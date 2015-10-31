@@ -16,7 +16,7 @@
         Fabian Valle
     </author>
 <access origin="*" />
-<access origin="http://www.hazedaily.com/" />
+
 <gap:plugin name="cordova-plugin-canvas2image" source="npm" />
 
 <preference name="permissions" value="none"/>
