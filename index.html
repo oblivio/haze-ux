@@ -340,16 +340,12 @@
 		        crossDomain: true,
 	
 		          error: function (jqXHR, textStatus, errorThrown) {
-	
+					alert("error");
 		            alert('new textStatus=' + textStatus + ' errorThrown=' + errorThrown);
 	
-		        })
-			  .done(function() {
-			    alert( "success" );
-			  })
-			  .always(function() {
-			    alert( "complete" );
-			  });
+		        }
+			});
+			alert("que paso?");
 		    $(document).on('click', 'img', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
