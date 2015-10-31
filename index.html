@@ -330,6 +330,13 @@
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
 			alert('device is ready');
+			if (window.jQuery) {  
+			    // jQuery is loaded  
+			    alert('jQuery is loaded');
+			} else {
+			    // jQuery is not loaded
+			    alert('No jQuery');
+			}
 		    $(document).on('click', 'img', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
