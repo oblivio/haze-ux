@@ -433,7 +433,7 @@ $('body').on('click','#send-invite-button',function(){
 		if(Entries.length == 0)
 			return false;
 		console.log('Entries',Entries);
-		$.post( "api/blackbook/", {blackbookdata:Entries})
+		$.post( "http://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 		  .done(function( data ) {
 		    oblivious_data.hasChanged = [];
 		    	data = JSON.parse(data);
