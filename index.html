@@ -329,12 +329,11 @@
 		<script>
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
-			alert('device is ready');
 			var jqxhr = $.ajax( "http://www.hazedaily.com/api/list/categories/" )
 			  .done(function() {
 			    alert( "success" );
 			  })
-			  .fail(function(xhr, status, error)  {
+			  .error(function(xhr, status, error){
 			    alert( "error" );
 			    var err = eval("(" + xhr.responseText + ")");
 			    alert(err.Message);
