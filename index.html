@@ -10,7 +10,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="js/vendor/jquery.2.1.4.js"></script>
         <link rel="stylesheet" href="css/furtive.min.css">
 		<script src="js/vendor/rivets.min.js?#"></script>
 		<script src="phonegap.js"></script>
@@ -26,7 +26,7 @@
 		<script src="js/vendor/rawinflate.js?#"></script>      
     	<script src="js/identicon.js/pnglib.js?#"></script>
 		<script src="js/identicon.js/identicon.js?#"></script>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    	<script src="js/vendor/moment.js"></script>
     	<link rel="stylesheet" href="js/remodal/remodal.css">
 		<link rel="stylesheet" href="js/remodal/remodal-default-theme.css">
     	<script src="js/remodal/remodal.min.js"></script>
@@ -321,7 +321,7 @@
                 
             </footer>
         </div>
-		    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.min.js"></script>
+		    	<script src="js/vendor/blockui.js"></script>
 		
         <script src="js/main.js"></script>
 		<script src="js/all.js"></script>
@@ -330,13 +330,16 @@
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
 			alert('device is ready');
-			if (window.jQuery) {  
-			    // jQuery is loaded  
-			    alert('jQuery is loaded');
-			} else {
-			    // jQuery is not loaded
-			    alert('No jQuery');
-			}
+			var jqxhr = $.ajax( "http://www.hazedaily.com/api/list/categories/" )
+			  .done(function() {
+			    alert( "success" );
+			  })
+			  .fail(function() {
+			    alert( "error" );
+			  })
+			  .always(function() {
+			    alert( "complete" );
+			  });
 		    $(document).on('click', 'img', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
