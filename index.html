@@ -330,19 +330,17 @@
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
 			var jqxhr = $.ajax({
-				
 		        "method": "GET",
-	
 		        "url": "http://www.hazedaily.com/api/list/categories/",
-	
-		        dataType: 'json',
-	
-		        crossDomain: true,
-	
-		          error: function (jqXHR, textStatus, errorThrown) {
+		        contentType: "application/json",  
+		        dataType: 'jsonp',  
+		       	crossDomain: true,
+		       	success : function(data) {
+                    alert(data);
+                },
+		        error: function (jqXHR, textStatus, errorThrown) {
 					alert("error");
 		            alert('new textStatus=' + textStatus + ' errorThrown=' + errorThrown);
-	
 		        }
 			});
 			
