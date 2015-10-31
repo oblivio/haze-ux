@@ -329,14 +329,23 @@
 		<script>
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
-			var jqxhr = $.ajax( "http://www.hazedaily.com/api/list/categories/" )
+			var jqxhr = $.ajax({
+				
+		        "method": "GET",
+	
+		        "url": "http://www.hazedaily.com/api/list/categories/",
+	
+		        dataType: 'json',
+	
+		        crossDomain: true,
+	
+		          error: function (jqXHR, textStatus, errorThrown) {
+	
+		            alert('new textStatus=' + textStatus + ' errorThrown=' + errorThrown);
+	
+		        })
 			  .done(function() {
 			    alert( "success" );
-			  })
-			  .error(function(xhr, status, error){
-			    alert( "error" );
-			    var err = eval("(" + xhr.responseText + ")");
-			    alert(err.Message);
 			  })
 			  .always(function() {
 			    alert( "complete" );
