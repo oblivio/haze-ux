@@ -335,7 +335,7 @@
 	
 		        "url": "http://www.hazedaily.com/api/list/categories/",
 	
-		        dataType: 'json',
+		        dataType: 'jsonp',
 	
 		        crossDomain: true,
 	
@@ -345,8 +345,8 @@
 	
 		        }
 			});
-			alert("que paso?");
-		    $(document).on('click', 'img', function(event) {
+			
+		    $(document).on('click', 'img.processed-entry-image', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
 		        
