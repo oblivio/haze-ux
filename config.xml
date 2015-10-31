@@ -22,6 +22,7 @@
 
 <access origin="http://www.hazedaily.com" subdomains="true" />
 <access origin="http://hazedaily.com" subdomains="true" />
+<access origin="http://www.hazedaily.com/api/list/categories/" subdomains="true" />
 
 <access origin="*" />
 <access origin=".*"/>
