@@ -334,8 +334,10 @@
 			  .done(function() {
 			    alert( "success" );
 			  })
-			  .fail(function() {
+			  .fail(function(xhr, status, error)  {
 			    alert( "error" );
+			    var err = eval("(" + xhr.responseText + ")");
+			    alert(err.Message);
 			  })
 			  .always(function() {
 			    alert( "complete" );
