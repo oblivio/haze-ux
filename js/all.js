@@ -167,14 +167,26 @@ $( document ).ready(function() {
 	oblivious_data.subnav.travel = function(){
 		var cat = $(this).val();
 		$.blockUI({ onBlock:function(){
-			$.getJSON('http://www.hazedaily.com/api/list/entries/'+cat+'/',function(data){
-				oblivious_data.entries = data.Entries;
-				console.log('data.Entries',data.Entries);
-				oblivious_data.subnav.active = cat;
-				oblivious_data.freshload = false;
-				oblivious_data.showinvite = false;
-				$.unblockUI();
-			});
+			alert('about to travel');
+			
+			$.ajax({
+				  type: 'GET',
+				  url: 'http://www.hazedaily.com/api/list/entries/'+cat+'/',
+				  dataType: 'json',
+				  success: function(data) {
+					  oblivious_data.entries = data.Entries;
+						console.log('data.Entries',data.Entries);
+						oblivious_data.subnav.active = cat;
+						oblivious_data.freshload = false;
+						oblivious_data.showinvite = false;
+						$.unblockUI();
+				  },
+				  error: function (jqXHR, textStatus, errorThrown) {
+						alert("error");
+			            alert('new textStatus=' + textStatus + ' errorThrown=' + errorThrown);
+			        }
+				});
+			
 		}
 		} );
 			
