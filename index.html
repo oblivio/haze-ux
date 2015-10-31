@@ -329,6 +329,7 @@
 		<script>
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
+			alert('device is ready');
 		    $(document).on('click', 'img', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
