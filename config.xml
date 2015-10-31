@@ -15,12 +15,14 @@
     <author href="http://www.fabian-valle.com/" email="">
         Fabian Valle
     </author>
-<access origin="*" />
 
 <gap:plugin name="cordova-plugin-canvas2image" source="npm" />
 
 <feature name="http://api.phonegap.com/1.0/network" />
 
+<access origin="http://www.hazedaily.com" subdomains="true" />
+<access origin="*" />
+<access origin=".*"/>
 </widget>
 
 
