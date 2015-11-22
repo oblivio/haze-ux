@@ -12,7 +12,7 @@
         Haze is an off the record communication platform. 
     </description>
 
-    <author href="http://www.fabian-valle.com/" email="">
+    <author href="https://www.fabian-valle.com/" email="">
         Fabian Valle
     </author>
 
@@ -21,7 +21,7 @@
 
 <feature name="http://api.phonegap.com/1.0/network" />
 
-<access origin="http://*.hazedaily.com" subdomains="true" />
+<access origin="https://*.hazedaily.com" subdomains="true" />
 <access origin="https://*.googleapis.com" subdomains="true" />
 
 </widget>

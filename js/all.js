@@ -62,7 +62,7 @@ $( document ).ready(function() {
 	rivets.bind($('#oblivious_addentry'), {
 		viewdata: oblivious_viewdata
 	});
-	$.getJSON('http://www.hazedaily.com/api/list/categories/',function(data){
+	$.getJSON('https://www.hazedaily.com/api/list/categories/',function(data){
 		oblivious_viewdata.categories = data.Categories;
 		oblivious_viewdata.keys = data.Keys;
 		obliviouscategorykeys = data.Keys;
@@ -187,7 +187,7 @@ $( document ).ready(function() {
 			
 			$.ajax({
 				  type: 'GET',
-				  url: 'http://www.hazedaily.com/api/list/entries/'+cat+'/',
+				  url: 'https://www.hazedaily.com/api/list/entries/'+cat+'/',
 				  dataType: 'json',
 				  success: function(data) {
 					  oblivious_data.entries = data.Entries;
@@ -225,7 +225,7 @@ $( document ).ready(function() {
 		oblivious_viewentry_data: oblivious_viewentry_data
 	});
 	
-	$.getJSON('http://www.hazedaily.com/api/list/categories/',function(data){
+	$.getJSON('https://www.hazedaily.com/api/list/categories/',function(data){
 			oblivious_data.categories = data.Categories;
 			oblivious_data.keys = data.Keys;
 			console.log('oblivious_data',oblivious_data);
@@ -528,7 +528,7 @@ $('body').on('click','#send-invite-button',function(){
 		if(Entries.length == 0)
 			return false;
 		
-		$.post( "http://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+		$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 		  .done(function( data ) {
 		    oblivious_data.hasChanged = [];
 		    	data = JSON.parse(data);
