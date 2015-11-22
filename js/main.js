@@ -820,7 +820,7 @@ var oblivious = (function () {
 		var str_parts = decodedinvite.split("#!");
 		var inviteid  = str_parts[0];
 		var invitecategory = str_parts[1];
-		
+		var invitestatus;
 		console.log('inviteid',inviteid);
 		console.log('invitecategory',invitecategory);
 		
@@ -848,7 +848,7 @@ var oblivious = (function () {
 						console.log('entryID',entryID);
 						console.log('entryKey',entryKey);
 						console.log('entryCategory',entryCategory);
-						var invitestatus;
+						
 						oblivious.getEntryMeta(entryID,entryCategory,function(){
 							console.log('this@getEMeta',this);
 							var alreadyhaskey = oblivious_module.blackbook._getEntryKey(entryID);
