@@ -27,14 +27,66 @@
     	<script src="js/identicon.js/pnglib.js?#"></script>
 		<script src="js/identicon.js/identicon.js?#"></script>
     	<script src="js/vendor/moment.js"></script>
-    	<link rel="stylesheet" href="js/remodal/remodal.css">
-		<link rel="stylesheet" href="js/remodal/remodal-default-theme.css">
-    	<script src="js/remodal/remodal.min.js"></script>
     	<link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
     	<link href='https://fonts.googleapis.com/css?family=Titillium+Web:700' rel='stylesheet' type='text/css'>
     	
     	<style>
- 
+ .rvmodal{
+ 	width:100%;
+ 	display:none;
+ 	border-bottom:1rem solid black;
+ 	
+ }
+ .rvmodal .modal-content{
+ 	width:75%;
+ 	margin:0 auto;
+ }
+ .rvmodal .rvmodal-close{
+ 	background-color: rgba(0,0,0,0.5);
+width: 15rem;
+height: 3rem;
+letter-spacing: 10px;
+font-size: 1rem;
+ }
+ .rvmodal .rvmodal-submit{
+ background-color: rgba(85, 210, 85, 0.7);
+width: auto;
+height: 3rem;
+letter-spacing: 10px;
+font-size: 1rem;
+padding: 1%;
+float: right;
+ }
+ .rvmodal .rvmodal-negative{
+ background-color: rgba(210, 85, 85, 0.7);
+width: auto;
+height: 3rem;
+letter-spacing: 10px;
+font-size: 1rem;
+padding: 1%;
+float: right;
+ }
+  .rvmodal .rvmodal-info{
+ background-color: rgba(100, 185, 255, 0.7);
+width: auto;
+height: 3rem;
+letter-spacing: 10px;
+font-size: 1rem;
+padding: 1%;
+float: right;
+ }
+  .rvmodal .rvmodal-warning{
+ background-color: rgba(255, 85, 0, 0.7);
+width: auto;
+height: 3rem;
+letter-spacing: 10px;
+font-size: 1rem;
+padding: 1%;
+float: right;
+ }
+ .rvmodal .rvmodal-close:after{
+ 	content:"close";
+ }
     	</style>
     </head>
     <body>
@@ -44,173 +96,65 @@
 
         <div class="header-container">
             <header class="wrapper clearfix">
-                <h1 class="title">haze | off the record...</h1>
+                <h1 class="title">haze</h1>
                 <nav>
                 <ul>
-	                <li><a href="#loadmodal"><img src="flaticon/svg/feed3.svg"/></a></li>
+	                <li><a id="openloadmodal" ><img src="flaticon/svg/feed3.svg"/></a></li>
    	                <li><a id="loadblackbook-button"  ><img src="flaticon/svg/visualization.svg"/></a></li>
-	                <li><a href="#addmodal"><img src="flaticon/svg/add20.svg"/></a></li>
-	                <li><a href="#settings"><img src="flaticon/svg/three115.svg"/></a></li>
+	                <li><a id="openaddmodal"><img src="flaticon/svg/add20.svg"/></a></li>
+	                <li><a id="opensettingsmodal" ><img src="flaticon/svg/three115.svg"/></a></li>
 	            </ul>
                 </nav>
             </header>
         </div>
         
 
-        <div class="main-container oblivious-home remodal-bg">
+        <div class="main-container oblivious-home rvmodal-bg">
             <div class="main wrapper clearfix">
-			
-			<div id="oblivious_entrylist" class="grd small">
-		        <div class="grd-row my1">
-		        	<div rv-if="oblivious_data.subnav.active">
-		        		<h3>{oblivious_data.subnav.active}</h3>
-		        		<hr />
-		        	</div>
-		        	<div id="instructions" rv-if="oblivious_data.freshload">
-		        		<h3>Welcome to haze.</h3>
-		        		<h5>Off the record communication platform</h5>
-		        		<hr />
-	     				<p><b>Public Feed</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/feed3.svg">
-	     				
-	     					<br />
-	     					The public feed let's you see all public posts.
-	     				</p>
-	     				<p><b>Blackbook</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/visualization.svg">
-	     				
-	     					<br />
-	     					The Blackbook keeps track of your oblivious entries.
-	     				</p>
-	     				<p><b>Add Entry</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/add20.svg">
-	     				
-	     					<br />
-							Create a new oblivious entry.
-	     				</p>
-	     				<p><b>Settings</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/three115.svg">
-	     				
-	     					<br />
-	     					Let's users configure their 'Blackbook'.
-	     				</p>
-		        	</div>
-		        </div>
-		        <div class="grd-row my1">
-		          <div rv-each-entry="oblivious_data.entries" class="grd-row-col-1-4 listed-entry py1 my1 mx1 px1" >
-		            <div rv-class="entry.category">
-		            <div class="heading">
-					        <span class="title">{entry.entryid}</span>
-					</div>
-					<div rv-id="entry.entryid" class="content oblivious-entry-button ">
-	                    		<span  class="icon-holder">
-	                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
-	                    		
-	                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
-	                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
-	                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
-	                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
-										<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">					                	
-	                    			</span>
-									
-					    </div>
-					    <div id="entry-actions">
-       	                    			<a rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="#invitemodal" id="" class="invite-button btn btn--s floated-right full-width">Invite</a>
-                    				 	<a rv-eid="entry.entryid" class="oblivious-entry-button btn btn--s btn--green floated-right full-width">View</a>
-                    		
-									</div>
-					</div>
-		          </div>
-		        </div>
-		      </div>
-			
-			
-			
-			
-                
-                <article style="display:none;" id="oblivious_viewentry">
-                	<section>
-                	
-                	<a id="return-to-entries" class="category-btn btn btn--s full-width">Back to Entries</a>
-                    <div class="oblivious-view-entry">
-                    	<div rv-each-entry="oblivious_viewentry_data.entries"  class="">
-                    		<h6 class="">{entry.category}:{entry.entryid}</h6>
-                    		
-                    		<hr />
-                    		<a rv-eid="entry.entryid" href="#modal" rv-if="entry.meta.opendiscussion"  id="" class="oblivious-entry-button add-comment-button btn--blue btn--s">Add Comment</a>
-				                	<a  rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="#invitemodal" id="" class="invite-button btn btn--s  full-width">Invite</a>
-				                	<span  class="icon-holder floated-right">
-                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
-                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
-                    				
-                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
-                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
-                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
-									<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">
-									
-									
-                    		</span>
-				                	<hr />
-                    		<textarea id="view-entry-meta" class="view-entry-meta full-width" disabled="disabled" rows=10>
-                    		
-                    		</textarea>
-                    	</div>
-                    	<div class="processed-entry-contents">
-                    		<div rv-each-econtent="oblivious_viewentry_data.contents" class="entry-content-container">
-                    			<a  rv-if="econtent.image" rv-href="econtent.image" download="oblivious.png">
-                    				<img rv-if="econtent.image" rv-src="econtent.image"  class="processed-entry-image" />
-                    			</a>
-                    			<hr />
-                    			<p rv-if="econtent.text">{econtent.text}</p>
-                    			<p rv-if="econtent.createdate">{econtent.createdate}</p>
-                    			<p rv-if="econtent.expiretime">{econtent.expiretime}</p>
-                    			<a  rv-if="econtent.identicon" rv-href="econtent.identicon" rv-download="entry.entryid">
-                    				<img rv-if="econtent.identicon" rv-src="econtent.identicon"  class="processed-entry-identicon" />
-                    			</a>
-                    		</div>
-                    	</div>
-                    </div>
-                    </section>
-                </article>
+			<div id="modals" class="grd small">
+<div class="grd-row">
+		<div id="rvmod-invite" class="rvmodal" data-rvmodal-id="invitemodal">
+  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+  <div class="modal-content">
+  	<h3>Generate Invite</h3>
+				<hr />
+					<label for="invite-pwd">Password*:</label>
+					<input id="invite-pwd" type="text" placeholder="(Required)" class="full-width" />
+			      <input type="text" class="full-width" id="encodedinvite" placeholder="encodedinvite" />
+			      <hr />
+			      <a id="invite-image" href="" download="invite.png"><img src="" /></a>
+  </div>
+  <button data-rvmodal-action="submit" id="send-invite-button" class="rvmodal-submit">Generate Invite</button>
+  
+</div>
+<div id="rvmod-alias" class="rvmodal" data-rvmodal-id="aliasmodal">
+  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+  <div class="modal-content">
+  	<h3>Set Entry Alias</h3>
+				<hr />
+					<label for="entry-original-id">EntryID:</label>
+					<input id="entry-original-id" type="text" disabled />
+					<label for="entry-original-cat">Category:</label>
+					<input id="entry-original-cat" type="text" disabled />
+					<hr />
+					<label for="entry-alias-input">Alias for Entry*:</label>
+					<input id="entry-alias-input" type="text" placeholder="(Enter Name)" class="full-width" />
+			      
+  </div>
+  <button data-rvmodal-action="submit" id="set-entry-alias-button" class="rvmodal-submit">Set</button>
+  
+</div>
+<div id="rvmod-generic" class="rvmodal" data-rvmodal-id="genericmodal">
+  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+  <div class="modal-content">
+  	<h3 class="generic-msg">Message goes here</h3>
+				<hr />
+  </div>
+</div>
 
-               
-                
 
-            </div> <!-- #main -->
-        </div> <!-- #main-container -->
-        <div class="remodal" data-remodal-id="modal">
-		  <button data-remodal-action="close" class="remodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Add Comment</h3>
-						<hr />
-					
-					      <form id="addcommentform" action="#" role="form" class="my2">
-					      	<img class="add-image-button" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
-					      	<input id="addimage-input-comment" type=file accept="image/*;capture=camera">				      	
-					      	<hr /><label for="msg">Message</label>
-					        <textarea 	rv-on-change="" id="comment-text" name="msg" rows="3" placeholder="New comment..."></textarea>
-					        
-					      </form>
-		  </div>
-		  <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>
-		  <button data-remodal-action="confirm" class="remodal-confirm" id="send-comment-button">Send</button>
-		</div>
-		<div class="remodal" data-remodal-id="invitemodal">
-		  <button data-remodal-action="close" class="remodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Generate Invite</h3>
-						<hr />
-							<label for="invite-pwd">Password*:</label>
-							<input id="invite-pwd" type="text" placeholder="(Required)" class="full-width" />
-					      <input type="text" class="full-width" id="encodedinvite" placeholder="encodedinvite" />
-					      <button id="send-invite-button" class="btn--green full-width">Generate Invite</button>
-					      <hr />
-					      <a id="invite-image" href="" download="invite.png"><img src="" /></a>
-		  </div>
-		  <button data-remodal-action="cancel" class="remodal-cancel full-width">Close</button>
-		</div>
-		<div id="subnav-home" class="remodal" data-remodal-id="loadmodal">
-		  <button data-remodal-action="close" class="remodal-close"></button>
+<div id="subnav-home" class="rvmodal" data-rvmodal-id="loadmodal">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
 		  <div class="modal-content">
 		  	<h3>Choose Category</h3>
 						<hr />
@@ -226,33 +170,36 @@
                 		
                 	</div>
 		  </div>
-		  <button data-remodal-action="cancel" class="remodal-cancel full-width">Close</button>
 		</div>
-		<div class="remodal" data-remodal-id="settings">
-		  <button data-remodal-action="close" class="remodal-close"></button>
+		
+		
+<div id="rvmod-settingsmodal" class="rvmodal" data-rvmodal-id="settings">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
 		  <div class="modal-content">
-		  	<h3>Settings</h3>
+		  	<h3>Blackbook Settings</h3>
 			<hr />
-			<article id="blackbook_management">
-			 		<section class="measure p2">
-			 			<h3>Blackbook</h3>
-			 			<a id="clear-blackbook-button" data-cleartype="all" class="category-btn btn btn--red full-width">
-               				Clear Blackbook
-               			</a>
                			
-			 		</section>
-			 	</article>
 		  </div>
-		  <button data-remodal-action="cancel" class="remodal-cancel full-width">Close</button>
+		  <button id="clear-blackbook-button" data-cleartype="all" data-rvmodal-action="negative" class="rvmodal-negative">Clear</button>
 		</div>
-		<div class="remodal" data-remodal-id="addmodal">
-		  <button data-remodal-action="close" class="remodal-close"></button>
+		
+		<div id="rvmod-addhub" class="rvmodal" data-rvmodal-id="addhub">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
 		  <div class="modal-content">
-		  	<h3>Add Entry</h3>
-						<hr />
-						<article id="oblivious_addentry">
-                <section class="" id="">
-                <h5>Have an invite?</h5>
+		  	<h3>Add new entry...</h3>
+			<hr />
+               			
+		  </div>
+		  <button id="showinvitemodal-btn" data-rvmodal-action="warning" class="rvmodal-warning">Existing Entry</button>
+				  <button id="showaddnewmodal-btn" data-rvmodal-action="info" class="rvmodal-info">New Entry</button>
+		
+		</div>
+		
+<div id="rvmod-invitemodal" class="rvmodal" data-rvmodal-id="invitesection">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+		  <div class="modal-content">
+		  	<div class="" id="">
+                <h3>Have an invite?</h3>
                 <p style="display:none;" id="invite-status">Successfully processed invite! <a class="btn--red dismiss-button">dismiss</a></p>
                 
                 	<form id="inviteform" action="#" role="form" class="my2">
@@ -260,16 +207,23 @@
                 		<input type="text" id="encodedinvite-input" class="full-width" />
                 		<div id="invite-action">
                 			
-                		<input id="decode-input" class="" type=file accept="image/*;capture=camera">				      	
-                		<input id="submit-invite-button" value="Submit Invite" class="btn--blue" type="button">
+                		<input id="decode-input" class="" type=file accept="image/*;capture=camera">	
                 		</div>
                 	</form>
                 <hr />	
-                </section>
-                 <section class="" id="">
-					      <h5>Create Entry</h5>
+                </div>	
+		  </div>
+		  <button id="submit-invite-button"  data-rvmodal-action="submit" class="rvmodal-submit">Submit Invite</button>
+		</div>
+	
+		<div id="rvmod-addnewmodal" class="rvmodal" data-rvmodal-id="addmodal">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+		  <div class="modal-content">
+		  	<h3>Add Entry</h3>
 						<hr />
-					
+						<div id="oblivious_addentry">
+                
+                 <div class="" id="">
 					      <form id="addentryform" action="#" role="form" class="my2">
 					      	<img class="add-image-button" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
 					      	<input id="addimage-input" type=file accept="image/*;capture=camera">				      	
@@ -305,13 +259,162 @@
                 	    	</select>
                 	    	<hr />
 					      </form>
-					    </section>   
-                </article>
+					    </div>   
+                </div>
                
 		  </div>
-		  <button id="submit-entry-button" data-remodal-action="confirm" class="remodal-confirm full-width">Submit</button>
-		  <button data-remodal-action="cancel" class="remodal-cancel full-width">Close</button>
+		  <button id="submit-entry-button" data-rvmodal-action="submit" class="rvmodal-submit">Submit Entry</button>
+		  
 		</div>
+
+
+<div id="rvmod-addcomment" class="rvmodal" data-rvmodal-id="modal">
+		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+		  <div class="modal-content">
+		  	<h3>Add Comment</h3>
+						<hr />
+					
+					      <form id="addcommentform" action="#" role="form" class="my2">
+					      	<img class="add-image-button" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
+					      	<input id="addimage-input-comment" type=file accept="image/*;capture=camera">				      	
+					      	<hr /><label for="msg">Message</label>
+					        <textarea 	rv-on-change="" id="comment-text" name="msg" rows="3" placeholder="New comment..."></textarea>
+					        
+					      </form>
+		  </div>
+		  <button data-rvmodal-action="submit" class="rvmodal-submit" id="send-comment-button">Send Comment</button>
+		</div>
+
+
+</div>
+			</div>
+			<div id="oblivious_entrylist" class="grd small">
+				
+		        <div class="grd-row my1 mx1">
+		        	<div rv-if="oblivious_data.subnav.active">
+		        		<h3>{oblivious_data.subnav.active}</h3>
+		        		<hr />
+		        	</div>
+		        	
+		        	<div id="instructions" rv-if="oblivious_data.freshload">
+		        		<h3>Welcome to haze.</h3>
+		        		<h5>Off the record communication platform</h5>
+		        		<hr />
+	     				<p><b>Public Feed</b>
+	     					     					<img class="instructions-image floated-right" src="flaticon/svg/feed3.svg">
+	     				
+	     					<br />
+	     					The public feed let's you see all public posts.
+	     				</p>
+	     				<p><b>Blackbook</b>
+	     					     					<img class="instructions-image floated-right" src="flaticon/svg/visualization.svg">
+	     				
+	     					<br />
+	     					The Blackbook keeps track of your oblivious entries.
+	     				</p>
+	     				<p><b>Add Entry</b>
+	     					     					<img class="instructions-image floated-right" src="flaticon/svg/add20.svg">
+	     				
+	     					<br />
+							Create a new oblivious entry.
+	     				</p>
+	     				<p><b>Settings</b>
+	     					     					<img class="instructions-image floated-right" src="flaticon/svg/three115.svg">
+	     				
+	     					<br />
+	     					Let's users configure their 'Blackbook'.
+	     				</p>
+		        	</div>
+		        </div>
+		        <div class="grd-row my1 mx2">
+		          <div rv-each-entry="oblivious_data.entries" class="grd-row-col-1-4 listed-entry py1 my1 mx1 px1" >
+		            <div rv-class="entry.category">
+		            <div class="heading">
+		            		<span rv-if="entry.blackbook" class="title">{entry.visiblename}</span>
+		            		<hr />
+					        <span class="title">{entry.entryid}</span>
+					</div>
+					<div rv-id="entry.entryid" class="content oblivious-entry-button ">
+	                    		<span  class="icon-holder">
+	                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
+	                    		
+	                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
+	                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
+	                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
+	                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
+										<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">					                	
+	                    			</span>
+									
+					    </div>
+					    <div id="entry-actions">
+       	                    			<a rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="" id="" class="invite-button btn btn--s floated-right full-width">Invite</a>
+                    				 	<a rv-eid="entry.entryid" class="oblivious-entry-button btn btn--s btn--green floated-right full-width">View</a>
+                    		<a rv-eid="entry.entryid"  rv-ecat="entry.category" class="alias-button btn btn--s btn--blue floated-right full-width">Alias</a>
+                    		
+									</div>
+					</div>
+		          </div>
+		        </div>
+		      </div>
+			
+			
+			
+			
+                
+                <article style="display:none;" id="oblivious_viewentry">
+                	<section>
+                	
+                	<a id="return-to-entries" class="category-btn btn btn--s full-width">Back to Entries</a>
+                    <div class="oblivious-view-entry">
+                    	<div rv-each-entry="oblivious_viewentry_data.entries"  class="">
+                    		<h6 class="">{entry.category}:{entry.entryid}</h6>
+                    		
+                    		<hr />
+
+                    		<a rv-eid="entry.entryid" href="" rv-if="entry.meta.opendiscussion"  id="" class="add-comment-button btn--blue btn--s">Add Comment</a>
+				                	<a  rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="#invitemodal" id="" class="invite-button btn btn--s  full-width">Invite</a>
+				                	<span  class="icon-holder floated-right">
+                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
+                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
+                    				
+                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
+                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
+                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
+									<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">
+									
+									
+                    		</span>
+				                	<hr />
+                    		<textarea style="display:none;" id="view-entry-meta" class="view-entry-meta full-width" disabled="disabled" rows=10>
+                    		
+                    		</textarea>
+                    	</div>
+                    	<div class="processed-entry-contents">
+                    		<div rv-each-econtent="oblivious_viewentry_data.contents" class="entry-content-container">
+                    			<a  rv-if="econtent.image" rv-href="econtent.image" download="oblivious.png">
+                    				<img rv-if="econtent.image" rv-src="econtent.image"  class="processed-entry-image" />
+                    			</a>
+                    			<hr />
+                    			<p rv-if="econtent.text">{econtent.text}
+                    			                    				<img rv-if="econtent.identicon" rv-src="econtent.identicon"  class="processed-entry-identicon" />
+                    			
+                    			</p>
+                    			<p rv-if="econtent.createdate">{econtent.createdate}</p>
+                    			<p rv-if="econtent.expiretime">{econtent.expiretime}</p>
+                    			<a  rv-if="econtent.identicon" rv-href="econtent.identicon" rv-download="entry.entryid">
+                    			</a>
+                    		</div>
+                    	</div>
+                    </div>
+                    </section>
+                </article>
+
+               
+                
+
+            </div> <!-- #main -->
+        </div> <!-- #main-container -->
+        
         <div class="footer-container">
             <footer class="wrapper">
                 <h3 class="title">Haze</h3>
@@ -327,6 +430,48 @@
 		<script src="js/all.js"></script>
 		
 		<script>
+		
+		
+       //rvmod-invite
+       //id="rvmod-addcomment" 
+      
+        	$("#openloadmodal").on("click",function(e){
+        		e.preventDefault();
+        		 $("html, body").animate({ scrollTop: 0 }, "slow");
+        		$(".rvmodal").fadeOut();
+            	$("#subnav-home").fadeIn();
+            });
+        	$("#openaddmodal").on("click",function(e){
+				e.preventDefault();
+				 $("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+	        	$("#rvmod-addhub").fadeIn();
+	        });
+        	$("#showinvitemodal-btn").on("click",function(e){
+				e.preventDefault();
+				 $("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+	        	$("#rvmod-invitemodal").fadeIn();
+	        });
+        	
+        	$("#showaddnewmodal-btn").on("click",function(e){
+				e.preventDefault();
+				 $("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+	        	$("#rvmod-addnewmodal").fadeIn();
+	        });
+        	$("#opensettingsmodal").on("click",function(e){
+        		e.preventDefault();
+        		 $("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+	        	$("#rvmod-settingsmodal").fadeIn();
+            });
+			$(".rvmodal-close").on("click",function(e){
+	        	$(this).parent().hide();
+	        	 $("html, body").animate({ scrollTop: 0 }, "slow");
+	        });
+		
+		
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
 			var jqxhr = $.ajax({
@@ -336,7 +481,7 @@
 		        dataType: 'jsonp',  
 		       	crossDomain: true,
 		       	success : function(data) {
-                    alert(data);
+                    //alert(data);
                 },
 		        error: function (jqXHR, textStatus, errorThrown) {
 					alert("error");

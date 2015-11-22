@@ -1,5 +1,8 @@
 sjcl.random.startCollectors();
 
+var obliviouscategorykeys = [];
+
+
 var oblivious = (function () {
 	var blackbook = function(){
 		this.data_types = ['commentcount','aliases','contacts','categories','entries','keys','tokens','meta'];
@@ -251,15 +254,17 @@ var oblivious = (function () {
 	}
 	function getPublicKey(cat){
 		var pkey=false;
-		$.ajax({
-	        async: false,
-	        url: "http://www.hazedaily.com/api/get/publickeys/"+cat,
-	        dataType: "json",
-	        data: {},
-	        success: function(data){
-	        	pkey = data.Key;
-	        }
-	    });
+		
+		
+		//TODO__NO BUENO AMIGO
+	
+		$.each(obliviouscategorykeys,function(i,category){
+			if(String(i) === String(cat)){
+				pkey=String(category.key);
+				return false;
+			}
+		});
+		
 		return pkey;
 	}
 	function addEntry(entrydata,cb){
@@ -870,9 +875,16 @@ var oblivious = (function () {
 					}else{
 						invitestatus = "Could not process invite.";
 					}
-					$(selector).text(invitestatus);
-					$(selector).show();
-					setTimeout(function() { $(selector).hide(); }, 5000);
+//					
+//					$(selector).text(invitestatus);
+//					$(selector).show();
+					
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+					$(".rvmodal").fadeOut();
+					$("#rvmod-generic .generic-msg").text(invitestatus);
+		        	$("#rvmod-generic").fadeIn();
+//		        	
+//					setTimeout(function() { $(selector).hide(); }, 5000);
 					
 				}else{
 					var eContents = window.atob(invitedata);

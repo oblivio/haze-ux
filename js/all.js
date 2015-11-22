@@ -1,5 +1,6 @@
 console.log('add page');
 
+
 $.blockUI.defaults.message = "";
 //add-image-button
 //execute callback when the page is ready:
@@ -8,7 +9,10 @@ $( document ).ready(function() {
 	$("#clear-blackbook-button").on("click",function(){
 		
 			oblivious.blackbookClear();
-		
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$(".rvmodal").fadeOut();
+			$("#rvmod-generic .generic-msg").text('blackbook cleared!');
+        	$("#rvmod-generic").fadeIn();
 	});
 
 // Handler for .ready() called.
@@ -16,6 +20,7 @@ $( document ).ready(function() {
 	var oblivious_viewdata = {
 		'clientsidecrypto':false,
 		'categories':[],
+		'keys':[],
 		'togglecrypto':null,
 		'setAddProperty':null,
 		'newentry':{
@@ -59,6 +64,9 @@ $( document ).ready(function() {
 	});
 	$.getJSON('http://www.hazedaily.com/api/list/categories/',function(data){
 		oblivious_viewdata.categories = data.Categories;
+		oblivious_viewdata.keys = data.Keys;
+		obliviouscategorykeys = data.Keys;
+		console.log('oblivious_viewdata',oblivious_viewdata);
 	});
 	
 	oblivious._onchange('addimage-input',function(){
@@ -87,6 +95,10 @@ $( document ).ready(function() {
 			$("#inviteform")[0].reset();
 	});
 	$("#metadata_entry").on("change",function(){
+		$("#metadata_preview").show();
+		if($(this).val() == '')
+			$("#metadata_preview").hide();
+		
 		var tmpJSON = $(this).val();
 		try{
 			tmpJSON = JSON.parse(tmpJSON);
@@ -134,6 +146,10 @@ $( document ).ready(function() {
 					});
 				}
 				$('#addentryform')[0].reset();
+				$("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+				$("#rvmod-generic .generic-msg").text('oblivious entry added!');
+	        	$("#rvmod-generic").fadeIn();
 			}}); 
 		
 	});
@@ -157,6 +173,7 @@ $( document ).ready(function() {
 			showinvite:false,
 			hasChanged:[],
 			categories:[],
+			keys:[],
 			subnav:{
 				'categories':true,	
 				'content':[],
@@ -167,7 +184,6 @@ $( document ).ready(function() {
 	oblivious_data.subnav.travel = function(){
 		var cat = $(this).val();
 		$.blockUI({ onBlock:function(){
-			alert('about to travel');
 			
 			$.ajax({
 				  type: 'GET',
@@ -211,6 +227,8 @@ $( document ).ready(function() {
 	
 	$.getJSON('http://www.hazedaily.com/api/list/categories/',function(data){
 			oblivious_data.categories = data.Categories;
+			oblivious_data.keys = data.Keys;
+			console.log('oblivious_data',oblivious_data);
 			oblivious_data.subnav.content = data.Categories;
 //			oblivious_data.subnav.active = '(choose a category to begin...)';
 	});
@@ -265,21 +283,47 @@ $( document ).ready(function() {
 	});
 $('body').on('click','#loadblackbook-button',function(){
 	console.log('loading blackbook...');
-
+	 $("html, body").animate({ scrollTop: 0 }, "slow");
 	
 	var Entries =[];
 	var localMeta = oblivious.blackbookGet('meta');
+	var localAliases = oblivious.blackbookGet('aliases');
+
+	var localCommCount = oblivious.blackbookGet('commentcount');
+	
 	$.each(localMeta,function(i,obj){
 		var tmpEntry = {
 				'category':'',
 				'entryid':'',
-				'meta':''
+				'meta':'',
+				'blackbook':true,
+				'visiblename':'(no alias)'
 		};
 		if(obj.value != ''){
 			tmpEntry.entryid = obj.key;
 			tmpEntry.category = obj.value.category;
 			tmpEntry.meta = obj.value;
-			Entries.push(tmpEntry);
+			
+			$.each(localAliases,function(j,aliasObj){
+				var aliasRaw = String(aliasObj.key).split(":");
+				var aliasID = aliasRaw[0];
+				var aliasCat = aliasRaw[1];
+				
+				if(aliasID == tmpEntry.entryid && aliasCat == tmpEntry.category){
+					tmpEntry.visiblename = String(aliasObj.value);
+				}
+			});
+			$.each(localCommCount,function(j,cObj){
+				console.log('cObj',cObj);
+				
+				if(String(cObj.key) === String(tmpEntry.entryid + ":" + tmpEntry.category) ){
+					tmpEntry.commentcount = cObj.value;
+					return false;
+				}
+			});
+			if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+				Entries.push(tmpEntry);
+			}
 		}
 	});
 	oblivious_data.entries = Entries;
@@ -295,7 +339,8 @@ $('body').on('click','#loadblackbook-button',function(){
 	});
 	oblivious_data.hasChanged = [];
 })
-$('body').on('click','#return-to-entries',function(){
+$('body').on('click','#return-to-entries',function(e){
+	e.preventDefault();
 	oblivious_viewentry_data.password = '';
 	oblivious_viewentry_data.category = '';
 	oblivious_viewentry_data.entries = [];
@@ -305,18 +350,49 @@ $('body').on('click','#return-to-entries',function(){
 		$("#oblivious_entrylist").show();
 		$("#oblivious_viewentry").hide();
 	});
-$('body').on('click','.invite-button',function(){
+$('body').on('click','.invite-button',function(e){
 	//clear fields
+	e.preventDefault();
 	$("#invite-pwd").val('');
 	var entryID = $(this).attr('eid');
 	var cat = $(this).attr('ecat');
 	oblivious_viewentry_data._entryid = entryID;
 	oblivious_viewentry_data.category = cat;
-	console.log('did this work?',cat);
+	$(".rvmodal").fadeOut();
+	$("#rvmod-invite").fadeIn();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
 });
-$('body').on('click','.add-comment-button',function(){
+$('body').on('click','.alias-button',function(e){
+	//clear fields
+	e.preventDefault();
+	$("#entry-alias-input,#entry-original-id,#entry-original-cat").val('');
+	var entryID = $(this).attr('eid');
+	var cat = $(this).attr('ecat');
+	$("#entry-original-id").val(entryID);
+	$("#entry-original-cat").val(cat);
+	$(".rvmodal").fadeOut();
+	$("#rvmod-alias").fadeIn();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
+	$("#set-entry-alias-button").off('click').on('click',function(){
+		if($("#entry-alias-input").val() != ""){
+			
+			var newAlias = $("#entry-alias-input").val();
+			oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
+			$("#loadblackbook-button").click();
+		}
+	});
+
+	
+});
+
+$('body').on('click','.add-comment-button',function(e){
 	//clear fields
 	$("#addcommentform")[0].reset();
+	e.preventDefault();
+	$(".rvmodal").fadeOut();
+	$("#rvmod-addcomment").fadeIn();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
+	
 });
 $('body').on('click','#send-invite-button',function(){
 	var entryid = oblivious_viewentry_data._entryid;
@@ -388,6 +464,10 @@ $('body').on('click','#send-invite-button',function(){
 							    }
 								
 								$.unblockUI();
+								$("html, body").animate({ scrollTop: 0 }, "slow");
+								$(".rvmodal").fadeOut();
+								$("#rvmod-generic .generic-msg").text('comment sent!');
+					        	$("#rvmod-generic").fadeIn();
 							});
 						}
 						);
@@ -411,6 +491,7 @@ $('body').on('click','#send-invite-button',function(){
 	
 	//blackbook check
 	var bbcheck = function(){
+		console.log('bbcheck!');
 		var Entries =[];
 		var localMeta = oblivious.blackbookGet('meta');
 		var localCommCount = oblivious.blackbookGet('commentcount');
@@ -418,76 +499,65 @@ $('body').on('click','#send-invite-button',function(){
 			var tmpEntry = {
 					'category':'',
 					'entryid':'',
+					'visiblename':'',
 					'commentcount':'',
 			};
 			console.log('tmpEntry',tmpEntry);
 			tmpEntry.entryid = obj.key;
+			tmpEntry.visiblename = obj.key;
+			
 			tmpEntry.category = obj.value.category;
-			console.log('tmpEntry',tmpEntry);
+			
 			$.each(localCommCount,function(j,cObj){
 				console.log('cObj',cObj);
 				
-				if(cObj.key === obj.key + ":" + obj.value.category){
+				if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
 					tmpEntry.commentcount = cObj.value;
 					return false;
 				}
 			});
-			console.log('tmpEntry',tmpEntry);
-			if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined'){
-				if(tmpEntry.category != '' && tmpEntry.entryid != '' && tmpEntry.commentcount != ''){
-					console.log('tmpEntry',tmpEntry);
+			
+			
+			if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
 					Entries.push(tmpEntry);
-				}
+				
 			}
 
 				
 		});
 		if(Entries.length == 0)
 			return false;
-		console.log('Entries',Entries);
+		
 		$.post( "http://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 		  .done(function( data ) {
 		    oblivious_data.hasChanged = [];
 		    	data = JSON.parse(data);
+		    	console.log('data from bb check',data);
 		    	var currEntries = [];
 		    	var newCommentCount = {};
 		    	
 			    $.each(data,function(i,obj){
 			    		//obj[0] is the entry
-			    	if(obj.length == 0)
-			    		return false;
-			    	
-			    		if(obj[0].changed){
+			    	console.log('obj',obj,obj.length);
+			    	if(typeof obj.changed === 'undefined')
+			    		return true; //skip
+			    		console.log('wtf?');
+			    		if(obj.changed){
+			    			console.log('paso esto?');
 			    			var tmp = {
-			    					'entryid':obj[0].entryid,
-			    					'category':obj[0].category
+			    					'entryid':obj.entryid,
+			    					'category':obj.category,
+			    					'visiblename':obj.entryid
 			    			};
 			    			oblivious_data.hasChanged.push(tmp);
-			    			console.log('change!',obj[0]);
-			    			newCommentCount[obj[0].entryid + ":" + obj[0].category] = obj[0].commentcount;
-				    		
+			    			console.log('change!',obj);
+			    			newCommentCount[obj.entryid + ":" + obj.category] = obj.commentcount;
+							oblivious.blackbookSet('commentcount',obj.entryid +":"+obj.category ,obj.commentcount);
+
 			    		}
-			    		currEntries.push(obj[0]);	
+			    		currEntries.push(obj);	
 			    });
 			    
-			    //delete obsolete entries from BB
-			    var localMeta = oblivious.blackbookGet('meta');
-			    var newMeta = [];
-				$.each(localMeta,function(i,obj){
-					var stillExists = currEntries.filter( function(item){return (item.category==obj.value.category && item.entryid==obj.key);} );
-					console.log(stillExists);
-					if(stillExists.length == 0){
-						oblivious.blackbookSet('commentcount',obj.key+":"+obj.value.category ,-1);
-					}else{
-						console.log('newComment',newCommentCount,typeof newCommentCount[obj.key+":"+obj.value.category]);
-						if(typeof newCommentCount[obj.key+":"+obj.value.category] !== 'undefined'){
-							
-							oblivious.blackbookSet('commentcount',obj.key+":"+obj.value.category,newCommentCount[obj.key+":"+obj.value.category]);
-						}else{
-							
-						}
-					}
-				});
 				
 				//if @ blackbook
 				if(oblivious_data.subnav.active == 'Blackbook' && $("#oblivious_viewentry").css('display') === 'none'){
