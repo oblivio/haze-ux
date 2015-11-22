@@ -213,7 +213,7 @@ var oblivious = (function () {
 		        delete_token:  deleteToken,
 		        category:category
 		      };
-		var url = "http://www.hazedaily.com/api/remove/entry/";
+		var url = "https://www.hazedaily.com/api/remove/entry/";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -310,7 +310,7 @@ var oblivious = (function () {
 		}
 		
 		
-		var url = "http://www.hazedaily.com/api/create/entry/";
+		var url = "https://www.hazedaily.com/api/create/entry/";
 		var reqObj = {
 				url: url,
 			     data: entrydata
@@ -362,7 +362,7 @@ var oblivious = (function () {
 				entry_id:entryID,
 				category:category
 		};
-		var url = "http://www.hazedaily.com/api/get/entry/meta/";
+		var url = "https://www.hazedaily.com/api/get/entry/meta/";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -387,7 +387,7 @@ var oblivious = (function () {
 				entry_id:entryID,
 				category:category
 		};
-		var url = "http://www.hazedaily.com/api/get/entry/";
+		var url = "https://www.hazedaily.com/api/get/entry/";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -554,7 +554,7 @@ var oblivious = (function () {
 		        encrypted:encrypted
 		      };
 		console.log('before post',d);
-		var url = "http://www.hazedaily.com/api/create/entry/";
+		var url = "https://www.hazedaily.com/api/create/entry/";
 		var reqObj = {
 				url: url,
 			     data: d
