@@ -866,6 +866,13 @@ var oblivious = (function () {
 						    	blackbookSet('categories',entryID,entryCategory);
 						    	blackbookSet('meta',entryID,this[0].meta);
 						    	blackbookSet('commentcount',entryID+":"+entryCategory,0);
+						    	
+						    	$("html, body").animate({ scrollTop: 0 }, "slow");
+								$(".rvmodal").fadeOut();
+								$("#rvmod-generic .generic-msg").text(invitestatus);
+					        	$("#rvmod-generic").fadeIn();
+					        	
+					        	
 						    	//blackbookSet commentcount here
 						    	//and @ create when populating blackbook
 						    	//clicking view from public does not add to bb
@@ -879,10 +886,7 @@ var oblivious = (function () {
 //					$(selector).text(invitestatus);
 //					$(selector).show();
 					
-					$("html, body").animate({ scrollTop: 0 }, "slow");
-					$(".rvmodal").fadeOut();
-					$("#rvmod-generic .generic-msg").text(invitestatus);
-		        	$("#rvmod-generic").fadeIn();
+					
 //		        	
 //					setTimeout(function() { $(selector).hide(); }, 5000);
 					
