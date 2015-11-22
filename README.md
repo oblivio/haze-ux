@@ -1,27 +1,37 @@
-# oblivious
+# haze
 Zero knowledge.
 
-oblivious 0.0.1 Alpha - 
+haze 1.0.0 Genesis - 
 
-==== THIS IS ALPHA SOFTWARE - USE AT YOUR OWN RISKS ====
+https://web.hazedaily.com
 
-oblivious began while trying to further modularize a fork of ZeroBin I've been working on (Haze - www.hazedaily.com);
+
+Haze is a end-to-end encrypted communication platform using 256 bit AES encryption built on top of the oblivious system.
+More information on the oblivious system could be found at
+
+http://www.github.com/oblivio/oblivious 
+
+The haze front-end is very simple and straight forward. There are four main navigation buttons which I'll describe below.
+
+1.) Public Feed - 
+The public feed displays haze entries for a particular category. Upon selecting a category, the available entries will be displayed. From this screen you can either 'View' an entry, or 'Alias' it. 
+
+2.) Blackbook -
+Similar to the public feed, but keeps track of your personal haze entries. You will be able to generate 'invites' only for entries available in your Blackbook.
+
+3.) Add Entry -
+The add entry button lets you add an entry to your Blackbook. You can do this by selecting the 'Existing Entry' option and processing an invite, or by selecting the 'New Entry' option and creating a new haze entry.
+
+4.) Settings -
+From here you will be able to manage your Blackbook settings. 
+
 
 While the purpose of Haze is end-to-end encrypted communication (client-to-client encryption) - oblivious takes care of the back-end process. The oblivious system itself is built in a very simple, easy to understand way. When you create a new entry, all you are doing is creating a file (following a particular folder/naming structure); The contents of the file will be the contents of your entry (but encrypted with a server key); This entry can have certain attributes like expiration time, burnafterreading, and open-discussions(comments). If you are the creator of an entry, you will get a special 'delete token' that let's you remove the entry before its expiration date. 
-
-Oblivious also provides a mechanism to 'invite' users into entries, allows users to comment on entries, add images to content or comments, password protect specific content, and even specify expiration times. This feature-set is sure to expand in the future.
-
-Oblivious includes a default front-end, to show how the system could be used to provide end-to-end encryption to its users. The default front-end is basically a different theme for the Haze front-end - and encapsulates a lot of the magic into easy to use javascript API. Here is a live demo of oblivious: http://www.fabian-valle.com/code/oblivious/
-
-The oblivious system is built on the Slim framework - a microframework for PHP.
-
-http://www.slimframework.com/
-
 
 
 === ORIGINS ===
 
-oblivious has its origins in ZeroBin - a minimalist, opensource online pastebin where the server 
+Both haze and oblivious have their origins in ZeroBin - a minimalist, opensource online pastebin where the server 
 has zero knowledge of pasted data. 
 
 More information on the project page:
