@@ -474,22 +474,7 @@ float: right;
 		
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
-			var jqxhr = $.ajax({
-		        "method": "GET",
-		        "url": "http://www.hazedaily.com/api/list/categories/",
-		        contentType: "application/json",  
-		        dataType: 'jsonp',  
-		       	crossDomain: true,
-		       	success : function(data) {
-                    //alert(data);
-                },
-		        error: function (jqXHR, textStatus, errorThrown) {
-					alert("error");
-		            alert('new textStatus=' + textStatus + ' errorThrown=' + errorThrown);
-		        }
-			});
-			
-		    $(document).on('click', 'img.processed-entry-image', function(event) {
+			$(document).on('click', 'img.processed-entry-image', function(event) {
 		        event.preventDefault();
 		        var tmpSRC = $(this).attr('src');
 		        
