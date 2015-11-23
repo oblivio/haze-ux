@@ -18,7 +18,7 @@ $( document ).ready(function() {
 // Handler for .ready() called.
 	// unblock when ajax activity stops 
 	var oblivious_viewdata = {
-		'clientsidecrypto':false,
+		'clientsidecrypto':true,
 		'categories':[],
 		'keys':[],
 		'togglecrypto':null,
@@ -154,8 +154,8 @@ $( document ).ready(function() {
 		
 	});
 	$("#addentryform").on('reset',function(){
-		oblivious._disableClientCrypto();
-		oblivious_viewdata.clientsidecrypto=false;
+		oblivious._enableClientCrypto();
+		oblivious_viewdata.clientsidecrypto=true;
 	});
 	$('#addentryform')[0].reset();
 	

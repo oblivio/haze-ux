@@ -85,6 +85,14 @@ float: right;
  .rvmodal .rvmodal-close:after{
  	content:"close";
  }
+ .header-container .title{
+ 	width:100%;
+ }
+ #help>img{
+ 	width:3rem;
+ 	height:auto;
+ 	float:right;
+ }
     	</style>
     </head>
     <body>
@@ -94,7 +102,8 @@ float: right;
 
         <div class="header-container">
             <header class="wrapper clearfix">
-                <h1 class="title">haze</h1>
+                <h1 class="title">haze<span id="help"><img src="flaticon/svg/round67.svg"/></span></h1>
+                
                 <nav>
                 <ul>
 	                <li><a id="openloadmodal" ><img src="flaticon/svg/feed3.svg"/></a></li>
@@ -149,7 +158,37 @@ float: right;
 				<hr />
   </div>
 </div>
-
+<div id="rvmod-help" class="rvmodal" data-rvmodal-id="helpmodal">
+  <button data-rvmodal-action="close" class="rvmodal-close"></button>
+  <div class="modal-content">
+  	<h3 class="">Encryption?</h3>
+	<p>
+	The simplest way to think of encryption is to think of password protection. When you use a password to protect a piece of information, you are using a form of encryption. Without the password, the data is worthless.
+	</p>
+	<h3>End-to-End Encryption?</h3>
+	<p>
+	When you create a haze entry, the content of your haze entry gets encrypted using AES 256 bit encryption on the client-side before the data is sent to the server. The server contains only encrypted information, and is oblivious as to what the actual content is. The server then returns an haze id to the client. A typical haze id will look something like this: "0adedd281fdbc2f8". The client can use this haze id to access the encrypted information in the haze entry. The 256 bit key never touches the server - it only exists on the client. 
+	</p>
+	<p>
+	The 256 bit key is the 'password' to your haze entry. Without this, the data in your haze entry is not usable. A typical key would look something like this: "+BnEcW9gAP7bz3I/1LDi5UMygbt14GXNTWxgX+9GCMw="
+	</p>
+	<h3>Blackbook?</h3>
+	<p>
+	The Blackbook let's you keep track of your haze entries by storing keys, aliases, and other entry data using HTML5 localStorage. 
+	</p>
+	<h3>How do I start an encrypted conversation?</h3>
+	<p>
+	To start a conversation, click on the 'Add' button and select the 'New Entry' option. <br />
+	At this point, you will be able to configure options for your haze entry such as expiration time, message, image, category, password-protection or custom meta-data.  <br />
+	Once your entry is configured, you can proceed to create it. Once the entry has been created, it will be loaded onto your Blackbook. From your Blackbook, you will be able to generate a password-protected invite for your haze entry.  <br />
+	From your Blackbook, you can also view or alias an entry. To alias an entry, simply click on the 'Alias' button and enter the required information. To view an entry, click on 'View' and the entry contents will become available. While viewing a haze entry, you also have the option to add comments containing text/image.
+	</p>
+	<h3>An Invite?</h3>
+	<p>
+	A haze invite is an image containing an invite code hidden in the pixel information. When this invite code is processed by the invite recipient, he will be able to access the entry for which the invite was generated.
+	</p>
+  </div>
+</div>
 
 <div id="subnav-home" class="rvmodal" data-rvmodal-id="loadmodal">
 		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
@@ -227,7 +266,7 @@ float: right;
 					      	<input id="addimage-input" type=file accept="image/*;capture=camera">				      	
 					      	<hr />
 					        <label class="clientsidecrypto" for="crypto">Client-Side Crypto</label>
-					        <input rv-on-change="viewdata.togglecrypto" class="clientsidecrypto" name="crypto" type="checkbox" />
+					        <input rv-on-change="viewdata.togglecrypto" checked="checked" class="clientsidecrypto" name="crypto" type="checkbox" />
 					        
 					        <label for="password">Password</label>
 					        <input 	rv-on-change="viewdata.setAddProperty" id="entry-password" name="password" placeholder="Enter password" type="password">
@@ -470,7 +509,12 @@ float: right;
 	        	$(this).parent().hide();
 	        	 $("html, body").animate({ scrollTop: 0 }, "slow");
 	        });
-		
+			$("#help>img").on("click",function(e){
+				e.preventDefault();
+       		 $("html, body").animate({ scrollTop: 0 }, "slow");
+				$(".rvmodal").fadeOut();
+	        	$("#rvmod-help").fadeIn();
+			});
 		
 		document.addEventListener("deviceready", onDeviceReady, false);
 		function onDeviceReady() {
