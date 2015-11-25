@@ -309,6 +309,16 @@ var oblivious = (function () {
 			entrydata.publickey=1;
 		}
 		
+		var localAliases = oblivious.blackbookGet('aliases');
+		var nickname = "(Anonymous)";
+		$.each(localAliases,function(i,obj){
+			if(obj.key == "me"){
+				console.log('found my alias!',obj);
+				nickname=obj.value;
+				return false;
+			}
+		});
+		entrydata.nickname = nickname;
 		
 		var url = "https://www.hazedaily.com/api/create/entry/";
 		var reqObj = {
@@ -419,8 +429,11 @@ var oblivious = (function () {
 				identicon:'',//'<a class="image" href="data:image/png;base64,'
 				createdate:'',
 				expiretime:'',
-				
+				author:'',
 			};
+			if(obj.meta.nickname){
+				true_entry.author = obj.meta.nickname;
+			}
 			if(obj.meta.publickey){
 				var publickey = getPublicKey(obj.meta.category);
 				obj.data = _decrypt(publickey,obj.data);
@@ -553,6 +566,15 @@ var oblivious = (function () {
 		        category:category,
 		        encrypted:encrypted
 		      };
+		var localAliases = oblivious.blackbookGet('aliases');
+		$.each(localAliases,function(i,obj){
+			//set nickname to 'me' alias
+			if(obj.key == "me"){
+				d.nickname = obj.value;
+				return false;
+			}
+		});
+		
 		console.log('before post',d);
 		var url = "https://www.hazedaily.com/api/create/entry/";
 		var reqObj = {
@@ -731,7 +753,7 @@ var oblivious = (function () {
 				d.krypi=1;
 				d.data = encodedString;
 			}
-			
+			oblivious._disableClientCrypto();
 			console.log('regular entry');
 			oblivious.addEntry(d,function(){
 				console.log('this@afterinvite',this);
@@ -752,7 +774,7 @@ var oblivious = (function () {
 				$("#invite-image>img").attr('src',imgSRC);
 				$("#invite-image>img").show();
 			});
-			
+			oblivious._enableClientCrypto();
 		}else if(entryCategory){
 			var rawString = "#"+entryID+"#"+'(nokey)'+"#"+entryCategory;
 			var encodedString = rawString;
@@ -774,7 +796,7 @@ var oblivious = (function () {
 			}else{
 				d.unencrypted=1;
 			}
-			
+			oblivious._disableClientCrypto();
 			console.log('regular entry');
 			oblivious.addEntry(d,function(){
 				console.log('this@afterinvite',this);
@@ -795,6 +817,7 @@ var oblivious = (function () {
 				$("#invite-image>img").attr('src',imgSRC);
 				$("#invite-image>img").show();
 			});
+			oblivious._enableClientCrypto();
 		}
 	}
 	function _processInviteCode(rawCode){
@@ -832,8 +855,11 @@ var oblivious = (function () {
 
 				var tmpData = String(invitedata.data).replace("#!k!#","");
 				console.log('tmpData',tmpData);
-				var pwd = prompt("Please enter password to decrypt");
+				var pwd = $("#encodedinvite-input").data('pwd');
+				$("#encodedinvite-input").data('pwd','');$("#encodedinvite-input").val('');
+				console.log('pwd',pwd);
 				if(pwd){
+					console.log('pwd',pwd);
 					var eContents = oblivious._decrypt(pwd,tmpData);
 					console.log('eContents',eContents);
 					var decoded = eContents;
@@ -855,6 +881,10 @@ var oblivious = (function () {
 							console.log('already',alreadyhaskey);
 							if(alreadyhaskey){
 								invitestatus = "You already have access to this entry.";
+								$("html, body").animate({ scrollTop: 0 }, "slow");
+								$(".rvmodal").fadeOut();
+								$("#rvmod-generic .generic-msg").text(invitestatus);
+					        	$("#rvmod-generic").fadeIn();
 							}else{
 								invitestatus = "Successfully processed invite!";
 								if(entryKey == '(nokey)'){
@@ -881,6 +911,10 @@ var oblivious = (function () {
 				    	//blackbookSet('tokens',data.id,data.deletetoken);
 					}else{
 						invitestatus = "Could not process invite.";
+						$("html, body").animate({ scrollTop: 0 }, "slow");
+						$(".rvmodal").fadeOut();
+						$("#rvmod-generic .generic-msg").text(invitestatus);
+			        	$("#rvmod-generic").fadeIn();
 					}
 //					
 //					$(selector).text(invitestatus);

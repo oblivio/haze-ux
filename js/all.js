@@ -83,6 +83,7 @@ $( document ).ready(function() {
 				GhostPixels.decode(password,e.target.result).then(function(decodedMessage){
 					
 					$("#encodedinvite-input").val(decodedMessage);
+					$("#encodedinvite-input").data('pwd',password);
 					
 	        	});
 	        	
