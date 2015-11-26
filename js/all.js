@@ -258,21 +258,27 @@ $( document ).ready(function() {
 					oblivious.getEntry(entry.entryid,entry.category,function(){
 						console.log('this @ getEntry',this);
 						var data = this;
-						if(data[0].meta.krypi == "1"){
-							var pwd = prompt("Please enter password to decrypt");
-							if(pwd){
-								var eContents = oblivious._processGetEntry(data,entry.entryid,pwd);
-								oblivious_viewentry_data.contents = eContents;
-								oblivious_viewentry_data.password = pwd;
-							}else{
-								
-								$("#return-to-entries").click();
-							}
-					    }else{
-					    	var eContents = oblivious._processGetEntry(data,entry.entryid,'');
-					    	oblivious_viewentry_data.contents = eContents;
-					    	console.log(oblivious_viewentry_data.contents);
-					    }
+						if(data[1] == "Paste does not exist, has expired or has been deleted."){
+							oblivious.blackbookSet('commentcount',entry.entryid +":"+entry.category ,-1);
+
+						}else{
+							if(data[0].meta.krypi == "1"){
+								var pwd = prompt("Please enter password to decrypt");
+								if(pwd){
+									var eContents = oblivious._processGetEntry(data,entry.entryid,pwd);
+									oblivious_viewentry_data.contents = eContents;
+									oblivious_viewentry_data.password = pwd;
+								}else{
+									
+									$("#return-to-entries").click();
+								}
+						    }else{
+						    	var eContents = oblivious._processGetEntry(data,entry.entryid,'');
+						    	oblivious_viewentry_data.contents = eContents;
+						    	console.log(oblivious_viewentry_data.contents);
+						    }
+						}
+						
 						
 						$.unblockUI();
 					});
@@ -567,21 +573,28 @@ $('body').on('click','#send-invite-button',function(){
 					oblivious.getEntry(oblivious_viewentry_data._entryid,oblivious_viewentry_data.category,function(){
 						console.log('this @ getEntry',this);
 						var data = this;
-						if(data[0].meta.krypi == "1"){
-							var pwd = oblivious_viewentry_data.password;
-							if(pwd){
-								var eContents = oblivious._processGetEntry(data,oblivious_viewentry_data._entryid,pwd);
-								oblivious_viewentry_data.contents = eContents;
-								window.scrollTo(0,$('#oblivious_viewentry')[0].scrollHeight);
-							}else{
-								
-								$("#return-to-entries").click();
-							}
-					    }else{
-					    	var eContents = oblivious._processGetEntry(data,oblivious_viewentry_data._entryid,'');
-					    	oblivious_viewentry_data.contents = eContents;
-					    	window.scrollTo(0,$('#oblivious_viewentry')[0].scrollHeight - 100);
-					    }
+						if(data[1] == "Paste does not exist, has expired or has been deleted."){
+							oblivious.blackbookSet('commentcount',oblivious_viewentry_data._entryid +":"+oblivious_viewentry_data.category ,-1);
+							$("#return-to-entries").click();
+							$('#loadblackbook-button').click();
+						}else{
+							if(data[0].meta.krypi == "1"){
+								var pwd = oblivious_viewentry_data.password;
+								if(pwd){
+									var eContents = oblivious._processGetEntry(data,oblivious_viewentry_data._entryid,pwd);
+									oblivious_viewentry_data.contents = eContents;
+									window.scrollTo(0,$('#oblivious_viewentry')[0].scrollHeight);
+								}else{
+									
+									$("#return-to-entries").click();
+								}
+						    }else{
+						    	var eContents = oblivious._processGetEntry(data,oblivious_viewentry_data._entryid,'');
+						    	oblivious_viewentry_data.contents = eContents;
+						    	window.scrollTo(0,$('#oblivious_viewentry')[0].scrollHeight - 100);
+						    }
+						}
+						
 						
 					});
 				}

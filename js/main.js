@@ -875,39 +875,26 @@ var oblivious = (function () {
 						console.log('entryKey',entryKey);
 						console.log('entryCategory',entryCategory);
 						
-						oblivious.getEntryMeta(entryID,entryCategory,function(){
-							console.log('this@getEMeta',this);
-							var alreadyhaskey = oblivious_module.blackbook._getEntryKey(entryID);
-							console.log('already',alreadyhaskey);
-							if(alreadyhaskey){
-								invitestatus = "You already have access to this entry.";
-								$("html, body").animate({ scrollTop: 0 }, "slow");
-								$(".rvmodal").fadeOut();
-								$("#rvmod-generic .generic-msg").text(invitestatus);
-					        	$("#rvmod-generic").fadeIn();
-							}else{
-								invitestatus = "Successfully processed invite!";
-								if(entryKey == '(nokey)'){
-									entryKey = false;
-									invitestatus = "Successfully processed invite! - no key required for entry.";
-								}
-								blackbookSet('entries',entryCategory,entryID);
-						    	blackbookSet('keys',entryID,entryKey);
-						    	blackbookSet('categories',entryID,entryCategory);
-						    	blackbookSet('meta',entryID,this[0].meta);
-						    	blackbookSet('commentcount',entryID+":"+entryCategory,0);
-						    	
-						    	$("html, body").animate({ scrollTop: 0 }, "slow");
-								$(".rvmodal").fadeOut();
-								$("#rvmod-generic .generic-msg").text(invitestatus);
-					        	$("#rvmod-generic").fadeIn();
-					        	
-					        	
-						    	//blackbookSet commentcount here
-						    	//and @ create when populating blackbook
-						    	//clicking view from public does not add to bb
+							invitestatus = "Successfully processed invite!";
+							if(entryKey == '(nokey)'){
+								entryKey = false;
+								invitestatus = "Successfully processed invite! - no key required for entry.";
 							}
-						});
+							blackbookSet('entries',entryCategory,entryID);
+					    	blackbookSet('keys',entryID,entryKey);
+					    	blackbookSet('categories',entryID,entryCategory);
+					    	blackbookSet('commentcount',entryID+":"+entryCategory,0);
+					    	
+					    	$("html, body").animate({ scrollTop: 0 }, "slow");
+							$(".rvmodal").fadeOut();
+							$("#rvmod-generic .generic-msg").text(invitestatus);
+				        	$("#rvmod-generic").fadeIn();
+				        	
+				        	
+					    	//blackbookSet commentcount here
+					    	//and @ create when populating blackbook
+					    	//clicking view from public does not add to bb
+						
 				    	//blackbookSet('tokens',data.id,data.deletetoken);
 					}else{
 						invitestatus = "Could not process invite.";
