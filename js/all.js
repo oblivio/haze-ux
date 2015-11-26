@@ -139,11 +139,13 @@ $( document ).ready(function() {
 					console.log('krypi entry');
 					oblivious.addKrypiEntry(d,function(){
 						$.unblockUI();
+						$('#loadblackbook-button').click();
 					});
 				}else{
 					console.log('regular entry');
 					oblivious.addEntry(d,function(){
 						$.unblockUI();
+						$('#loadblackbook-button').click();
 					});
 				}
 				$('#addentryform')[0].reset();
@@ -151,10 +153,11 @@ $( document ).ready(function() {
 				$(".rvmodal").fadeOut();
 				$("#rvmod-generic .generic-msg").text('oblivious entry added!');
 	        	$("#rvmod-generic").fadeIn();
+	        	
 			}}); 
 		
 	});
-	$("#addentryform").on('reset',function(){
+	$("#addentryform").on('reset',function(){	
 		oblivious._enableClientCrypto();
 		oblivious_viewdata.clientsidecrypto=true;
 	});
