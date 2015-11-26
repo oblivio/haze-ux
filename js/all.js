@@ -298,7 +298,8 @@ $('body').on('click','#loadblackbook-button',function(){
 	var localAliases = oblivious.blackbookGet('aliases');
 
 	var localCommCount = oblivious.blackbookGet('commentcount');
-	
+	console.log('locCommC',localCommCount);
+	console.log('localMeta',localMeta);
 	$.each(localMeta,function(i,obj){
 		var tmpEntry = {
 				'category':'',
@@ -308,10 +309,14 @@ $('body').on('click','#loadblackbook-button',function(){
 				'visiblename':'(no alias)'
 		};
 		if(obj.value != ''){
-			tmpEntry.entryid = obj.key;
-			tmpEntry.category = obj.value.category;
-			tmpEntry.meta = obj.value;
+			var tmpRaw = String(obj.key).split(":");
+			var tmpID = tmpRaw[0];
+			var tmpCat = tmpRaw[1];
 			
+			tmpEntry.entryid = tmpID;
+			tmpEntry.category = tmpCat;
+			tmpEntry.meta = obj.value;
+			console.log('dimelo pina',tmpEntry);
 			$.each(localAliases,function(j,aliasObj){
 				var aliasRaw = String(aliasObj.key).split(":");
 				var aliasID = aliasRaw[0];
@@ -501,6 +506,7 @@ $('body').on('click','#send-invite-button',function(){
 	var bbcheck = function(){
 		console.log('bbcheck!');
 		var Entries =[];
+		var localEntries = [];
 		var localMeta = oblivious.blackbookGet('meta');
 		var localCommCount = oblivious.blackbookGet('commentcount');
 		$.each(localMeta,function(i,obj){
@@ -510,14 +516,19 @@ $('body').on('click','#send-invite-button',function(){
 					'visiblename':'',
 					'commentcount':'',
 			};
-			console.log('tmpEntry',tmpEntry);
-			tmpEntry.entryid = obj.key;
-			tmpEntry.visiblename = obj.key;
+			var tmpRaw = String(obj.key).split(":");
+			var tmpID = tmpRaw[0];
+			var tmpCat = tmpRaw[1];
 			
-			tmpEntry.category = obj.value.category;
+			tmpEntry.entryid = tmpID;
+			tmpEntry.visiblename = tmpID;
+			
+			tmpEntry.category = tmpCat;
+
+			console.log('tmpEntry',tmpEntry);
 			
 			$.each(localCommCount,function(j,cObj){
-				console.log('cObj',cObj);
+				console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
 				
 				if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
 					tmpEntry.commentcount = cObj.value;
@@ -525,9 +536,11 @@ $('body').on('click','#send-invite-button',function(){
 				}
 			});
 			
-			
+			console.log('que ostia?',tmpEntry);
 			if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-					Entries.push(tmpEntry);
+					
+				localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+				Entries.push(tmpEntry);
 				
 			}
 
@@ -535,14 +548,17 @@ $('body').on('click','#send-invite-button',function(){
 		});
 		if(Entries.length == 0)
 			return false;
-		
+		console.log('Entries',Entries);
+		var currEntries = [];
+
+    	var newCommentCount = {};
+    	
 		$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 		  .done(function( data ) {
 		    oblivious_data.hasChanged = [];
 		    	data = JSON.parse(data);
 		    	console.log('data from bb check',data);
-		    	var currEntries = [];
-		    	var newCommentCount = {};
+		    	
 		    	
 			    $.each(data,function(i,obj){
 			    		//obj[0] is the entry
@@ -564,11 +580,36 @@ $('body').on('click','#send-invite-button',function(){
 
 			    		}
 			    		currEntries.push(obj);	
+			    		
 			    });
 			    
 				
 				//if @ blackbook
 				if(oblivious_data.subnav.active == 'Blackbook' && $("#oblivious_viewentry").css('display') === 'none'){
+					$.each(localEntries,function(ii,encodedentry){
+						var tmpRaw = String(encodedentry).split(":");
+						var tmpID = tmpRaw[0];
+						var tmpCat = tmpRaw[1];
+						
+						var foundEntry = false;
+						$.each(currEntries,function(jj,obj){
+					    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+							console.log('obj-checkit',obj);
+							if(obj.entryid == tmpID && obj.category == tmpCat){
+								foundEntry = true;
+								return false;
+							}
+							
+					    });
+						if(!foundEntry){
+							console.log('entry no longer exists!');
+					    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+							
+						}else{
+							console.log('entry still exists amigo');
+						}
+					});
+					
 					$('#loadblackbook-button').click();
 				}else if ($("#oblivious_viewentry").css('display') === 'block'){
 					oblivious.getEntry(oblivious_viewentry_data._entryid,oblivious_viewentry_data.category,function(){

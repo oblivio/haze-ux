@@ -67,14 +67,15 @@ var oblivious = (function () {
 		}
 		
 	};
-	blackbook.prototype._getEntryKey = function(entryID){
+	blackbook.prototype._getEntryKey = function(entryID,entryCat){
 		var localCollection = this.getFromStorage('keys');
 		var key = false;
 	    if( localCollection.length == 0){
 	    	console.log('no keys in blackbook');
 	    }else{
+	    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
 	    	$.each(localCollection,function(i,entry){
-	    		if(entry.key == entryID){
+	    		if(entry.key == (entryID + ":" + entryCat)){
 	    			key = entry.value;
 	    			return false;//exit $.each
 	    		}
@@ -108,9 +109,7 @@ var oblivious = (function () {
 			'blackbook': new blackbook()
 	};//using an api_path will allow for more flexible folder structure
 	
-	function getKeyFromBlackbook(entryID){
-		return oblivious_module.blackbook._getEntryKey(entryID);
-	}
+	
 	var xmlhttp = null;
 	function _serialize(obj,prefix){
 		var str = [];
@@ -342,11 +341,11 @@ var oblivious = (function () {
 		    		
 		    	}else{
 		    		console.log('data',data.length);
-			    	blackbookSet('entries',data.category,data.id);
-			    	blackbookSet('keys',data.id,ranKey);
+			    	blackbookSet('entries',data.id+":"+data.category,data.id);
+			    	blackbookSet('keys',data.id+":"+data.category,ranKey);
 			    	blackbookSet('categories',data.id,data.category)
-			    	blackbookSet('tokens',data.id,data.deletetoken);
-			    	blackbookSet('meta',data.id,entrydata);
+			    	blackbookSet('tokens',data.id+":"+data.category,data.deletetoken);
+			    	blackbookSet('meta',data.id+":"+data.category,entrydata);
 			    	blackbookSet('commentcount',data.id+":"+data.category,1);
 		    	}
 		    }
@@ -354,11 +353,11 @@ var oblivious = (function () {
 		    	
 		    }else{
 		    	console.log('data',data.length);
-		    	blackbookSet('entries',data.category,data.id);
-		    	blackbookSet('keys',data.id,false);
+		    	blackbookSet('entries',data.id+":"+data.category,data.id);
+		    	blackbookSet('keys',data.id+":"+data.category,false);
 		    	blackbookSet('categories',data.id,data.category)
-		    	blackbookSet('tokens',data.id,data.deletetoken);
-		    	blackbookSet('meta',data.id,entrydata);
+		    	blackbookSet('tokens',data.id+":"+data.category,data.deletetoken);
+		    	blackbookSet('meta',data.id+":"+data.category,entrydata);
 		    	blackbookSet('commentcount',data.id+":"+data.category,1);
 		    }
 		    if(typeof cb !== 'undefined' && typeof cb === 'function')
@@ -458,7 +457,7 @@ var oblivious = (function () {
 			if(obj.meta.encrypted == "1"){
 				//check the blackbook for the key
 				console.log('entryID',entryID);
-				var entryKey = oblivious_module.blackbook._getEntryKey(entryID);
+				var entryKey = oblivious_module.blackbook._getEntryKey(entryID,obj.meta.category);
 				
 				
 				if(entryKey){
@@ -499,7 +498,7 @@ var oblivious = (function () {
 			if(typeof obj.meta.parentid !== 'undefined'){
 				console.log('obj.data',obj.data);
 				if(obj.meta.encrypted){
-					var entryKey = oblivious_module.blackbook._getEntryKey(entryID);
+					var entryKey = oblivious_module.blackbook._getEntryKey(entryID,obj.meta.category);
 					
 					if(entryKey){
 						var tmp_true_entry = _decrypt(entryKey,obj.data);
@@ -551,7 +550,7 @@ var oblivious = (function () {
 			
 		}
 		
-		var entryKey = oblivious_module.blackbook._getEntryKey(entryID);
+		var entryKey = oblivious_module.blackbook._getEntryKey(entryID,category);
 		var encrypted=0;
 		if(entryKey){
 			//entry uses client-side encryption
@@ -730,7 +729,7 @@ var oblivious = (function () {
 	}
 	function _inviteMobile(entryID,category){
 		var entryCategory = oblivious_module.blackbook._getEntryCategory(entryID);
-		var entryKey = oblivious_module.blackbook._getEntryKey(entryID);
+		var entryKey = oblivious_module.blackbook._getEntryKey(entryID,category);
 		if(!entryCategory){
 			entryCategory = category;
 		}
@@ -875,22 +874,36 @@ var oblivious = (function () {
 						console.log('entryKey',entryKey);
 						console.log('entryCategory',entryCategory);
 						
-							invitestatus = "Successfully processed invite!";
-							if(entryKey == '(nokey)'){
-								entryKey = false;
-								invitestatus = "Successfully processed invite! - no key required for entry.";
-							}
-							blackbookSet('entries',entryCategory,entryID);
-					    	blackbookSet('keys',entryID,entryKey);
-					    	blackbookSet('categories',entryID,entryCategory);
-					    	blackbookSet('commentcount',entryID+":"+entryCategory,0);
-					    	
-					    	$("html, body").animate({ scrollTop: 0 }, "slow");
-							$(".rvmodal").fadeOut();
-							$("#rvmod-generic .generic-msg").text(invitestatus);
-				        	$("#rvmod-generic").fadeIn();
+							
 				        	
-				        	
+				        	oblivious.getEntryMeta(entryID,entryCategory,function(){
+								console.log('this@getEMeta',this);
+								var alreadyhaskey = oblivious_module.blackbook._getEntryKey(entryID,entryCategory);
+								console.log('already',alreadyhaskey);
+								if(alreadyhaskey){
+									invitestatus = "You already have access to this entry.";
+								}else{
+									invitestatus = "Successfully processed invite!";
+									if(entryKey == '(nokey)'){
+										entryKey = false;
+										invitestatus = "Successfully processed invite! - no key required for entry.";
+									}
+									blackbookSet('entries',entryID+":"+entryCategory,entryID);
+							    	blackbookSet('keys',entryID+":"+entryCategory,entryKey);
+							    	blackbookSet('categories',entryID,entryCategory);
+							    	blackbookSet('commentcount',entryID+":"+entryCategory,1);
+							    	blackbookSet('meta',entryID+":"+entryCategory,this[0].meta);
+							    	
+							    	$("html, body").animate({ scrollTop: 0 }, "slow");
+									$(".rvmodal").fadeOut();
+									$("#rvmod-generic .generic-msg").text(invitestatus);
+						        	$("#rvmod-generic").fadeIn();
+							    	//blackbookSet commentcount here
+							    	//and @ create when populating blackbook
+							    	//clicking view from public does not add to bb
+								}
+							});
+					    	//blackbookSet('tokens',data.id,data.deletetoken);
 					    	//blackbookSet commentcount here
 					    	//and @ create when populating blackbook
 					    	//clicking view from public does not add to bb
@@ -949,6 +962,5 @@ var oblivious = (function () {
         blackbookSet:blackbookSet,
         blackbookClear:blackbookClear,
         _generateInvite:_generateInvite,
-        getKeyFromBlackbook:getKeyFromBlackbook
     }; 
 })();
