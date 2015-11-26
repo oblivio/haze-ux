@@ -526,7 +526,10 @@ $('body').on('click','#send-invite-button',function(){
 			
 			
 			if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-					Entries.push(tmpEntry);
+					
+				
+				
+				Entries.push(tmpEntry);
 				
 			}
 
@@ -562,12 +565,26 @@ $('body').on('click','#send-invite-button',function(){
 							oblivious.blackbookSet('commentcount',obj.entryid +":"+obj.category ,obj.commentcount);
 
 			    		}
-			    		currEntries.push(obj);	
+			    		var trues = [];
+			    		$.each(localCommCount,function(j,cObj){
+							console.log('cObj',cObj);
+							
+							if(String(cObj.key) === String(obj.entryid + ":" + obj.category) ){
+								trues.push(String(obj.entryid + ":" + obj.category));
+							}
+						});
+			    		if(trues.length > 0){
+
+				    		currEntries.push(obj);	
+			    		}else{
+			    			console.log('erased?');
+			    		}
 			    });
 			    
 				
 				//if @ blackbook
 				if(oblivious_data.subnav.active == 'Blackbook' && $("#oblivious_viewentry").css('display') === 'none'){
+					
 					$('#loadblackbook-button').click();
 				}else if ($("#oblivious_viewentry").css('display') === 'block'){
 					oblivious.getEntry(oblivious_viewentry_data._entryid,oblivious_viewentry_data.category,function(){
