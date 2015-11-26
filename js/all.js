@@ -260,7 +260,8 @@ $( document ).ready(function() {
 						var data = this;
 						if(data[1] == "Paste does not exist, has expired or has been deleted."){
 							oblivious.blackbookSet('commentcount',entry.entryid +":"+entry.category ,-1);
-
+							$("#return-to-entries").click();
+							$('#loadblackbook-button').click();
 						}else{
 							if(data[0].meta.krypi == "1"){
 								var pwd = prompt("Please enter password to decrypt");
