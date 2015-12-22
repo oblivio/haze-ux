@@ -752,7 +752,6 @@ var oblivious = (function () {
 				d.krypi=1;
 				d.data = encodedString;
 			}
-			oblivious._disableClientCrypto();
 			console.log('regular entry');
 			oblivious.addEntry(d,function(){
 				console.log('this@afterinvite',this);
@@ -773,7 +772,6 @@ var oblivious = (function () {
 				$("#invite-image>img").attr('src',imgSRC);
 				$("#invite-image>img").show();
 			});
-			oblivious._enableClientCrypto();
 		}else if(entryCategory){
 			var rawString = "#"+entryID+"#"+'(nokey)'+"#"+entryCategory;
 			var encodedString = rawString;
@@ -795,7 +793,6 @@ var oblivious = (function () {
 			}else{
 				d.unencrypted=1;
 			}
-			oblivious._disableClientCrypto();
 			console.log('regular entry');
 			oblivious.addEntry(d,function(){
 				console.log('this@afterinvite',this);
@@ -816,7 +813,6 @@ var oblivious = (function () {
 				$("#invite-image>img").attr('src',imgSRC);
 				$("#invite-image>img").show();
 			});
-			oblivious._enableClientCrypto();
 		}
 	}
 	function _processInviteCode(rawCode){
