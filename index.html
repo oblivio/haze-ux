@@ -33,7 +33,15 @@
  	width:100%;
  	display:none;
  	border-bottom:1rem solid black;
- 	
+ 	position:absolute;
+ 	left:0;
+ 	background: rgba(255,255,255,0.95);
+ 	overflow-x:hidden;
+ 	overflow-y:scroll;
+ 	-webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+-moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+padding-bottom:4rem;
  }
  .rvmodal .modal-content{
  	width:75%;
@@ -394,9 +402,9 @@ float: right;
 									
 					    </div>
 					    <div id="entry-actions">
-       	                    			<a rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="" id="" class="invite-button btn btn--s floated-right full-width">Invite</a>
-                    				 	<a rv-eid="entry.entryid" class="oblivious-entry-button btn btn--s btn--green floated-right full-width">View</a>
-                    		<a rv-eid="entry.entryid"  rv-ecat="entry.category" class="alias-button btn btn--s btn--blue floated-right full-width">Alias</a>
+       	                    			<a rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="" id="" class=" icon-holder invite-button btn btn--s floated-right full-width"><img src="flaticon/svg/wedding4.svg" alt="invite" /></a>
+                    				 	<a rv-eid="entry.entryid" class="oblivious-entry-button btn btn--s btn--green floated-right full-width icon-holder"><img src="flaticon/svg/view24.svg" alt="view"/></a>
+                    					<a rv-eid="entry.entryid"  rv-ecat="entry.category" class="alias-button btn btn--s btn--blue floated-right full-width icon-holder"><img src="flaticon/svg/favorite46.svg" alt="alias" /></a>
                     		
 									</div>
 					</div>
@@ -418,7 +426,7 @@ float: right;
                     		
                     		<hr />
 
-                    		<a rv-eid="entry.entryid" href="" rv-if="entry.meta.opendiscussion"  id="" class="add-comment-button btn--blue btn--s">Add Comment</a>
+                    		<a rv-eid="entry.entryid" href="" rv-if="entry.meta.opendiscussion"  id="" class="add-comment-button btn--blue btn--s icon-holder"><img src="flaticon/svg/chat-bubble1.svg" alt="add comment"/></a>
 				                	<a  rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="#invitemodal" id="" class="invite-button btn btn--s  full-width">Invite</a>
 				                	<span  class="icon-holder floated-right">
                     				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">

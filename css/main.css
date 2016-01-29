@@ -47,7 +47,9 @@ width:auto;
 	font-weight:bold;
 	letter-spacing:3px;
 }
-
+.btn{
+	cursor: pointer;
+}
 .entry-content-container{
 	    -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5);
     -moz-box-shadow:    0 15px 10px -10px rgba(0, 0, 0, 0.5);
@@ -357,6 +359,12 @@ nav ul {
 
 	}
 .icon-holder img{
+	width:30px;
+	max-width:30px;
+	height:auto;
+	display:inline-block;
+}
+.icon-holder a>img{
 	width:30px;
 	max-width:30px;
 	height:auto;
