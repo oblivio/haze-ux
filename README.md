@@ -1,7 +1,7 @@
 # haze
 Zero knowledge.
 
-haze 1.0.0 Genesis - 
+haze 1.0.2 Genesis - 
 
 https://web.hazedaily.com
 

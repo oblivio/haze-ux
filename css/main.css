@@ -298,7 +298,6 @@ body {
     border-bottom: 20px solid black;
 }
 .main-container{
-	font-family: "Comic Sans MS", cursive, sans-serif; font-wight:bold;
 }
 .footer-container p{
 	width:100%;
@@ -331,7 +330,6 @@ body {
 
 .title {
     color: black;
-    font-family: "Comic Sans MS", cursive, sans-serif; font-weight:bold;
     font-weight:bold;
     letter-spacing:5px;
 }
