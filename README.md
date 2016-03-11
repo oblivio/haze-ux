@@ -1,7 +1,7 @@
 # haze
 Zero knowledge.
 
-haze 1.0.3 Genesis - 
+haze 1.0.5 Genesis - 
 
 https://web.hazedaily.com
 
@@ -11,22 +11,37 @@ More information on the oblivious system could be found at
 
 http://www.github.com/oblivio/oblivious 
 
-The haze front-end is very simple and straight forward. There are four main navigation buttons which I'll describe below.
-
-1.) Public Feed - 
-The public feed displays haze entries for a particular category. Upon selecting a category, the available entries will be displayed. From this screen you can either 'View' an entry, or 'Alias' it. 
-
-2.) Blackbook -
-Similar to the public feed, but keeps track of your personal haze entries. You will be able to generate 'invites' only for entries available in your Blackbook.
-
-3.) Add Entry -
-The add entry button lets you add an entry to your Blackbook. You can do this by selecting the 'Existing Entry' option and processing an invite, or by selecting the 'New Entry' option and creating a new haze entry.
-
-4.) Settings -
-From here you will be able to manage your Blackbook settings. 
-
-
 While the purpose of Haze is end-to-end encrypted communication (client-to-client encryption) - oblivious takes care of the back-end process. The oblivious system itself is built in a very simple, easy to understand way. When you create a new entry, all you are doing is creating a file (following a particular folder/naming structure); The contents of the file will be the contents of your entry (but encrypted with a server key); This entry can have certain attributes like expiration time, burnafterreading, and open-discussions(comments). If you are the creator of an entry, you will get a special 'delete token' that let's you remove the entry before its expiration date. 
+
+=== Encryption ===
+
+	The simplest way to think of encryption is to think of password protection. When you use a password to protect a piece of information, you are using a form of encryption. Without the password, the data is worthless.
+
+
+=== End-to-End Encryption? ===
+
+	When you create a haze entry, the content of your haze entry gets encrypted using AES 256 bit encryption on the client-side before the data is sent to the server. The server contains only encrypted information, and is oblivious as to what the actual content is. The server then returns an haze id to the client. A typical haze id will look something like this: <span style="display: inline-block;word-break: break-all;">0adedd281fdbc2f8</span>. The client can use this haze id to access the encrypted information in the haze entry. The 256 bit key never touches the server - it only exists on the client. 
+
+
+	The 256 bit key is the 'password' to your haze entry. Without this, the data in your haze entry is not usable. A typical key would look something like this: 	+BnEcW9gAP7bz3I/1LDi5UMygbt14GXNTWxgX+9GCMw=
+	
+=== Blackbook? === 
+	
+	The Blackbook let's you keep track of your haze entries by storing keys, aliases, and other entry data using HTML5 localStorage. 
+	
+=== How do I start an encrypted conversation? === 
+	
+	To start a conversation, click on the 'Add' button.
+	
+	At this point, you will be able to configure options for your haze entry such as expiration time, message, image, category, password-protection or custom meta-data.  
+	
+	Once your entry is configured, you can proceed to create it. Once the entry has been created, it will be loaded onto your Blackbook. From your Blackbook, you will be able to generate a password-protected invite for your haze entry.  
+	
+	From your Blackbook, you can also view or alias an entry. To alias an entry, simply click on the 'Alias' button and enter the required information. To view an entry, click on 'View' and the entry contents will become available. While viewing a haze entry, you also have the option to add comments containing text/image.
+	
+=== An Invite? ===
+
+	A haze invite is an image containing an invite code hidden in the pixel information. When this invite code is processed by the invite recipient, he will be able to access the entry for which the invite was generated.
 
 
 === ORIGINS ===
