@@ -473,118 +473,7 @@
 				});
 			});
 			app.controller('HazeCtrl', function($scope, $location, $routeParams) {
-				//blackbook check
-				$scope.bbcheck = function(){
-					console.log('bbcheck!');
-					var Entries =[];
-					var localEntries = [];
-					var localMeta = oblivious.blackbookGet('meta');
-					var localCommCount = oblivious.blackbookGet('commentcount');
-					$.each(localMeta,function(i,obj){
-						var tmpEntry = {
-								'category':'',
-								'entryid':'',
-								'visiblename':'',
-								'commentcount':'',
-						};
-						var tmpRaw = String(obj.key).split(":");
-						var tmpID = tmpRaw[0];
-						var tmpCat = tmpRaw[1];
-						
-						tmpEntry.entryid = tmpID;
-						tmpEntry.visiblename = tmpID;
-						
-						tmpEntry.category = tmpCat;
-
-						console.log('tmpEntry',tmpEntry);
-						
-						$.each(localCommCount,function(j,cObj){
-							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							
-							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-								tmpEntry.commentcount = cObj.value;
-								return false;
-							}
-						});
-						
-						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-								
-							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							Entries.push(tmpEntry);
-							
-						}
-
-							
-					});
-					if(Entries.length == 0)
-						return false;
-					console.log('Entries',Entries);
-					var currEntries = [];
-
-			    	var newCommentCount = {};
-			    	
-					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
-					  .done(function( data ) {
-					    var hasChanged = [];
-					    	data = JSON.parse(data);
-					    	console.log('data from bb check',data);
-					    	
-						    $.each(data,function(i,obj){
-						    	//obj[0] is the entry
-						    	console.log('obj',obj,obj.length);
-						    	if(typeof obj.changed === 'undefined')
-						    		return true; //skip
-						    		
-						    		
-						    		if(obj.changed){
-						    			var tmp = {
-						    					'entryid':obj.entryid,
-						    					'category':obj.category,
-						    					'visiblename':obj.entryid
-						    			};
-						    			hasChanged.push(tmp);
-
-						    		}
-						    		currEntries.push(obj);	
-						    		
-						    });
-						    
-						    $scope.$apply(function() {
-						    	$scope.hasChanged = hasChanged;
-						    });
-						    
-							//if @ blackbook
-							if($location.path() == '/blackbook'){
-								$.each(localEntries,function(ii,encodedentry){
-									var tmpRaw = String(encodedentry).split(":");
-									var tmpID = tmpRaw[0];
-									var tmpCat = tmpRaw[1];
-									
-									var foundEntry = false;
-									$.each(currEntries,function(jj,obj){
-								    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
-										console.log('obj-checkit',obj);
-										if(obj.entryid == tmpID && obj.category == tmpCat){
-											foundEntry = true;
-											return false;
-										}
-										
-								    });
-									if(!foundEntry){
-										console.log('entry no longer exists!');
-								    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
-										location.reload(true);
-									}else{
-										console.log('entry still exists amigo');
-									}
-								});
-								$scope.loadBlackbook();
-							}
-							
-					  }, "json");
-				};
-				$scope.bbcheck();
-				window.setInterval($scope.bbcheck(),30000); //check every 30s
+				
 				
 				
 				
@@ -763,12 +652,133 @@
 						}
 					});
 					
-						$scope.entries = Entries;
-						console.log('$scope.entries',$scope.entries);
+						
+						$scope.$apply(function () {
+							$scope.entries = Entries;
+							console.log('$scope.entries',$scope.entries);
+							
+							alert($scope.entries.length);
+						});
+						
+						
 						
 					
-					
 				};
+				
+				//blackbook check
+				$scope.bbcheck = function(){
+					console.log('bbcheck!');
+					var Entries =[];
+					var localEntries = [];
+					var localMeta = oblivious.blackbookGet('meta');
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					$.each(localMeta,function(i,obj){
+						var tmpEntry = {
+								'category':'',
+								'entryid':'',
+								'visiblename':'',
+								'commentcount':'',
+						};
+						var tmpRaw = String(obj.key).split(":");
+						var tmpID = tmpRaw[0];
+						var tmpCat = tmpRaw[1];
+						
+						tmpEntry.entryid = tmpID;
+						tmpEntry.visiblename = tmpID;
+						
+						tmpEntry.category = tmpCat;
+
+						console.log('tmpEntry',tmpEntry);
+						
+						$.each(localCommCount,function(j,cObj){
+							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							
+							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+								tmpEntry.commentcount = cObj.value;
+								return false;
+							}
+						});
+						
+						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+								
+							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							Entries.push(tmpEntry);
+							
+						}
+
+							
+					});
+					if(Entries.length == 0)
+						return false;
+					console.log('Entries',Entries);
+					var currEntries = [];
+
+			    	var newCommentCount = {};
+			    	
+					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+					  .done(function( data ) {
+					    var hasChanged = [];
+					    	data = JSON.parse(data);
+					    	console.log('data from bb check',data);
+					    	
+						    $.each(data,function(i,obj){
+						    	//obj[0] is the entry
+						    	console.log('obj',obj,obj.length);
+						    	if(typeof obj.changed === 'undefined')
+						    		return true; //skip
+						    		
+						    		
+						    		if(obj.changed){
+						    			var tmp = {
+						    					'entryid':obj.entryid,
+						    					'category':obj.category,
+						    					'visiblename':obj.entryid
+						    			};
+						    			hasChanged.push(tmp);
+
+						    		}
+						    		currEntries.push(obj);	
+						    		
+						    });
+						    
+						    $scope.$apply(function() {
+						    	$scope.hasChanged = hasChanged;
+						    });
+						    
+							//if @ blackbook
+							if($location.path() == '/blackbook'){
+								$.each(localEntries,function(ii,encodedentry){
+									var tmpRaw = String(encodedentry).split(":");
+									var tmpID = tmpRaw[0];
+									var tmpCat = tmpRaw[1];
+									
+									var foundEntry = false;
+									$.each(currEntries,function(jj,obj){
+								    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+										console.log('obj-checkit',obj);
+										if(obj.entryid == tmpID && obj.category == tmpCat){
+											foundEntry = true;
+											return false;
+										}
+										
+								    });
+									if(!foundEntry){
+										console.log('entry no longer exists!');
+								    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+										location.reload(true);
+									}else{
+										console.log('entry still exists amigo');
+									}
+								});
+								$scope.loadBlackbook();
+							}
+							
+					  }, "json");
+				};
+				$scope.bbcheck();
+				window.setInterval($scope.bbcheck(),30000); //check every 30s
+				
+				
 				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
 // 					data.category_data.Categories;
 // 					data.category_data.Keys;
@@ -899,10 +909,6 @@
 		      	      when('/processinvite', {
 		      		        templateUrl: 'templates/processinvite.html',
 		      		        controller: 'HazeProcessInviteViewCtrl'
-		      	      	}).
-		      	      when('/alias/me', {
-		      		        templateUrl: 'templates/setalias.html',
-		      		        controller: 'AliasCtrl'
 		      	      	}).
 			      	      otherwise({
 			      	        redirectTo: '/blackbook'
