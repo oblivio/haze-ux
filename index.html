@@ -721,7 +721,6 @@
 
 					var localCommCount = oblivious.blackbookGet('commentcount');
 					
-					
 					$.each(localMeta,function(i,obj){
 						var tmpEntry = {
 								'category':'',
@@ -763,13 +762,10 @@
 							}
 						}
 					});
-					$scope.$apply(function() {
-						$scope.entries = Entries;
-						console.log('$scope.entries',$scope.entries);	
-					});
 					
-						
-						
+						$scope.entries = Entries;
+						console.log('$scope.entries',$scope.entries);
+						alert($scope.entries.length);
 					
 					
 				};
