@@ -1,591 +1,704 @@
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>haze | off the record...</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <script src="js/vendor/jquery.2.1.4.js"></script>
-        <link rel="stylesheet" href="css/furtive.min.css">
-		<script src="js/vendor/rivets.min.js?#"></script>
-		<script src="phonegap.js"></script>
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
-        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-        <script src="js/vendor/load-image.all.min.js"></script>
-        <script src="js/vendor/sjcl.js?#"></script>
-        <script src="js/ghostpixels/vendor/rsvp.min.js?#"></script>
-        <script src="js/ghostpixels/ghostpixels.js?#"></script>
-		<script src="js/vendor/base64.js?#"></script>
-		<script src="js/vendor/rawdeflate.js?#"></script>
-		<script src="js/vendor/rawinflate.js?#"></script>      
-    	<script src="js/identicon.js/pnglib.js?#"></script>
-		<script src="js/identicon.js/identicon.js?#"></script>
-    	<script src="js/vendor/moment.js"></script>
-    	
-    	<style>
- .rvmodal{
- 	width:100%;
- 	display:none;
- 	border-bottom:1rem solid black;
- 	position:absolute;
- 	left:0;
- 	background: rgba(255,255,255,0.95);
- 	overflow-x:hidden;
- 	overflow-y:scroll;
- 	-webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.75);
--moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.75);
-box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.75);
-padding-bottom:4rem;
- }
- .rvmodal .modal-content{
- 	width:75%;
- 	margin:0 auto;
- }
- .rvmodal .rvmodal-close{
- 	background-color: rgba(0,0,0,0.5);
-width: 15rem;
-height: 3rem;
-letter-spacing: 10px;
-font-size: 1rem;
- }
- .rvmodal .rvmodal-submit{
- background-color: rgba(85, 210, 85, 0.7);
-width: auto;
-height: 3rem;
-letter-spacing: 10px;
-font-size: 1rem;
-padding: 1%;
- }
- .rvmodal .rvmodal-negative{
- background-color: rgba(210, 85, 85, 0.7);
-width: auto;
-height: 3rem;
-letter-spacing: 10px;
-font-size: 1rem;
-padding: 1%;
- }
-  .rvmodal .rvmodal-info{
- background-color: rgba(100, 185, 255, 0.7);
-width: auto;
-height: 3rem;
-letter-spacing: 10px;
-font-size: 1rem;
-padding: 1%;
-float: right;
- }
-  .rvmodal .rvmodal-warning{
- background-color: rgba(255, 85, 0, 0.7);
-width: auto;
-height: 3rem;
-letter-spacing: 10px;
-font-size: 1rem;
-padding: 1%;
-float: right;
- }
- .rvmodal .rvmodal-close:after{
- 	content:"close";
- }
- .header-container .title{
- 	width:100%;
- }
- #help>img{
- 	width:3rem;
- 	height:auto;
- 	float:right;
- }
- .entry-author{
- text-align:justify !important;
- width:100%;
- }
-    	</style>
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-
-        <div class="header-container">
-            <header class="wrapper clearfix">
-                <h1 class="title">haze<span id="help"><img src="flaticon/svg/round67.svg"/></span></h1>
-                
-                <nav>
-                <ul>
-	                <li><a id="openloadmodal" ><img src="flaticon/svg/feed3.svg"/></a></li>
-   	                <li><a id="loadblackbook-button"  ><img src="flaticon/svg/visualization.svg"/></a></li>
-	                <li><a id="openaddmodal"><img src="flaticon/svg/add20.svg"/></a></li>
-	                <li><a id="opensettingsmodal" ><img src="flaticon/svg/three115.svg"/></a></li>
-	            </ul>
-                </nav>
-            </header>
-        </div>
-        
-
-        <div class="main-container oblivious-home rvmodal-bg">
-            <div class="main wrapper clearfix">
-			<div id="modals" class="grd small">
-<div class="grd-row">
-		<div id="rvmod-invite" class="rvmodal" data-rvmodal-id="invitemodal">
-  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-  <div class="modal-content">
-  	<h3>Generate Invite</h3>
-				<hr />
-					<label for="invite-pwd">Password*:</label>
-					<input id="invite-pwd" type="text" placeholder="(Required)" class="full-width" />
-			      <input type="text" class="full-width" id="encodedinvite" placeholder="encodedinvite" />
-			      <hr />
-			      <a id="invite-image" href="" download="invite.png"><img class="processed-entry-image" src="" /></a>
-  </div>
-  <button data-rvmodal-action="submit" id="send-invite-button" class="rvmodal-submit">Generate Invite</button>
-  
-</div>
-<div id="rvmod-alias" class="rvmodal" data-rvmodal-id="aliasmodal">
-  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-  <div class="modal-content">
-  	<h3>Set Entry Alias</h3>
-				<hr />
-					<label for="entry-original-id">EntryID:</label>
-					<input id="entry-original-id" type="text" disabled />
-					<label for="entry-original-cat">Category:</label>
-					<input id="entry-original-cat" type="text" disabled />
-					<hr />
-					<label for="entry-alias-input">Alias for Entry*:</label>
-					<input id="entry-alias-input" type="text" placeholder="(Enter Name)" class="full-width" />
-			      
-  </div>
-  <button data-rvmodal-action="submit" id="set-entry-alias-button" class="rvmodal-submit">Set</button>
-  
-</div>
-<div id="rvmod-generic" class="rvmodal" data-rvmodal-id="genericmodal">
-  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-  <div class="modal-content">
-  	<h3 class="generic-msg">Message goes here</h3>
-				<hr />
-  </div>
-</div>
-<div id="rvmod-help" class="rvmodal" data-rvmodal-id="helpmodal">
-  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-  <div class="modal-content">
-  	<h3 class="">Encryption?</h3>
-	<p>
-	The simplest way to think of encryption is to think of password protection. When you use a password to protect a piece of information, you are using a form of encryption. Without the password, the data is worthless.
-	</p>
-	<h3>End-to-End Encryption?</h3>
-	<p>
-	When you create a haze entry, the content of your haze entry gets encrypted using AES 256 bit encryption on the client-side before the data is sent to the server. The server contains only encrypted information, and is oblivious as to what the actual content is. The server then returns an haze id to the client. A typical haze id will look something like this: <span style="display: inline-block;word-break: break-all;">0adedd281fdbc2f8</span>. The client can use this haze id to access the encrypted information in the haze entry. The 256 bit key never touches the server - it only exists on the client. 
-	</p>
-	<p>
-	The 256 bit key is the 'password' to your haze entry. Without this, the data in your haze entry is not usable. A typical key would look something like this: 	<span style="display: inline-block;word-break: break-all;">+BnEcW9gAP7bz3I/1LDi5UMygbt14GXNTWxgX+9GCMw=</span>
-	
-	</p>
-	
-	<h3>Blackbook?</h3>
-	<p>
-	The Blackbook let's you keep track of your haze entries by storing keys, aliases, and other entry data using HTML5 localStorage. 
-	</p>
-	<h3>How do I start an encrypted conversation?</h3>
-	<p>
-	To start a conversation, click on the 'Add' button and select the 'New Entry' option. <br />
-	At this point, you will be able to configure options for your haze entry such as expiration time, message, image, category, password-protection or custom meta-data.  <br />
-	Once your entry is configured, you can proceed to create it. Once the entry has been created, it will be loaded onto your Blackbook. From your Blackbook, you will be able to generate a password-protected invite for your haze entry.  <br />
-	From your Blackbook, you can also view or alias an entry. To alias an entry, simply click on the 'Alias' button and enter the required information. To view an entry, click on 'View' and the entry contents will become available. While viewing a haze entry, you also have the option to add comments containing text/image.
-	</p>
-	<h3>An Invite?</h3>
-	<p>
-	A haze invite is an image containing an invite code hidden in the pixel information. When this invite code is processed by the invite recipient, he will be able to access the entry for which the invite was generated.
-	</p>
-  </div>
-</div>
-
-<div id="subnav-home" class="rvmodal" data-rvmodal-id="loadmodal">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Choose Category</h3>
-						<hr />
-			<div rv-if="oblivious_data.subnav.categories">
-  						
-                	    <div id="category-container">
-                	    	<select  rv-on-change="oblivious_data.subnav.travel"	 id="current-category">
-                	    		<option class="category-btn btn btn--s full-width">(choose a category)</option>
-                	    		<option rv-each-category="oblivious_data.subnav.content" class="category-btn btn btn--s full-width">{category}</option>
-                	    	</select>
-                		</div>
-                		<hr />
-                		
-                	</div>
-		  </div>
-		</div>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>HAZE</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> 
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		
 		
-<div id="rvmod-settingsmodal" class="rvmodal" data-rvmodal-id="settings">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Blackbook Settings</h3>
-			<hr />
-               			
-					<label for="user-alias-input">User Alias</label>
-					<input id="user-alias-input" type="text" placeholder="(Enter Name)" class="" />
-		      		<button  id="user-alias-set-button" class="rvmodal-submit"  type="button">set alias</button>
-		      		<hr />
-		      		<label for="user-alias-input">Clear Blackbook</label>
-		      		<br />
-		      		<button id="clear-blackbook-button"  class="rvmodal-negative" data-cleartype="all" type="button">clear</button>
-		  </div>
-		</div>
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<link rel="stylesheet" type="text/css" href="semanticui/dist/semantic.min.css">
 		
-		<div id="rvmod-addhub" class="rvmodal" data-rvmodal-id="addhub">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Add new entry...</h3>
-			<hr />
-               			
-		  </div>
-		  <button id="showinvitemodal-btn" data-rvmodal-action="warning" class="rvmodal-warning">Existing Entry</button>
-				  <button id="showaddnewmodal-btn" data-rvmodal-action="info" class="rvmodal-info">New Entry</button>
-		
-		</div>
-		
-<div id="rvmod-invitemodal" class="rvmodal" data-rvmodal-id="invitesection">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<div class="" id="">
-                <h3>Have an invite?</h3>
-                <p style="display:none;" id="invite-status">Successfully processed invite! <a class="btn--red dismiss-button">dismiss</a></p>
-                
-                	<form id="inviteform" action="#" role="form" class="my2">
-                		<label for="inviteinput">Enter Invite</label>
-                		<input type="text" id="encodedinvite-input" class="full-width" />
-                		<div id="invite-action">
-                			
-                		<input id="decode-input" class="" type=file accept="image/*;capture=camera">	
-                		</div>
-                	</form>
-                <hr />	
-                </div>	
-		  </div>
-		  <button id="submit-invite-button"  data-rvmodal-action="submit" class="rvmodal-submit">Submit Invite</button>
-		</div>
-	
-		<div id="rvmod-addnewmodal" class="rvmodal" data-rvmodal-id="addmodal">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Add Entry</h3>
-						<hr />
-						<div id="oblivious_addentry">
-                
-                 <div class="" id="">
-					      <form id="addentryform" action="#" role="form" class="my2">
-					      	<img class="add-image-button" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
-					      	<input id="addimage-input" type=file accept="image/*;capture=camera">				      	
-					      	<hr />
-					        <label class="clientsidecrypto" for="crypto">Client-Side Crypto</label>
-					        <input rv-on-change="viewdata.togglecrypto" class="clientsidecrypto" name="crypto" type="checkbox" />
-					        
-					        <label for="password">Password</label>
-					        <input 	rv-on-change="viewdata.setAddProperty" id="entry-password" name="password" placeholder="Enter password" type="password">
-					        <label for="msg">Message</label>
-					        <textarea 	rv-on-change="viewdata.setAddProperty" id="entry-text" name="msg" rows="3" placeholder="Entry contents..."></textarea>
-					        <label for="expiration">Expiration</label>
-					        <select	rv-on-change="viewdata.setAddProperty" name="expiration" id="entry-expiration">
-					        	<option value="never">Never</option>
-<!-- 					        	<option value="burnafter">Burn After Reading</option> -->
-					        	<option value="5min">5 minutes</option>
-					        	<option value="10min">10 minutes</option>
-					        	<option value="1hour">1 hour</option>
-					        	<option value="1day">1 day</option>
-					        	<option value="1week">1 week</option>
-					        	<option value="1month">1 month</option>
-					        	<option value="1year">1 year</option>
-					        </select>
-					        <label for="metadata">Meta-Data</label>
-					        <input id="metadata_entry" type="text" name="metadata" class="full-width" />
-					        <textarea id="metadata_preview" disabled=true rows=3 placeholder="Entry MetaData JSON"></textarea>
-					        <label for="category">
-					        	Choose a Category
-					        </label>
-					        <select	rv-on-change="viewdata.setAddProperty" id="addentry-category">
-                	    		<option class="category-btn btn btn--s full-width">(choose a category)</option>
-                	    		<option rv-each-category="viewdata.categories" class="category-btn btn btn--s full-width">{category}</option>
-                	    	</select>
-                	    	<hr />
-					      </form>
-					    </div>   
-                </div>
-               
-		  </div>
-		  <button id="submit-entry-button" data-rvmodal-action="submit" class="rvmodal-submit">Submit Entry</button>
-		  
-		</div>
+		<style>
+		@font-face {
+		  font-family: 'Monoton';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Monoton'), local('Monoton-Regular'), url(assets/fonts/monoton.woff2) format('woff2');
+		}
+		#main{
+			margin-top:5em;
+			padding-top:1em;
+		}
+		#logo{
+			font-family: "Monoton",cursive;
+			font-size: 1.5em;
+			letter-spacing: 1px;
+		}
+		</style>
+	</head>
+	<body ng-app="hazeApp">
+		<!-- Wrapper-->
+			<div id="wrapper">
 
-
-<div id="rvmod-addcomment" class="rvmodal" data-rvmodal-id="modal">
-		  <button data-rvmodal-action="close" class="rvmodal-close"></button>
-		  <div class="modal-content">
-		  	<h3>Add Comment</h3>
-						<hr />
+				<!-- Nav -->
 					
-					      <form id="addcommentform" action="#" role="form" class="my2">
-					      	<img class="add-image-button" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
-					      	<input id="addimage-input-comment" type=file accept="image/*;capture=camera">				      	
-					      	<hr /><label for="msg">Message</label>
-					        <textarea 	rv-on-change="" id="comment-text" name="msg" rows="3" placeholder="New comment..."></textarea>
-					        
-					      </form>
-		  </div>
-		  <button data-rvmodal-action="submit" class="rvmodal-submit" id="send-comment-button">Send Comment</button>
-		</div>
+					<nav class="ui three item fixed green pointing menu">
+					  	<a id="logo" class="item">
+					  	
+					  	HAZE
+					  	</a>
+						<a id="blackbookbtn" href="#/blackbook" class="item"><div class="ui basic green  icon button"><i class="comments outline icon"></i></div></a>
+						<a id="createbtn" href="#/create" class="item"><div class="ui basic green icon button"><i class="add icon"></i></div></a>
+					</nav>
+					
+				<!-- Main -->
+					<div id="main" class="">
 
+						<!-- content-section -->
+						<div ng-view></div>
+						<!-- /content-section -->
 
-</div>
+					</div>
+
+				<!-- Footer -->
+					<div id="footer">
+						&nbsp;
+					</div>
+
 			</div>
-			<div id="oblivious_entrylist" class="grd small">
+
+		<!-- Scripts -->
+			
+		<script src="phonegap.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.3.0/js/md5.min.js"></script>
+		
+		<!-- Optional -->
+		
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="semanticui/dist/semantic.min.js"></script>	
+		
+			<script src="js/vendor/angular.min.js"></script>
+			<script src="js/vendor/angular-route.min.js"></script>
+			<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+	        <script src="js/vendor/load-image.all.min.js"></script>
+	        <script src="js/vendor/sjcl.js?#"></script>
+	        <script src="js/ghostpixels/vendor/rsvp.min.js?#"></script>
+	        <script src="js/ghostpixels/ghostpixels.js?#"></script>
+			<script src="js/vendor/base64.js?#"></script>
+			<script src="js/vendor/rawdeflate.js?#"></script>
+			<script src="js/vendor/rawinflate.js?#"></script>      
+	    	<script src="js/identicon.js/pnglib.js?#"></script>
+			<script src="js/identicon.js/identicon.js?#"></script>
+	    	<script src="js/vendor/moment.js"></script>
+	    	
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			
+			<script src="js/haze.js"></script>
+			
+			<script>
+			
+			var app = angular.module('hazeApp',  ['ngRoute']);
+			
+			app.controller('HazeViewCtrl',function($scope,$location,$routeParams){
+				$scope.entryid = $routeParams.eid;
+				$scope.category = $routeParams.category;
+				$scope.entryContents = false;
+				$scope.entryPassword = '';
 				
-		        <div class="grd-row my1 mx1">
-		        	<div rv-if="oblivious_data.subnav.active">
-		        		<h3>{oblivious_data.subnav.active}</h3>
-		        		<hr />
-		        	</div>
-		        	
-		        	<div id="instructions" rv-if="oblivious_data.freshload">
-		        		<h3>Welcome to haze.</h3>
-		        		<h5>Off the record communication platform</h5>
-		        		<hr />
-	     				<p><b>Public Feed</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/feed3.svg">
-	     				
-	     					<br />
-	     					The public feed let's you see all public posts.
-	     				</p>
-	     				<p><b>Blackbook</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/visualization.svg">
-	     				
-	     					<br />
-	     					The Blackbook keeps track of your oblivious entries.
-	     				</p>
-	     				<p><b>Add Entry</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/add20.svg">
-	     				
-	     					<br />
-							Create a new oblivious entry.
-	     				</p>
-	     				<p><b>Settings</b>
-	     					     					<img class="instructions-image floated-right" src="flaticon/svg/three115.svg">
-	     				
-	     					<br />
-	     					Let's users configure their 'Blackbook'.
-	     				</p>
-		        	</div>
-		        </div>
-		        <div class="grd-row my1 mx2">
-		          <div rv-each-entry="oblivious_data.entries" class="grd-row-col-1-4 listed-entry py1 my1 mx1 px1" >
-		            <div rv-class="entry.category">
-		            <div class="heading">
-		            		<span rv-if="entry.blackbook" class="title">{entry.visiblename}</span>
-		            		<hr />
-					        <span class="title">{entry.entryid}</span>
-					</div>
-					<div rv-id="entry.entryid" class="content oblivious-entry-button ">
-	                    		<span  class="icon-holder">
-	                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
-	                    		
-	                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
-	                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
-	                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
-	                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
-										<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">					                	
-	                    			</span>
-									
-					    </div>
-					    <div id="entry-actions">
-       	                    			<a rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="" id="" class=" icon-holder invite-button btn btn--s floated-right full-width"><img src="flaticon/svg/wedding4.svg" alt="invite" /></a>
-                    				 	<a rv-eid="entry.entryid" class="oblivious-entry-button btn btn--s btn--green floated-right full-width icon-holder"><img src="flaticon/svg/view24.svg" alt="view"/></a>
-                    					<a rv-eid="entry.entryid"  rv-ecat="entry.category" class="alias-button btn btn--s btn--blue floated-right full-width icon-holder"><img src="flaticon/svg/favorite46.svg" alt="alias" /></a>
-                    		
-									</div>
-					</div>
-		          </div>
-		        </div>
-		      </div>
-			
-			
-			
-			
-                
-                <article style="display:none;" id="oblivious_viewentry">
-                	<section>
-                	
-                	<a id="return-to-entries" class="category-btn btn btn--s full-width">Back to Entries</a>
-                    <div class="oblivious-view-entry">
-                    	<div rv-each-entry="oblivious_viewentry_data.entries"  class="">
-                    		<h6 class="">{entry.category}:{entry.entryid}</h6>
-                    		
-                    		<hr />
-
-                    		<a rv-eid="entry.entryid" href="" rv-if="entry.meta.opendiscussion"  id="" class="add-comment-button btn--blue btn--s icon-holder"><img src="flaticon/svg/chat-bubble1.svg" alt="add comment"/></a>
-				                	<a  rv-if="oblivious_data.showinvite" rv-eid="entry.entryid" rv-ecat="entry.category" href="#invitemodal" id="" class="invite-button btn btn--s  full-width">Invite</a>
-				                	<span  class="icon-holder floated-right">
-                    				<img rv-if="entry.meta.containsimage" src="flaticon/svg/picture56.svg" alt="oblivious entry">
-                    				<img rv-if="entry.meta.burnafterreading" src="flaticon/svg/fire14.svg" alt="oblivious entry">
-                    				
-                    				<img rv-if="entry.meta.opendiscussion" src="flaticon/svg/chat78.svg" alt="oblivious entry"> 
-                    				<img rv-if="entry.meta.encrypted" src="flaticon/svg/locked43.svg" alt="oblivious entry">
-                    				<img rv-if="entry.meta.krypi" src="flaticon/svg/login13.svg" alt="oblivious entry">			
-									<img rv-if="entry.meta.unencrypted" src="flaticon/svg/open99.svg" alt="oblivious entry">
-									
-									
-                    		</span>
-				                	<hr />
-                    		<textarea style="display:none;" id="view-entry-meta" class="view-entry-meta full-width" disabled="disabled" rows=10>
-                    		
-                    		</textarea>
-                    	</div>
-                    	<div class="processed-entry-contents">
-                    		<div rv-each-econtent="oblivious_viewentry_data.contents" class="entry-content-container">
-                    			<a  rv-if="econtent.image" rv-href="econtent.image" download="oblivious.png">
-                    				<img rv-if="econtent.image" rv-src="econtent.image"  class="processed-entry-image" />
-                    			</a>
-                    			<hr />
-                    			<p rv-if="econtent.text">{econtent.text}
-                    			                    				<img rv-if="econtent.identicon" rv-src="econtent.identicon"  class="processed-entry-identicon" />
-                    			
-                    			</p>
-                    			<p class="entry-author" rv-if="econtent.author">{econtent.author}</p>
-                    			<p rv-if="econtent.createdate">{econtent.createdate}</p>
-                    			<p rv-if="econtent.expiretime">{econtent.expiretime}</p>
-                    			<a  rv-if="econtent.identicon" rv-href="econtent.identicon" rv-download="entry.entryid">
-                    			</a>
-                    		</div>
-                    	</div>
-                    </div>
-                    </section>
-                </article>
-
-               
-                
-
-            </div> <!-- #main -->
-        </div> <!-- #main-container -->
-        
-        <div class="footer-container">
-            <footer class="wrapper">
-                <h3 class="title">haze</h3>
-                <p>haze is built on oblivious - which is open-source software released under <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPLV3</a>. Developed by <a href="http://www.fabian-valle.com">Fabian Valle</a>. Source code available on <a href="https://github.com/oblivio/oblivious">Github</a>.
-                || Icons made by <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a>, <a href="http://www.flaticon.com/authors/icomoon" title="Icomoon">Icomoon</a>, <a href="http://www.flaticon.com/authors/appzgear" title="Appzgear">Appzgear</a>, <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/alessio-atzeni" title="Alessio Atzeni">Alessio Atzeni</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
-                
-                <br />
-                <span id="siteseal"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=3cHwJSSGkGSYz8RUx1AjF3FIn5stU2l4tH1dHuQ1sYzG74IMvZp5TcKAJCxi"></script></span>
-                </p>
-            </footer>
-        </div>
-		    	<script src="js/vendor/blockui.js"></script>
-		
-        <script src="js/main.js"></script>
-		<script src="js/all.js"></script>
-		
-		<script>
-		
-		
-       //rvmod-invite
-       //id="rvmod-addcomment" 
-      
-        	$("#openloadmodal").on("click",function(e){
-        		e.preventDefault();
-        		 $("html, body").animate({ scrollTop: 0 }, "slow");
-        		$(".rvmodal").fadeOut();
-            	$("#subnav-home").fadeIn();
-            });
-        	$("#openaddmodal").on("click",function(e){
-				e.preventDefault();
-				 $("html, body").animate({ scrollTop: 0 }, "slow");
-				$(".rvmodal").fadeOut();
-	        	$("#rvmod-addhub").fadeIn();
-	        });
-        	$("#showinvitemodal-btn").on("click",function(e){
-				e.preventDefault();
-				 $("html, body").animate({ scrollTop: 0 }, "slow");
-				$(".rvmodal").fadeOut();
-	        	$("#rvmod-invitemodal").fadeIn();
-	        });
-        	
-        	$("#showaddnewmodal-btn").on("click",function(e){
-				e.preventDefault();
-				 $("html, body").animate({ scrollTop: 0 }, "slow");
-				$(".rvmodal").fadeOut();
-	        	$("#rvmod-addnewmodal").fadeIn();
-	        });
-        	$("#opensettingsmodal").on("click",function(e){
-        		e.preventDefault();
-        		var alias = '';
-				
-				var localAliases = oblivious.blackbookGet('aliases');
-				$.each(localAliases,function(i,obj){
-					if(obj.key == "me"){
-						alias = obj.value;
+				$scope.currentComment = '';
+				$scope.currentCommentImg = '';
+				$scope.hasPhoto = function(img){
+					if(img == ''){
 						return false;
+					}else{
+						return true;
 					}
+				};
+				$scope.showImage = function(e){
+					//view-image-modal
+					//modal-img-src
+					
+					$("#modal-img-src").attr('src','');
+					$("#modal-img-src").attr('src',e.image);
+					
+					$("#view-image-modal").modal('show');
+					
+				};
+				$scope.sendComment = function(){
+					$scope.currentComment = $("#comment-text").val();
+					
+					if($scope.currentComment == '' && $scope.currentCommentImg == ''){
+						console.log('no comment entered');
+					}else{
+						console.log('comment entered!');
+						var d ={ comment:String($scope.currentComment),
+					             imgdata:'',
+					             userkey:'',
+					             containsimage:0,
+					             nickname:''
+						     };
+						if($scope.currentCommentImg != ''){
+							d.imgdata = $scope.currentCommentImg;
+							d.containsimage = 1;
+						}
+						console.log('d',d);
+						oblivious.addEntryComment($scope.entryid, 
+								$scope.category,
+								d,function(){
+								location.reload(true);
+						});
+					}
+				};
+				
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
+				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
+// 					data.category_data.Categories;
+// 					data.category_data.Keys;
+					console.log('core-information',data);
+					$scope.$apply(function() {
+						$scope.core_data = data;
+						var identicon = new Identicon(data.user_hash, 420).toString();
+						identicon = 'data:image/png;base64,' + identicon;
+						$('.user-avatar').attr('src',identicon);
+						
+						
+						
+					});
+					
 				});
-        		$("#user-alias-input").val(alias);
-        		
-        		 $("html, body").animate({ scrollTop: 0 }, "slow");
-				$(".rvmodal").fadeOut();
-	        	$("#rvmod-settingsmodal").fadeIn();
-            });
-			$(".rvmodal-close").on("click",function(e){
-	        	$(this).parent().hide();
-	        	 $("html, body").animate({ scrollTop: 0 }, "slow");
-	        });
-			$("#help>img").on("click",function(e){
-				e.preventDefault();
-       		 $("html, body").animate({ scrollTop: 0 }, "slow");
-				$(".rvmodal").fadeOut();
-	        	$("#rvmod-help").fadeIn();
+				$scope.$on('$viewContentLoaded', function(){
+					// Run after view loaded.
+					$('.dropdown')
+			  		.dropdown({
+			  		    //dropdown settings
+		  		    })
+			  		;
+					oblivious._onchange('addimage-input-comment',function(){
+						var imgData = String(this);
+						$scope.$apply(function() {
+							$scope.currentCommentImg = imgData;
+						});
+					});
+					
+					$('.dropdown')
+			  		.checkbox();
+					oblivious.getEntry($scope.entryid ,$scope.category,function(){
+						console.log('this @ getEntry',this);
+						var data = this;
+						var eContents,pwd;
+						if(data[1] == "Paste does not exist, has expired or has been deleted."){
+							oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
+							$location.path('/blackbook');
+						}else{
+							if(data[0].meta.krypi == "1"){
+								pwd = prompt("Please enter password to decrypt");
+								if(pwd){
+									eContents = oblivious._processGetEntry(data,$scope.entryid ,pwd);
+									
+								}else{
+									
+									$location.path('/blackbook');
+								}
+						    }else{
+						    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
+						    	
+						    }
+							$scope.$apply(function() {
+
+								$scope.entryContents = eContents;
+								$scope.entryPassword = pwd;
+								
+								console.log('eContents',eContents,$scope.entryContents );
+								
+								if(eContents[0].image != ""){
+
+									$("#main-img").attr('src',eContents[0].image);	
+									$("#main-img").fadeIn();
+
+								}
+								
+								$("#main-message").text(eContents[0].text);
+								
+							});
+						}
+					});
+				});
 			});
-			//user-alias-set-button
-			$("#user-alias-set-button").on("click",function(e){
+			app.controller('HazeInviteViewCtrl',function($scope,$location,$routeParams){
+				$scope.entryid = $routeParams.eid;
+				$scope.category = $routeParams.category;
 				
-				var alias = $("#user-alias-input").val();
-				if(alias.length > 0)
-					oblivious.blackbookSet('aliases','me',alias);
-				
-				console.log('new user alias - ',alias);
+				$scope.generateInvite = function(){
+					if($("#invite-pwd").val() != ''){
+							oblivious._generateInvite($scope.entryid ,$scope.category);
+							//clear fields
+							$("#invite-pwd").val('');
+							$("#invite-img-wrapper").fadeIn();
+					}
+				};
+				$scope.$on('$viewContentLoaded', function(){});
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
+				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
+// 					data.category_data.Categories;
+// 					data.category_data.Keys;
+					console.log('core-information',data);
+					$scope.$apply(function() {
+						$scope.core_data = data;
+						var identicon = new Identicon(data.user_hash, 420).toString();
+						identicon = 'data:image/png;base64,' + identicon;
+						$('.user-avatar').attr('src',identicon);
+						
+						
+						
+					});
+					
+				});
 			});
-		
-		document.addEventListener("deviceready", onDeviceReady, false);
-		function onDeviceReady() {
-			$(document).on('click', 'img.processed-entry-image', function(event) {
-		        event.preventDefault();
-		        var tmpSRC = $(this).attr('src');
-		        
-		        var canvas = canvas = document.createElement('canvas');
-		    	canvas.width = GhostPixels.dimensions.width;
-		    	canvas.height = GhostPixels.dimensions.height;
-		    	var img = new Image();
-		        img.onload = function() {
-		            var ctx = canvas.getContext('2d');
-		            ctx.canvas.width = img.width;
-		            ctx.canvas.height = img.height;
-		            ctx.drawImage(img, 0, 0);
-		            
-		            window.canvas2ImagePlugin.saveImageDataToLibrary(
-			                function(msg){
-			                    alert('File has been saved to gallery.');
-			                },
-			                function(err){
-			                    alert('File could not be saved to gallery.');
-			                },
-			                canvas
-			            );
-		        };
-		        img.src = tmpSRC;
-		        
-		    });
-		}; //end onDeviceReady
-		</script>
-    </body>
+			app.controller('AliasCtrl',function($scope,$location,$routeParams){
+				
+			});
+			app.controller('HazeProcessInviteViewCtrl',function($scope,$location,$routeParams){
+				
+				$scope.process = function(){
+					oblivious._processInvite('#invite-status');
+				};
+				$scope.$on('$viewContentLoaded', function(){
+					
+					document.getElementById('decode-input').onchange = function(input) {
+						var file    = document.getElementById('decode-input').files[0];
+						if ( file ) {
+					        var FR= new FileReader();
+					        FR.onload = function(e) {
+					        	var password = prompt('Enter password (leave empty if none)');
+					        	
+								GhostPixels.decode(password,e.target.result).then(function(decodedMessage){
+									
+									$("#encodedinvite-input").val(decodedMessage);
+									$("#encodedinvite-input").data('pwd',password);
+									
+					        	});
+					        	
+					        };       
+					        FR.readAsDataURL( file );
+					    }
+					};
+					$("#submit-invite-button").on("click",function(){
+						oblivious._processInvite('#invite-status');
+							$("#inviteform")[0].reset();
+					});
+					
+				});
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
+				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
+// 					data.category_data.Categories;
+// 					data.category_data.Keys;
+					console.log('core-information',data);
+					$scope.$apply(function() {
+						$scope.core_data = data;
+						var identicon = new Identicon(data.user_hash, 420).toString();
+						identicon = 'data:image/png;base64,' + identicon;
+						$('.user-avatar').attr('src',identicon);
+						
+						
+						
+					});
+					
+				});
+			});
+			app.controller('HazeCtrl', function($scope, $location, $routeParams) {
+				$scope.core_data = {};
+				$scope.newentry =  {
+					'image':'',
+					'clientsidecrypto':'',
+					'password':'',
+					'message':'',
+					'expiration':'',
+					'metadata':'',
+				};
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.hasChanged = [];
+				$scope.submitNewEntry = function(){
+					var entryDetails = {
+						'image':'',
+						'clientsidecrypto':'',
+						'password':'',
+						'message':'',
+						'expiration':'',
+						'metadata':'',
+						'meta':'',
+						'category':'public',
+						'containsimage':0
+					};
+					entryDetails.clientsidecrypto = $('#cryptotoggle').checkbox('is checked');
+					entryDetails.password = $('#entry-password').val();
+					entryDetails.message = $("#entry-text").val();
+					entryDetails.expiration = $("#entry-expiration").val();
+					entryDetails.metadata = $("#metadata_entry").val();
+					entryDetails.image = $scope.newentry.image;
+					if(entryDetails.image != ''){
+						entryDetails.containsimage = 1;
+					}
+					console.log('entry-details',entryDetails);
+					
+					var d ={ data:String(entryDetails.message),
+				             expire:entryDetails.expiration,
+				             opendiscussion: 1,
+				             category:entryDetails.category,
+				             userkey:entryDetails.password,
+				             imgdata:entryDetails.image,
+				             containsimage:entryDetails.containsimage
+					     };
+					for (var attrname in $scope.newentry.meta) { d[attrname] = $scope.newentry.meta[attrname]; }
+
+					if(entryDetails.password != ''){
+						//krypi-password
+						//(newEntry,category,userKey,img_data){
+						d.userkey = entryDetails.password;
+					}
+					if(entryDetails.image != ''){
+						d.imgdata = entryDetails.image;
+						d.containsimage = 1;
+					}
+					console.log('d',d);
+					if(d.imgdata || d.userkey){
+						console.log('krypi entry');
+						oblivious.addKrypiEntry(d,function(){
+							console.log('added!');
+						});
+					}else{
+						console.log('regular entry');
+						oblivious.addEntry(d,function(){
+							console.log('added!')
+						});
+					}
+					$('#addentryform')[0].reset();
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+				};
+				
+				$scope.setEntryAlias = function(entryID,cat){
+					var newAlias = $('#entry-alias-'+entryID).val();
+ 					oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
+					location.reload(true);
+				};
+				
+				$scope.setUserAlias = function(){
+					var alias = $("#user-alias-input").val();
+					if(alias.length > 0)
+						oblivious.blackbookSet('aliases','me',alias);
+					
+					console.log('new user alias - ',alias,oblivious.blackbookGet('aliases','me'));
+					location.reload(true);
+				};
+				$scope.getUserAlias = function(){
+					var alias = '(Anonymous)';
+					var myAliasData = oblivious.blackbookGet('aliases','me');
+					if(typeof myAliasData[0] !== 'undefined' && typeof myAliasData[0].value !== 'undefined'){
+
+						if(String(myAliasData[0].value).length > 0){
+							alias = myAliasData[0].value;
+						}
+						console.log('alias',alias);
+						return alias;	
+					}
+				};
+				$scope.user_alias = $scope.getUserAlias();
+				$scope.user_identicon = '';
+				$scope.loadBlackbook = function(){
+
+					console.log('loading blackbook...');
+					 $("html, body").animate({ scrollTop: 0 }, "slow");
+					
+					var Entries =[];
+					var localMeta = oblivious.blackbookGet('meta');
+					var localAliases = oblivious.blackbookGet('aliases');
+
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					
+					$.each(localMeta,function(i,obj){
+						var tmpEntry = {
+								'category':'',
+								'entryid':'',
+								'meta':'',
+								'entryhash':'',
+								'blackbook':true,
+								'visiblename':'(no alias)'
+						};
+						if(obj.value != ''){
+							var tmpRaw = String(obj.key).split(":");
+							var tmpID = tmpRaw[0];
+							var tmpCat = tmpRaw[1];
+							
+							tmpEntry.entryid = tmpID;
+							tmpEntry.hash = $scope.getHash(tmpID);
+							tmpEntry.category = tmpCat;
+							tmpEntry.meta = obj.value;
+							console.log('dimelo pina',tmpEntry);
+							$.each(localAliases,function(j,aliasObj){
+								var aliasRaw = String(aliasObj.key).split(":");
+								var aliasID = aliasRaw[0];
+								var aliasCat = aliasRaw[1];
+								
+								if(aliasID == tmpEntry.entryid && aliasCat == tmpEntry.category){
+									tmpEntry.visiblename = String(aliasObj.value);
+								}
+							});
+							$.each(localCommCount,function(j,cObj){
+								console.log('cObj',cObj);
+								
+								if(String(cObj.key) === String(tmpEntry.entryid + ":" + tmpEntry.category) ){
+									tmpEntry.commentcount = cObj.value;
+									return false;
+								}
+							});
+							if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+								Entries.push(tmpEntry);
+							}
+						}
+					});
+					
+						$scope.entries = Entries;
+						console.log('$scope.entries',$scope.entries);
+						$('.listed-entry').removeClass('has-changed');
+						$.each($scope.hasChanged,function(i,tmpObj){
+							console.log('oblivious_data.hasChanged',$scope.hasChanged);
+							$("#"+tmpObj.entryid).parent('.'+tmpObj.category).parent('.listed-entry').addClass('has-changed');
+							//where do I remove this???
+						});
+
+						$scope.hasChanged = [];
+					
+					
+				};
+				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
+// 					data.category_data.Categories;
+// 					data.category_data.Keys;
+					console.log('core-information',data);
+					$scope.$apply(function() {
+						$scope.core_data = data;
+						var identicon = new Identicon(data.user_hash, 420).toString();
+						identicon = 'data:image/png;base64,' + identicon;
+						
+						$scope.user_identicon = identicon;
+						
+						
+						switch($location.path()){
+					      case "/home":
+					    	  break;
+					      case "/blackbook":
+					    	  $scope.loadBlackbook();
+					    	  break;
+					      case "/create":
+					    	  break;
+					      case "/settings":
+					    	  break;
+				      	}
+						
+					});
+					
+				});
+				
+				$scope.$on('$viewContentLoaded', function(){
+					 // Run after view loaded.
+						$('.dropdown')
+				  		.dropdown({
+				  		    //dropdown settings
+			  		    })
+				  		;
+					 
+						$('.dropdown')
+				  		.checkbox();
+						
+					 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
+					 		var tmpData = $(this).data();
+					 		console.log('tmpData',tmpData);
+					 		
+					 	
+					 		if(typeof tmpData.modalid !== 'undefined'){
+					 			
+					 			$('#'+tmpData.modalid).transition('scale')
+					 			;
+					 			$('#'+tmpData.hidecontentids).transition('scale')
+					 			;			
+					 		}
+					 	});
+					 	$("#clear-blackbook-button").on("click",function(){
+								
+								oblivious.blackbookClear();
+								$("html, body").animate({ scrollTop: 0 }, "slow");
+								location.reload(true);
+						});
+					 	
+					 	
+					 	switch($location.path()){
+					 	case "/create":
+					 		oblivious._onchange('addimage-input',function(){
+								var imgData = String(this);
+								$scope.$apply(function() {
+									$scope.newentry.image = imgData;
+								});
+							});
+							$('#cryptotoggle').on("change",function(){
+								
+								if($(this).checkbox('is checked')){
+									console.log('enable crypto');	
+									oblivious._enableClientCrypto();
+								}else{
+									console.log('disable crypto');
+									oblivious._disableClientCrypto();
+								}
+							});
+							
+							$("#metadata_entry").on("change",function(){
+								$("#metadata_preview").show();
+								if($(this).val() == '')
+									$("#metadata_preview").hide();
+								
+								var tmpJSON = $(this).val();
+								try{
+									tmpJSON = JSON.parse(tmpJSON);
+									var tmpMeta = {};
+									for (var attrname in tmpJSON) { 
+										tmpMeta[attrname] = tmpJSON[attrname]; 
+									}
+									$scope.$apply(function() {
+										$scope.newentry.meta = tmpMeta;
+									});
+									$("#metadata_preview").val( JSON.stringify(tmpJSON,null,2) );
+								}catch(e){
+									console.log('not valid JSON');
+								}
+								
+							});
+							break;
+					 	case "/blackbook":
+					 		
+					 		break;
+					 	}
+					});
+				
+			});
+			app.config(['$routeProvider',
+			      	  function($routeProvider) {
+			      	    $routeProvider.
+			      	      when('/blackbook', {
+			      		        templateUrl: 'templates/blackbook.html',
+			      		        controller: 'HazeCtrl'
+			      	      }).
+			      	      when('/create', {
+			      		        templateUrl: 'templates/create.html',
+			      		        controller: 'HazeCtrl'
+			      	      }).
+			      	    when('/view/:category/:eid', {
+		      		        templateUrl: 'templates/view.html',
+		      		        controller: 'HazeViewCtrl'
+		      	      	}).
+		      	      when('/invite/:category/:eid', {
+		      		        templateUrl: 'templates/invite.html',
+		      		        controller: 'HazeInviteViewCtrl'
+		      	      	}).
+		      	      when('/processinvite', {
+		      		        templateUrl: 'templates/processinvite.html',
+		      		        controller: 'HazeProcessInviteViewCtrl'
+		      	      	}).
+		      	      when('/alias/me', {
+		      		        templateUrl: 'templates/setalias.html',
+		      		        controller: 'AliasCtrl'
+		      	      	}).
+			      	      otherwise({
+			      	        redirectTo: '/blackbook'
+			      	      });
+			      	  }]);
+			
+			app.run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $routeParams) {
+			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
+			      console.log('Current route name: ' + $location.path());
+			      // Get all URL parameter
+			      console.log($routeParams);
+			      $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
+				      switch($location.path()){
+				      case "/home":
+				    	  $("#homebtn").addClass('active');
+				    	  $("#homebtn").find('.button').removeClass('basic');
+				    	  break;
+				      case "/blackbook":
+				    	  $("#blackbookbtn").addClass('active');
+				    	  $("#blackbookbtn").find('.button').removeClass('basic');
+				    	  break;
+				      case "/create":
+				    	  $("#createbtn").addClass('active');
+				    	  $("#createbtn").find('.button').removeClass('basic');
+				    	  break;
+				      case "/settings":
+				    	  $("#settingsbtn").addClass('active');
+				    	  $("#settingsbtn").find('.button').removeClass('basic');
+				    	  break;
+				      }
+			    });
+			  }]);
+			</script>
+			
+			<script>
+			
+			document.addEventListener("deviceready", onDeviceReady, false);
+			function onDeviceReady() {
+				$(document).on('click', 'img.processed-entry-image', function(event) {
+			        event.preventDefault();
+			        var tmpSRC = $(this).attr('src');
+			        
+			        var canvas = canvas = document.createElement('canvas');
+			    	canvas.width = GhostPixels.dimensions.width;
+			    	canvas.height = GhostPixels.dimensions.height;
+			    	var img = new Image();
+			        img.onload = function() {
+			            var ctx = canvas.getContext('2d');
+			            ctx.canvas.width = img.width;
+			            ctx.canvas.height = img.height;
+			            ctx.drawImage(img, 0, 0);
+			            
+			            window.canvas2ImagePlugin.saveImageDataToLibrary(
+				                function(msg){
+				                    alert('File has been saved to gallery.');
+				                },
+				                function(err){
+				                    alert('File could not be saved to gallery.');
+				                },
+				                canvas
+				            );
+			        };
+			        img.src = tmpSRC;
+			        
+			    });
+			}; //end onDeviceReady
+			
+			</script>
+	</body>
 </html>
-        

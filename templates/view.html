@@ -1,0 +1,70 @@
+<div id="view-image-modal" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    View Image
+  </div>
+  <div class="image content">
+    <div class="ui large image">
+      <img id="modal-img-src" class="processed-entry-image" src="">
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui red deny button">
+      close
+    </div>
+  </div>
+</div>
+
+<div id="view-entry" class="ui stacked segment" style="">
+    			  <a href="#/blackbook" class="ui fluid top attached pink button return-to-BB-button" id="">&lt; Blackbook</a>
+  
+  <div class="ui centered card">
+  
+	  <div class="image">
+	    <img id="main-img" src="" style="display:none;">
+	  </div>
+	  <div class="content">
+	    <a id="main-message" class="header">{{entryid}}</a>
+	        <img class="ui avatar image" src="{{getIdenticon(entryid)}}">
+	    
+	  </div>
+	</div>
+  <div id="entry-comments" class="ui animated celled large list" style="max-height:10em; overflow-x:hidden;overflow-y:scroll">
+  <div ng-repeat="entry in entryContents" class="item">
+    <img class="ui avatar image" src="{{entry.identicon}}">
+    <div class="right floated content">
+      <div ng-show="hasPhoto(entry.image)" ng-click="showImage(entry)" class="ui icon button pink"><i class="photo icon"></i></div>
+    </div>
+    <div class="content">
+      <div class="header">{{entry.author}}</div>
+      {{entry.text}}
+    </div>
+  </div>
+</div>
+
+<div id="add-comment-form">
+	<div class="">
+		  	<h3>Add Comment</h3>
+			<hr />
+		
+		      <form id="addcommentform" action="#" role="form" class="ui form">
+		      
+			  <div class="field">
+			    <label>Image:</label>
+ 				<img class="add-image-button ui image avatar" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
+			    
+ 	 	      	<input   id="addimage-input-comment" type=file accept="image/*;capture=camera">				      	
+			  </div>
+			  <div class="field">
+			  	<label for="msg">Message</label>
+			  	 <textarea  id="comment-text" name="msg" rows="3" placeholder="New comment..."></textarea>
+			  	
+			  </div>
+		        
+		      </form>
+		  </div>
+			  <button ng-click="sendComment()" class="ui fluid bottom attached blue button" id="send-comment-button">Send Comment</button>
+				  
+</div>
+
+</div>

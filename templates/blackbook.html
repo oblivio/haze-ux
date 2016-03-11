@@ -1,0 +1,83 @@
+
+<article id="blackbook" class="ui stacked segment">
+<div  class="ui card ">
+		  <div class="content">
+ 		      <div class="right floated">
+		  		</div>
+		    <div class="header user-alias">
+	  						  	<img id="" src="{{user_identicon}}" class="ui avatar image user-avatar"/>
+		    					{{user_alias}}
+		    </div>
+		    <div class="meta">
+		      <span class="category">haze user</span>
+		    </div>
+		    <div class="description">
+		      <p></p>
+		    </div>
+		  </div>
+		  <div class="extra content">
+		    <div class="right floated author">
+		    	<div id="" class="ui right labeled left icon mini input">
+				  <i class="tags icon"></i>
+				  <input id="user-alias-input" placeholder="Enter Alias" type="text">
+				  <a class="ui tag label" ng-click="setUserAlias()">
+				    Alias
+				  </a>
+				</div>
+		    </div>
+		    
+		  </div>
+		  
+		</div>
+	<h2 class="ui icon center aligned header">
+	  <i class="comments outline icon"></i>
+	  <div class="content">
+	  	
+	    Blackbook
+	    <div class="sub header">Manage your Blackbook entries</div>
+	  </div>
+	  <a href="#/processinvite" class="ui orange button" id="invite-modal-open">Have an invite?</a>
+	
+	</h2>
+	<hr />
+	<div class="ui cards">
+		<div ng-repeat="entry in entries" class="ui card haze-entry">
+		   			    	<button style="display:none;" class="ui icon top attached labeled red button"><i class="delete icon"></i>remove</button>
+		  <div class="content">
+ 		      <div class="right floated">
+ 		      <img class="ui avatar image" src="{{getIdenticon(entry.entryid)}}">
+		  		</div>
+		    <div class="header">{{entry.visiblename}}</div>
+		    <div class="meta">
+		      <span class="category">haze entry</span>
+		    </div>
+		    <div class="description">
+		      <p></p>
+		    </div>
+		  </div>
+		  <div class="extra content">
+		    <div class="right floated author">
+		    	<div id="" class="ui right labeled left icon mini input">
+				  <i class="tags icon"></i>
+				  <input id="entry-alias-{{entry.entryid}}" placeholder="Enter Alias" type="text">
+				  <a class="ui tag label" ng-click="setEntryAlias(entry.entryid,entry.category)">
+				    Alias
+				  </a>
+				</div>
+				<a href="#/invite/{{entry.category}}/{{entry.entryid}}" class="ui fluid button teal">invite</a>
+		    </div>
+		    
+		  </div>
+		  		    							<a href="#/view/{{entry.category}}/{{entry.entryid}}"  class="ui icon labeled bottom attached green button "><i class="eye icon"></i>view</a>
+		  
+		</div>
+	</div>
+	<br />
+	<br />
+	  <a  class="ui red bottom attached basic button" id="clear-blackbook-button">clear blackbook</a>
+
+</article>
+
+  
+ 
+ 

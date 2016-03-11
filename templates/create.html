@@ -1,0 +1,64 @@
+<article id="contact" class="center aligned segment">
+	<h2 class="ui icon center aligned header">
+	  <i class="add icon"></i>
+	  <div class="content">
+	    Create
+	    <div class="sub header">Create a new haze entry.</div>
+	  </div>
+	</h2>
+						<div id="oblivious_addentry" class="ui stacked segment">
+                
+	<h3>Add Entry</h3>
+                 <div class="" id="">
+					      <form id="addentryform" action="#" role="form" class="ui form">
+					      	<div class="field">
+					      		<label>Image:</label>
+					      		<img class="add-image-button ui image avatar" src="flaticon/svg/picture56.svg" alt="oblivious entry"> 
+						      	<input id="addimage-input" type=file accept="image/*;capture=camera">				      	
+						      	
+					      	</div>
+					      	
+					        <div class="field">
+					          <div id="cryptotoggle" class="ui toggle checkbox">
+					            <input name="crypto" type="checkbox">
+					            <label>Client-Side Crypto</label>
+					          </div>
+					        </div>
+					        
+					        <div class="field">
+					        <label for="password">Password</label>
+					        <input id="entry-password" name="password" placeholder="Enter password" type="password">
+					        </div>
+					        
+					        <div class="field">
+					        
+					        
+					        <label for="msg">Message</label>
+					        <textarea 	id="entry-text" name="msg" rows="3" placeholder="Entry contents..."></textarea>
+					        </div>
+					        
+					        <div class="field">
+					        <label for="expiration">Expiration</label>
+					        <select	class="dropdown" name="expiration" id="entry-expiration">
+					        	<option value="never">Never</option>
+<!-- 					        	<option value="burnafter">Burn After Reading</option> -->
+					        	<option value="5min">5 minutes</option>
+					        	<option value="10min">10 minutes</option>
+					        	<option value="1hour">1 hour</option>
+					        	<option value="1day">1 day</option>
+					        	<option value="1week">1 week</option>
+					        	<option value="1month">1 month</option>
+					        	<option value="1year">1 year</option>
+					        </select>
+					        </div>
+					        <div class="field">
+					        <label for="metadata">Meta-Data</label>
+					        <input id="metadata_entry" type="text" name="metadata" class="full-width" />
+					        <textarea id="metadata_preview" disabled=true rows=3 placeholder="Entry MetaData JSON"></textarea>
+					        </div>
+					      </form>
+					    </div>   
+                </div>
+	  <a ng-click="submitNewEntry()" class="ui green bottom attached  button" id="submit-new-entry">submit</a>
+             
+</article>
