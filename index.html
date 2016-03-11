@@ -190,7 +190,6 @@
 						    
 						    $scope.$apply(function() {
 						    	$scope.hasChanged = hasChanged;
-						    	$scope.loadBlackbook();
 						    });
 						    
 							//if @ blackbook
@@ -224,7 +223,6 @@
 									}
 									$scope.$apply(function() {
 								    	$scope.entryContents = eContents.reverse();
-								    	console.log('new comment! yay!');
 								    });
 									
 								});
@@ -478,6 +476,7 @@
 					console.log('bbcheck!');
 					var Entries =[];
 					var localEntries = [];
+					var hasChanged = [];
 					var localMeta = oblivious.blackbookGet('meta');
 					var localCommCount = oblivious.blackbookGet('commentcount');
 					$.each(localMeta,function(i,obj){
@@ -525,7 +524,7 @@
 			    	
 					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 					  .done(function( data ) {
-					    var hasChanged = [];
+					    
 					    	data = JSON.parse(data);
 					    	console.log('data from bb check',data);
 					    	
@@ -549,10 +548,7 @@
 						    		
 						    });
 						    
-						    $scope.$apply(function() {
-						    	$scope.hasChanged = hasChanged;
-						    	$scope.loadBlackbook();
-						    });
+						    
 						    
 							//if @ blackbook
 							if($location.path() == '/blackbook'){
@@ -579,7 +575,10 @@
 										console.log('entry still exists amigo');
 									}
 								});
-								
+								$scope.$apply(function() {
+							    	$scope.hasChanged = hasChanged;
+							    	$scope.loadBlackbook();
+							    });
 							}
 							
 					  }, "json");
@@ -721,6 +720,8 @@
 					var localAliases = oblivious.blackbookGet('aliases');
 
 					var localCommCount = oblivious.blackbookGet('commentcount');
+					
+					alert(localMeta.length);
 					
 					$.each(localMeta,function(i,obj){
 						var tmpEntry = {
