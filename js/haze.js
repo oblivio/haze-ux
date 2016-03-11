@@ -302,10 +302,10 @@ var oblivious = (function () {
 		if(entrydata.encrypted != 1 && entrydata.krypi != 1){
 			entrydata.unencrypted = 1;
 			//get the server public key
-			var publickey = getPublicKey(entrydata.category);
-			console.log('pk',publickey);
-			entrydata.data = String( _encrypt(publickey,entrydata.data) );
-			entrydata.publickey=1;
+//			var publickey = getPublicKey(entrydata.category);
+//			console.log('pk',publickey);
+//			entrydata.data = String( _encrypt(publickey,entrydata.data) );
+//			entrydata.publickey=1;
 		}
 		
 		var localAliases = oblivious.blackbookGet('aliases');
@@ -433,10 +433,10 @@ var oblivious = (function () {
 			if(obj.meta.nickname){
 				true_entry.author = obj.meta.nickname;
 			}
-			if(obj.meta.publickey){
-				var publickey = getPublicKey(obj.meta.category);
-				obj.data = _decrypt(publickey,obj.data);
-			}
+//			if(obj.meta.publickey){
+//				var publickey = getPublicKey(obj.meta.category);
+//				obj.data = _decrypt(publickey,obj.data);
+//			}
 			if(obj.meta.postdate){
 				var postdate = moment(obj.meta.postdate*1000).format("YYYY-MM-DD, HH:mm");
 				true_entry.createdate = postdate;
