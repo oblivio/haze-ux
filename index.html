@@ -18,6 +18,9 @@
 		  font-weight: 400;
 		  src: local('Monoton'), local('Monoton-Regular'), url(assets/fonts/monoton.woff2) format('woff2');
 		}
+		.has-changed{
+			border: 1em solid red !important;
+		}
 		#main{
 			margin-top:5em;
 			padding-top:1em;
@@ -93,13 +96,149 @@
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
 			app.controller('HazeViewCtrl',function($scope,$location,$routeParams){
+				
+				
+				
 				$scope.entryid = $routeParams.eid;
 				$scope.category = $routeParams.category;
 				$scope.entryContents = false;
 				$scope.entryPassword = '';
+
+				$scope.hasChanged = [];
 				
 				$scope.currentComment = '';
 				$scope.currentCommentImg = '';
+				
+				
+				
+				//blackbook check
+				var bbcheck = function(){
+					console.log('bbcheck!');
+					var Entries =[];
+					var localEntries = [];
+					var localMeta = oblivious.blackbookGet('meta');
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					$.each(localMeta,function(i,obj){
+						var tmpEntry = {
+								'category':'',
+								'entryid':'',
+								'visiblename':'',
+								'commentcount':'',
+						};
+						var tmpRaw = String(obj.key).split(":");
+						var tmpID = tmpRaw[0];
+						var tmpCat = tmpRaw[1];
+						
+						tmpEntry.entryid = tmpID;
+						tmpEntry.visiblename = tmpID;
+						
+						tmpEntry.category = tmpCat;
+
+						console.log('tmpEntry',tmpEntry);
+						
+						$.each(localCommCount,function(j,cObj){
+							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							
+							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+								tmpEntry.commentcount = cObj.value;
+								return false;
+							}
+						});
+						
+						console.log('que ostia?',tmpEntry);
+						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+								
+							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							Entries.push(tmpEntry);
+							
+						}
+
+							
+					});
+					if(Entries.length == 0)
+						return false;
+					console.log('Entries',Entries);
+					var currEntries = [];
+
+			    	var newCommentCount = {};
+			    	
+					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+					  .done(function( data ) {
+					    var hasChanged = [];
+					    	data = JSON.parse(data);
+					    	console.log('data from bb check',data);
+					    	
+						    $.each(data,function(i,obj){
+						    	//obj[0] is the entry
+						    	console.log('obj',obj,obj.length);
+						    	if(typeof obj.changed === 'undefined')
+						    		return true; //skip
+						    		
+						    		
+						    		if(obj.changed){
+						    			var tmp = {
+						    					'entryid':obj.entryid,
+						    					'category':obj.category,
+						    					'visiblename':obj.entryid
+						    			};
+						    			hasChanged.push(tmp);
+
+						    		}
+						    		currEntries.push(obj);	
+						    		
+						    });
+						    
+						    $scope.$apply(function() {
+						    	$scope.hasChanged = hasChanged;
+						    	$scope.loadBlackbook();
+						    });
+						    
+							//if @ blackbook
+							if($location.path() == '/blackbook'){
+								
+							}else{
+// 								$scope.entryid = $routeParams.eid;
+// 								$scope.category = $routeParams.category;
+// 								$scope.entryContents = false;
+// 								$scope.entryPassword = '';
+								oblivious.getEntry($scope.entryid,$scope.category,function(){
+									console.log('this @ getEntry',this);
+									var data = this;
+									var eContents = false;
+									if(data[1] == "Paste does not exist, has expired or has been deleted."){
+										oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
+										console.log('paste no existe',data[1]);
+										$location.path('/blackbook');
+									}else{
+										if(data[0].meta.krypi == "1"){
+											var pwd = $scope.entryPassword;
+											if(pwd){
+												eContents = oblivious._processGetEntry(data,$scope.entryid,pwd);
+												
+											}else{
+												$location.path('/blackbook');
+											}
+									    }else{
+									    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
+									    }
+									}
+									$scope.$apply(function() {
+								    	$scope.entryContents = eContents.reverse();
+								    	console.log('new comment! yay!');
+								    });
+									
+								});
+							}
+							
+					  }, "json");
+				};
+				bbcheck();
+				window.setInterval(bbcheck,30000); //check every 30s
+				
+				
+				
+				
+				
 				$scope.hasPhoto = function(img){
 					if(img == ''){
 						return false;
@@ -153,6 +292,11 @@
 					return identicon;
 				};
 				$scope.core_data = {};
+				$scope.toggleComment = function(){
+					console.log('toggling comment');
+				
+					$("#add-comment-form").transition('scale');
+				};
 				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
 // 					data.category_data.Categories;
 // 					data.category_data.Keys;
@@ -207,10 +351,12 @@
 						    }
 							$scope.$apply(function() {
 
-								$scope.entryContents = eContents;
+								$scope.entryContents = eContents.reverse(); //reverse order
 								$scope.entryPassword = pwd;
 								
 								console.log('eContents',eContents,$scope.entryContents );
+								
+				    			oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category , $scope.entryContents.length);
 								
 								if(eContents[0].image != ""){
 
@@ -220,6 +366,7 @@
 								}
 								
 								$("#main-message").text(eContents[0].text);
+								
 								
 							});
 						}
@@ -326,6 +473,138 @@
 				});
 			});
 			app.controller('HazeCtrl', function($scope, $location, $routeParams) {
+				//blackbook check
+				var bbcheck = function(){
+					console.log('bbcheck!');
+					var Entries =[];
+					var localEntries = [];
+					var localMeta = oblivious.blackbookGet('meta');
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					$.each(localMeta,function(i,obj){
+						var tmpEntry = {
+								'category':'',
+								'entryid':'',
+								'visiblename':'',
+								'commentcount':'',
+						};
+						var tmpRaw = String(obj.key).split(":");
+						var tmpID = tmpRaw[0];
+						var tmpCat = tmpRaw[1];
+						
+						tmpEntry.entryid = tmpID;
+						tmpEntry.visiblename = tmpID;
+						
+						tmpEntry.category = tmpCat;
+
+						console.log('tmpEntry',tmpEntry);
+						
+						$.each(localCommCount,function(j,cObj){
+							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							
+							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+								tmpEntry.commentcount = cObj.value;
+								return false;
+							}
+						});
+						
+						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+								
+							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							Entries.push(tmpEntry);
+							
+						}
+
+							
+					});
+					if(Entries.length == 0)
+						return false;
+					console.log('Entries',Entries);
+					var currEntries = [];
+
+			    	var newCommentCount = {};
+			    	
+					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+					  .done(function( data ) {
+					    var hasChanged = [];
+					    	data = JSON.parse(data);
+					    	console.log('data from bb check',data);
+					    	
+						    $.each(data,function(i,obj){
+						    	//obj[0] is the entry
+						    	console.log('obj',obj,obj.length);
+						    	if(typeof obj.changed === 'undefined')
+						    		return true; //skip
+						    		
+						    		
+						    		if(obj.changed){
+						    			var tmp = {
+						    					'entryid':obj.entryid,
+						    					'category':obj.category,
+						    					'visiblename':obj.entryid
+						    			};
+						    			hasChanged.push(tmp);
+
+						    		}
+						    		currEntries.push(obj);	
+						    		
+						    });
+						    
+						    $scope.$apply(function() {
+						    	$scope.hasChanged = hasChanged;
+						    	$scope.loadBlackbook();
+						    });
+						    
+							//if @ blackbook
+							if($location.path() == '/blackbook'){
+								$.each(localEntries,function(ii,encodedentry){
+									var tmpRaw = String(encodedentry).split(":");
+									var tmpID = tmpRaw[0];
+									var tmpCat = tmpRaw[1];
+									
+									var foundEntry = false;
+									$.each(currEntries,function(jj,obj){
+								    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+										console.log('obj-checkit',obj);
+										if(obj.entryid == tmpID && obj.category == tmpCat){
+											foundEntry = true;
+											return false;
+										}
+										
+								    });
+									if(!foundEntry){
+										console.log('entry no longer exists!');
+								    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+										location.reload(true);
+									}else{
+										console.log('entry still exists amigo');
+									}
+								});
+								
+							}
+							
+					  }, "json");
+				};
+				bbcheck();
+				window.setInterval(bbcheck,30000); //check every 30s
+				
+				
+				
+				
+				$scope.getEntryClassName = function(e){
+					console.log('$scope.hasChanged',$scope.hasChanged,e);
+					var className = "ui card haze-entry";
+					$.each($scope.hasChanged,function(i,tmpObj){
+						if(e.entryid == tmpObj.entryid && e.category == tmpObj.category){
+							className += " has-changed ";
+							console.log('esto paso?',className);
+							return false; //exit loop
+						}
+					});
+					console.log('className?',className);
+					return className;
+				};
+				
+			
 				$scope.core_data = {};
 				$scope.newentry =  {
 					'image':'',
@@ -401,6 +680,7 @@
 					}
 					$('#addentryform')[0].reset();
 					$("html, body").animate({ scrollTop: 0 }, "slow");
+					
 				};
 				
 				$scope.setEntryAlias = function(entryID,cat){
@@ -434,7 +714,7 @@
 				$scope.loadBlackbook = function(){
 
 					console.log('loading blackbook...');
-					 $("html, body").animate({ scrollTop: 0 }, "slow");
+// 					 $("html, body").animate({ scrollTop: 0 }, "slow");
 					
 					var Entries =[];
 					var localMeta = oblivious.blackbookGet('meta');
@@ -486,14 +766,7 @@
 					
 						$scope.entries = Entries;
 						console.log('$scope.entries',$scope.entries);
-						$('.listed-entry').removeClass('has-changed');
-						$.each($scope.hasChanged,function(i,tmpObj){
-							console.log('oblivious_data.hasChanged',$scope.hasChanged);
-							$("#"+tmpObj.entryid).parent('.'+tmpObj.category).parent('.listed-entry').addClass('has-changed');
-							//where do I remove this???
-						});
-
-						$scope.hasChanged = [];
+						
 					
 					
 				};
@@ -600,6 +873,7 @@
 							break;
 					 	case "/blackbook":
 					 		
+							
 					 		break;
 					 	}
 					});

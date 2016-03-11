@@ -16,7 +16,7 @@
 </div>
 
 <div id="view-entry" class="ui stacked segment" style="">
-    			  <a href="#/blackbook" class="ui fluid top attached pink button return-to-BB-button" id="">&lt; Blackbook</a>
+    			  <a style="display:none;" href="#/blackbook" class="ui fluid top attached pink button return-to-BB-button" id="">&lt; Blackbook</a>
   
   <div class="ui centered card">
   
@@ -28,21 +28,9 @@
 	        <img class="ui avatar image" src="{{getIdenticon(entryid)}}">
 	    
 	  </div>
+	  <div ng-click="toggleComment()" class="ui bottom attached blue button">comment</div>
 	</div>
-  <div id="entry-comments" class="ui animated celled large list" style="max-height:10em; overflow-x:hidden;overflow-y:scroll">
-  <div ng-repeat="entry in entryContents" class="item">
-    <img class="ui avatar image" src="{{entry.identicon}}">
-    <div class="right floated content">
-      <div ng-show="hasPhoto(entry.image)" ng-click="showImage(entry)" class="ui icon button pink"><i class="photo icon"></i></div>
-    </div>
-    <div class="content">
-      <div class="header">{{entry.author}}</div>
-      {{entry.text}}
-    </div>
-  </div>
-</div>
-
-<div id="add-comment-form">
+<div id="add-comment-form" style="display:none;">
 	<div class="">
 		  	<h3>Add Comment</h3>
 			<hr />
@@ -66,5 +54,16 @@
 			  <button ng-click="sendComment()" class="ui fluid bottom attached blue button" id="send-comment-button">Send Comment</button>
 				  
 </div>
-
+  <div id="entry-comments" class="ui animated celled large list" style="">
+  <div ng-repeat="entry in entryContents" class="item">
+    <img class="ui avatar image" src="{{entry.identicon}}">
+    <div class="right floated content">
+      <div ng-show="hasPhoto(entry.image)" ng-click="showImage(entry)" class="ui icon button pink"><i class="photo icon"></i></div>
+    </div>
+    <div class="content">
+      <div class="header">{{entry.author}}</div>
+      {{entry.text}}
+    </div>
+  </div>
+</div>
 </div>
