@@ -190,6 +190,7 @@
 						    
 						    $scope.$apply(function() {
 						    	$scope.hasChanged = hasChanged;
+						    	$scope.loadBlackbook();
 						    });
 						    
 							//if @ blackbook
@@ -223,6 +224,7 @@
 									}
 									$scope.$apply(function() {
 								    	$scope.entryContents = eContents.reverse();
+								    	console.log('new comment! yay!');
 								    });
 									
 								});
@@ -472,11 +474,10 @@
 			});
 			app.controller('HazeCtrl', function($scope, $location, $routeParams) {
 				//blackbook check
-				var bbcheck = function(){
+				$scope.bbcheck = function(){
 					console.log('bbcheck!');
 					var Entries =[];
 					var localEntries = [];
-					var hasChanged = [];
 					var localMeta = oblivious.blackbookGet('meta');
 					var localCommCount = oblivious.blackbookGet('commentcount');
 					$.each(localMeta,function(i,obj){
@@ -524,7 +525,7 @@
 			    	
 					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
 					  .done(function( data ) {
-					    
+					    var hasChanged = [];
 					    	data = JSON.parse(data);
 					    	console.log('data from bb check',data);
 					    	
@@ -548,7 +549,9 @@
 						    		
 						    });
 						    
-						    
+						    $scope.$apply(function() {
+						    	$scope.hasChanged = hasChanged;
+						    });
 						    
 							//if @ blackbook
 							if($location.path() == '/blackbook'){
@@ -575,16 +578,13 @@
 										console.log('entry still exists amigo');
 									}
 								});
-								$scope.$apply(function() {
-							    	$scope.hasChanged = hasChanged;
-							    	$scope.loadBlackbook();
-							    });
+								$scope.loadBlackbook();
 							}
 							
 					  }, "json");
 				};
-				bbcheck();
-				window.setInterval(bbcheck,30000); //check every 30s
+				$scope.bbcheck();
+				window.setInterval($scope.bbcheck(),30000); //check every 30s
 				
 				
 				
@@ -765,7 +765,7 @@
 					
 						$scope.entries = Entries;
 						console.log('$scope.entries',$scope.entries);
-						alert($scope.entries.length);
+						
 					
 					
 				};
@@ -785,7 +785,6 @@
 					      case "/home":
 					    	  break;
 					      case "/blackbook":
-					    	  $scope.loadBlackbook();
 					    	  break;
 					      case "/create":
 					    	  break;
