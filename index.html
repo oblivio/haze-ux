@@ -106,7 +106,8 @@
 					
 					var myAliasData = oblivious.blackbookGet('aliases');
 					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
-
+					var alias = eID;
+					
 					$.each(myAliasData,function(i,tmpAlias){
 						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
 							console.log('tmpAlias',tmpAlias);
@@ -617,7 +618,7 @@
 				
 					var myAliasData = oblivious.blackbookGet('aliases');
 					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
-
+					var alias = eID;
 					$.each(myAliasData,function(i,tmpAlias){
 						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
 							console.log('tmpAlias',tmpAlias);
