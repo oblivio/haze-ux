@@ -48,7 +48,9 @@
 					
 				<!-- Main -->
 					<div id="main" class="">
-
+						<div  data-loading id="main-dimmer" class="ui active dimmer">
+					        <div class="ui text loader">Loading</div>
+					    </div>
 						<!-- content-section -->
 						<div ng-view></div>
 						<!-- /content-section -->
@@ -101,6 +103,7 @@
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
 			app.controller('HazeViewCtrl',function($scope,$location,$routeParams){
+				
 				
 				$scope.getEntryAlias = function(eID,eCat){
 					
@@ -255,7 +258,7 @@
 					  }, "json");
 				};
 				bbcheck();
-// 				window.setInterval(bbcheck,30000); //check every 30s
+				window.setInterval(bbcheck,30000); //check every 30s
 				
 				
 				
@@ -321,6 +324,7 @@
 				};
 				
 				$scope.$on('$viewContentLoaded', function(){
+// 					$("#main-dimmer").removeClass('active');
 					// Run after view loaded.
 					$('.dropdown')
 			  		.dropdown({
@@ -533,6 +537,7 @@
 				var localMeta = oblivious.blackbookGet('meta');
 				var localCommCount = oblivious.blackbookGet('commentcount');
 				
+				
 				$.each(localMeta,function(i,obj){
 					var tmpEntry = {
 							'category':'',
@@ -661,7 +666,9 @@
 			  	};
 
 				api.registerObserverCallback(blackbookupdate);
-
+				$scope.checkblackbook = function(){
+					api.checkblackbook();
+				};
 				api.checkblackbook();
 				
 // 				window.setInterval(function(){
@@ -671,6 +678,7 @@
 				
 				
 				$scope.$on('$viewContentLoaded', function(){
+// 					$("#main-dimmer").removeClass('active');
 					 // Run after view loaded.
 				// Run after view loaded.
 				
@@ -718,9 +726,8 @@
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
 				
 				
-				
 				$scope.$on('$viewContentLoaded', function(){
-					
+// 					$("#main-dimmer").removeClass('active');
 					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
 			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
 
@@ -859,6 +866,9 @@
 				};
 			});
 			app.controller('HazeInviteViewCtrl',function($scope,$location,$routeParams){
+				
+				
+				
 				$scope.entryid = $routeParams.eid;
 				$scope.category = $routeParams.category;
 				
@@ -870,7 +880,10 @@
 							$("#invite-img-wrapper").fadeIn();
 					}
 				};
-				$scope.$on('$viewContentLoaded', function(){});
+				$scope.$on('$viewContentLoaded', function(){
+// 					$("#main-dimmer").removeClass('active');
+				});
+				
 				$scope.getHash = function(d){
 					console.log('md5',md5(d));
 					return md5(d);
@@ -884,12 +897,12 @@
 				
 			});
 			app.controller('HazeProcessInviteViewCtrl',function($scope,$location,$routeParams){
-				
+
 				$scope.process = function(){
 					oblivious._processInvite('#invite-status');
 				};
 				$scope.$on('$viewContentLoaded', function(){
-					
+// 					$("#main-dimmer").removeClass('active');
 					document.getElementById('decode-input').onchange = function(input) {
 						var file    = document.getElementById('decode-input').files[0];
 						if ( file ) {
@@ -926,6 +939,28 @@
 				$scope.core_data = {};
 				
 			});
+			app.directive('loading',   ['$http' ,function ($http)
+			                             {
+		        return {
+		            restrict: 'A',
+		            link: function (scope, elm, attrs)
+		            {
+		                scope.isLoading = function () {
+		                    return $http.pendingRequests.length > 0;
+		                };
+
+		                scope.$watch(scope.isLoading, function (v)
+		                {
+		                    if(v){
+		                        elm.show();
+		                    }else{
+		                        elm.hide();
+		                    }
+		                });
+		            }
+		        };
+
+		    }]);
 			app.config(['$routeProvider',
 			      	  function($routeProvider) {
 			      	    $routeProvider.
@@ -958,13 +993,13 @@
 			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
 			      console.log('Current route name: ' + $location.path());
 			      
-			     
 			      
 			      
 			      // Get all URL parameter
 			      console.log($routeParams);
 			      
 			    });
+
 			  }]);
 			</script>
 			
