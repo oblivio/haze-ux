@@ -568,7 +568,7 @@
 					return identicon;
 				};
 				$scope.core_data = {};
-				
+				$scope.hasChanged = [];
 				$scope.getEntryClassName = function(e){
 					console.log('$scope.hasChanged',$scope.hasChanged,e);
 					var className = "ui card haze-entry";
@@ -597,17 +597,43 @@
 					console.log('new user alias - ',alias,oblivious.blackbookGet('aliases','me'));
 					location.reload(true);
 				};
+				$scope.getEntryAlias = function(entry){
+					
+					var eID = entry.entryid;
+					var eCat = entry.category;
+					
+					var myAliasData = oblivious.blackbookGet('aliases');
+					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
+
+					$.each(myAliasData,function(i,tmpAlias){
+						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
+							console.log('tmpAlias',tmpAlias);
+							if(tmpAlias.key == String(eID+":"+eCat) && String(tmpAlias.value).length > 0){
+								alias = tmpAlias.value;
+								console.log('alias',alias);
+							}
+								
+						}
+					});
+					return alias;
+				};
 				$scope.getUserAlias = function(){
 					var alias = '(Anonymous)';
-					var myAliasData = oblivious.blackbookGet('aliases','me');
-					if(typeof myAliasData[0] !== 'undefined' && typeof myAliasData[0].value !== 'undefined'){
+					var myAliasData = oblivious.blackbookGet('aliases');
+					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
 
-						if(String(myAliasData[0].value).length > 0){
-							alias = myAliasData[0].value;
+					$.each(myAliasData,function(i,tmpAlias){
+						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
+							console.log('tmpAlias',tmpAlias);
+							if(tmpAlias.key == 'me' && String(tmpAlias.value).length > 0){
+								alias = tmpAlias.value;
+								console.log('alias',alias);
+							}
+								
 						}
-						console.log('alias',alias);
-						return alias;	
-					}
+					});
+					return alias;
+					
 				};
 				$scope.user_alias = $scope.getUserAlias();
 				$scope.user_identicon = '';
