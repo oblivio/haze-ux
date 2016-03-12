@@ -99,52 +99,6 @@
 			<script src="js/haze.js"></script>
 			
 			<script>
-			var Entries =[];
-			var localEntries = [];
-			var localMeta = oblivious.blackbookGet('meta');
-			var localCommCount = oblivious.blackbookGet('commentcount');
-			$.each(localMeta,function(i,obj){
-				var tmpEntry = {
-						'category':'',
-						'entryid':'',
-						'visiblename':'',
-						'commentcount':'',
-				};
-				var tmpRaw = String(obj.key).split(":");
-				var tmpID = tmpRaw[0];
-				var tmpCat = tmpRaw[1];
-				
-				tmpEntry.entryid = tmpID;
-				tmpEntry.visiblename = tmpID;
-				
-				tmpEntry.category = tmpCat;
-
-				console.log('tmpEntry',tmpEntry);
-				
-				$.each(localCommCount,function(j,cObj){
-					console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-					
-					if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-						tmpEntry.commentcount = cObj.value;
-						return false;
-					}
-				});
-				
-				if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-						
-					localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-					Entries.push(tmpEntry);
-					
-				}
-
-					
-			});
-			if(Entries.length == 0)
-				//return false;
-			console.log('Entries',Entries);
-			
-			</script>
-			<script>
 			
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
@@ -185,8 +139,52 @@
 				//blackbook check
 				var bbcheck = function(){
 					console.log('bbcheck!');
+					var Entries =[];
+					var localEntries = [];
+					var localMeta = oblivious.blackbookGet('meta');
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					$.each(localMeta,function(i,obj){
+						var tmpEntry = {
+								'category':'',
+								'entryid':'',
+								'visiblename':'',
+								'commentcount':'',
+						};
+						var tmpRaw = String(obj.key).split(":");
+						var tmpID = tmpRaw[0];
+						var tmpCat = tmpRaw[1];
+						
+						tmpEntry.entryid = tmpID;
+						tmpEntry.visiblename = $scope.getEntryAlias(tmpID,tmpCat);
+						
+						tmpEntry.category = tmpCat;
+
+						console.log('tmpEntry',tmpEntry);
+						
+						$.each(localCommCount,function(j,cObj){
+							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							
+							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+								tmpEntry.commentcount = cObj.value;
+								return false;
+							}
+						});
+						
+						console.log('que ostia?',tmpEntry);
+						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+								
+							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							Entries.push(tmpEntry);
+							
+						}
+
+							
+					});
+					if(Entries.length == 0)
+						return false;
 					console.log('Entries',Entries);
 					var currEntries = [];
+
 			    	var newCommentCount = {};
 			    	
 					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
@@ -260,7 +258,9 @@
 					  }, "json");
 				};
 				bbcheck();
-				window.setInterval(bbcheck,30000); //check every 30s
+// 				window.setInterval(bbcheck,30000); //check every 30s
+				
+				
 				
 				
 				
@@ -325,9 +325,6 @@
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
 					// Run after view loaded.
 					$('.dropdown')
 			  		.dropdown({
@@ -395,6 +392,7 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			  $httpProvider.defaults.headers.patch = {};
 			});
 			app.factory('api', function($http){
+				var bb_Entries=[];
 				var bb_hasChanged = [];
 				var observerCallbacks = [];
 				var notifyObservers = function(){
@@ -426,8 +424,47 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			    		var bbcheck = function(){
 							console.log('bbcheck!');
 							
+							$.each(localMeta,function(i,obj){
+								var tmpEntry = {
+										'category':'',
+										'entryid':'',
+										'visiblename':'',
+										'commentcount':'',
+								};
+								var tmpRaw = String(obj.key).split(":");
+								var tmpID = tmpRaw[0];
+								var tmpCat = tmpRaw[1];
+								
+								tmpEntry.entryid = tmpID;
+								tmpEntry.visiblename = tmpID;
+								
+								tmpEntry.category = tmpCat;
+
+								console.log('tmpEntry',tmpEntry);
+								
+								$.each(localCommCount,function(j,cObj){
+									console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+									
+									if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+										tmpEntry.commentcount = cObj.value;
+										return false;
+									}
+								});
+								
+								if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+										
+									localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+									Entries.push(tmpEntry);
+									
+								}
+
+									
+							});
+							if(Entries.length == 0)
+								return false;
 							console.log('Entries',Entries);
 							var currEntries = [];
+							
 					    	var newCommentCount = {};
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
@@ -495,13 +532,52 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			    }               
 			});
 			app.controller('BlackbookCtrl',function($scope,$location,$routeParams,api){
+				var Entries =[];
+				var localEntries = [];
+				var localMeta = oblivious.blackbookGet('meta');
+				var localCommCount = oblivious.blackbookGet('commentcount');
 				
-				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
-		      	$("#blackbookbtn").addClass('active');
-		    	$("#blackbookbtn").find('.button').removeClass('basic');
-		    	  
-		    	  
+				
+				$.each(localMeta,function(i,obj){
+					var tmpEntry = {
+							'category':'',
+							'entryid':'',
+							'visiblename':'',
+							'commentcount':'',
+					};
+					var tmpRaw = String(obj.key).split(":");
+					var tmpID = tmpRaw[0];
+					var tmpCat = tmpRaw[1];
+					
+					tmpEntry.entryid = tmpID;
+					tmpEntry.visiblename = tmpID;
+					
+					tmpEntry.category = tmpCat;
+
+					console.log('tmpEntry',tmpEntry);
+					
+					$.each(localCommCount,function(j,cObj){
+						console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+						
+						if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+							tmpEntry.commentcount = cObj.value;
+							return false;
+						}
+					});
+					
+					if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+							
+						localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+						Entries.push(tmpEntry);
+						
+					}
+
+						
+				});
+				if(Entries.length == 0)
+					//return false;
+				console.log('Entries',Entries);
+				
 				$scope.entries = Entries;
 				
 				$scope.getHash = function(d){
@@ -590,9 +666,7 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			  	};
 
 				api.registerObserverCallback(blackbookupdate);
-				$scope.checkblackbook = function(){
-					api.checkblackbook();
-				};
+
 				api.checkblackbook();
 				
 // 				window.setInterval(function(){
@@ -606,7 +680,9 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 					 // Run after view loaded.
 				// Run after view loaded.
 				
-				
+				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
+		      	
 		      	
 							$('.dropdown')
 					  		.dropdown({
@@ -636,7 +712,9 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 								location.reload(true);
 						});
 
-				    	 
+				    	  $("#blackbookbtn").addClass('active');
+				    	  $("#blackbookbtn").find('.button').removeClass('basic');
+				    	  
 					 	
 					});
 				
@@ -645,16 +723,15 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
 				
-				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
-		    	  $("#createbtn").addClass('active');
-		    	  $("#createbtn").find('.button').removeClass('basic');
-		    	  
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-					
+					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
+			    	  $("#createbtn").addClass('active');
+			    	  $("#createbtn").find('.button').removeClass('basic');
+			    	  
 			    	  
 					oblivious._onchange('addimage-input',function(){
 						var imgData = String(this);
@@ -803,9 +880,6 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
 				});
 				
 				$scope.getHash = function(d){
@@ -827,9 +901,6 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
 					document.getElementById('decode-input').onchange = function(input) {
 						var file    = document.getElementById('decode-input').files[0];
 						if ( file ) {
