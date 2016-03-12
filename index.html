@@ -190,7 +190,7 @@
 						    
 						    $scope.$apply(function() {
 						    	$scope.hasChanged = hasChanged;
-						    	$scope.loadBlackbook();
+// 						    	$scope.loadBlackbook();
 						    });
 						    
 							//if @ blackbook
@@ -659,15 +659,7 @@
 				
 				console.log('$scope.entries',$scope.entries);
 				
-				$scope.loadBlackbook = function(){
-					$scope.entries = $scope.getBlackbookEntries();
-					$scope.$apply(function(){
-						console.log('$scope.entries',$scope.entries);
-					});
-						
-					
-				};
-				
+			
 				//blackbook check
 				$scope.bbcheck = function(){
 					console.log('bbcheck!');
@@ -773,7 +765,6 @@
 										console.log('entry still exists amigo');
 									}
 								});
-								$scope.loadBlackbook();
 							}
 							
 					  }, "json");
