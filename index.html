@@ -135,7 +135,7 @@
 						var tmpCat = tmpRaw[1];
 						
 						tmpEntry.entryid = tmpID;
-						tmpEntry.visiblename = tmpID;
+						tmpEntry.visiblename = $scope.getEntryAlias(tmpID,tmpCat);
 						
 						tmpEntry.category = tmpCat;
 
@@ -597,11 +597,8 @@
 					console.log('new user alias - ',alias,oblivious.blackbookGet('aliases','me'));
 					location.reload(true);
 				};
-				$scope.getEntryAlias = function(entry){
-					
-					var eID = entry.entryid;
-					var eCat = entry.category;
-					
+				$scope.getEntryAlias = function(eID,eCat){
+				
 					var myAliasData = oblivious.blackbookGet('aliases');
 					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
 
