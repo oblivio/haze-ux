@@ -99,6 +99,52 @@
 			<script src="js/haze.js"></script>
 			
 			<script>
+			var Entries =[];
+			var localEntries = [];
+			var localMeta = oblivious.blackbookGet('meta');
+			var localCommCount = oblivious.blackbookGet('commentcount');
+			$.each(localMeta,function(i,obj){
+				var tmpEntry = {
+						'category':'',
+						'entryid':'',
+						'visiblename':'',
+						'commentcount':'',
+				};
+				var tmpRaw = String(obj.key).split(":");
+				var tmpID = tmpRaw[0];
+				var tmpCat = tmpRaw[1];
+				
+				tmpEntry.entryid = tmpID;
+				tmpEntry.visiblename = tmpID;
+				
+				tmpEntry.category = tmpCat;
+
+				console.log('tmpEntry',tmpEntry);
+				
+				$.each(localCommCount,function(j,cObj){
+					console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+					
+					if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+						tmpEntry.commentcount = cObj.value;
+						return false;
+					}
+				});
+				
+				if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+						
+					localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+					Entries.push(tmpEntry);
+					
+				}
+
+					
+			});
+			if(Entries.length == 0)
+				//return false;
+			console.log('Entries',Entries);
+			
+			</script>
+			<script>
 			
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
@@ -139,52 +185,8 @@
 				//blackbook check
 				var bbcheck = function(){
 					console.log('bbcheck!');
-					var Entries =[];
-					var localEntries = [];
-					var localMeta = oblivious.blackbookGet('meta');
-					var localCommCount = oblivious.blackbookGet('commentcount');
-					$.each(localMeta,function(i,obj){
-						var tmpEntry = {
-								'category':'',
-								'entryid':'',
-								'visiblename':'',
-								'commentcount':'',
-						};
-						var tmpRaw = String(obj.key).split(":");
-						var tmpID = tmpRaw[0];
-						var tmpCat = tmpRaw[1];
-						
-						tmpEntry.entryid = tmpID;
-						tmpEntry.visiblename = $scope.getEntryAlias(tmpID,tmpCat);
-						
-						tmpEntry.category = tmpCat;
-
-						console.log('tmpEntry',tmpEntry);
-						
-						$.each(localCommCount,function(j,cObj){
-							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							
-							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-								tmpEntry.commentcount = cObj.value;
-								return false;
-							}
-						});
-						
-						console.log('que ostia?',tmpEntry);
-						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-								
-							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							Entries.push(tmpEntry);
-							
-						}
-
-							
-					});
-					if(Entries.length == 0)
-						return false;
 					console.log('Entries',Entries);
 					var currEntries = [];
-
 			    	var newCommentCount = {};
 			    	
 					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
@@ -533,56 +535,13 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			    }               
 			});
 			app.controller('BlackbookCtrl',function($scope,$location,$routeParams,api){
-				var Entries =[];
-				var localEntries = [];
-				var localMeta = oblivious.blackbookGet('meta');
-				var localCommCount = oblivious.blackbookGet('commentcount');
+				
 				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
 		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
 		      	 $("#blackbookbtn").addClass('active');
 		    	  $("#blackbookbtn").find('.button').removeClass('basic');
 		    	  
-				
-				$.each(localMeta,function(i,obj){
-					var tmpEntry = {
-							'category':'',
-							'entryid':'',
-							'visiblename':'',
-							'commentcount':'',
-					};
-					var tmpRaw = String(obj.key).split(":");
-					var tmpID = tmpRaw[0];
-					var tmpCat = tmpRaw[1];
-					
-					tmpEntry.entryid = tmpID;
-					tmpEntry.visiblename = tmpID;
-					
-					tmpEntry.category = tmpCat;
-
-					console.log('tmpEntry',tmpEntry);
-					
-					$.each(localCommCount,function(j,cObj){
-						console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-						
-						if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-							tmpEntry.commentcount = cObj.value;
-							return false;
-						}
-					});
-					
-					if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-							
-						localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-						Entries.push(tmpEntry);
-						
-					}
-
-						
-				});
-				if(Entries.length == 0)
-					//return false;
-				console.log('Entries',Entries);
-				
+		    	  
 				$scope.entries = Entries;
 				
 				$scope.getHash = function(d){
