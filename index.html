@@ -601,7 +601,7 @@
 				$scope.user_alias = $scope.getUserAlias();
 				$scope.user_identicon = '';
 				$scope.loadBlackbook = function(){
-
+					alert('loadBLackBook');
 					console.log('loading blackbook...');
 // 					 $("html, body").animate({ scrollTop: 0 }, "slow");
 					
@@ -610,6 +610,8 @@
 					var localAliases = oblivious.blackbookGet('aliases');
 
 					var localCommCount = oblivious.blackbookGet('commentcount');
+					
+					alert(localMeta.length);
 					
 					$.each(localMeta,function(i,obj){
 						var tmpEntry = {
