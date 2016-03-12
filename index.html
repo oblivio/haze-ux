@@ -602,71 +602,13 @@
 				$scope.user_identicon = '';
 				console.log('loading blackbook...');
 //				 $("html, body").animate({ scrollTop: 0 }, "slow");
-				
-				var Entries =[];
-				var localMeta = oblivious.blackbookGet('meta');
-				var localAliases = oblivious.blackbookGet('aliases');
+				$scope.getBlackbookEntries = function(){
 
-				var localCommCount = oblivious.blackbookGet('commentcount');
-				
-				alert(localMeta.length);
-				
-				$.each(localMeta,function(i,obj){
-					var tmpEntry = {
-							'category':'',
-							'entryid':'',
-							'meta':'',
-							'entryhash':'',
-							'blackbook':true,
-							'visiblename':'(no alias)'
-					};
-					if(obj.value != ''){
-						var tmpRaw = String(obj.key).split(":");
-						var tmpID = tmpRaw[0];
-						var tmpCat = tmpRaw[1];
-						
-						tmpEntry.entryid = tmpID;
-						tmpEntry.hash = $scope.getHash(tmpID);
-						tmpEntry.category = tmpCat;
-						tmpEntry.meta = obj.value;
-						console.log('dimelo pina',tmpEntry);
-						$.each(localAliases,function(j,aliasObj){
-							var aliasRaw = String(aliasObj.key).split(":");
-							var aliasID = aliasRaw[0];
-							var aliasCat = aliasRaw[1];
-							
-							if(aliasID == tmpEntry.entryid && aliasCat == tmpEntry.category){
-								tmpEntry.visiblename = String(aliasObj.value);
-							}
-						});
-						$.each(localCommCount,function(j,cObj){
-							console.log('cObj',cObj);
-							
-							if(String(cObj.key) === String(tmpEntry.entryid + ":" + tmpEntry.category) ){
-								tmpEntry.commentcount = cObj.value;
-								return false;
-							}
-						});
-						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-							Entries.push(tmpEntry);
-						}
-					}
-				});
-				
-					
-						$scope.entries = Entries;
-						console.log('$scope.entries',$scope.entries);
-						
-				$scope.loadBlackbook = function(){
-					console.log('loading blackbook...');
-//					 $("html, body").animate({ scrollTop: 0 }, "slow");
-					
 					var Entries =[];
 					var localMeta = oblivious.blackbookGet('meta');
 					var localAliases = oblivious.blackbookGet('aliases');
 
 					var localCommCount = oblivious.blackbookGet('commentcount');
-					
 					
 					$.each(localMeta,function(i,obj){
 						var tmpEntry = {
@@ -709,11 +651,20 @@
 							}
 						}
 					});
+					return Entries;	
+				};
+				
 					
-							$scope.$apply(function(){
-								$scope.entries = Entries;
-								console.log('$scope.entries',$scope.entries);
-							});
+				$scope.entries = $scope.getBlackbookEntries();
+				
+				console.log('$scope.entries',$scope.entries);
+				
+				$scope.loadBlackbook = function(){
+					
+					$scope.$apply(function(){
+						$scope.entries = $scope.getBlackbookEntries();
+						console.log('$scope.entries',$scope.entries);
+					});
 						
 					
 				};
