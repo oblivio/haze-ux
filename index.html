@@ -71,7 +71,17 @@
 						<!-- content-section -->
 						<div class="slide" ng-view></div>
 						<!-- /content-section -->
-
+						
+						<div class="ui stacked segment">
+							<div style="display:none" id="blackbook-contents" class="ui cards">
+							
+							</div>
+							<br />
+							<br />
+							  <a  class="ui red bottom attached basic button" id="clear-blackbook-button">clear blackbook</a>
+									
+						</div>
+									
 					</div>
 
 				<!-- Footer -->
@@ -519,8 +529,10 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
 				$("#createbtn").removeClass('active');
 				$("#blackbookbtn").addClass('active');
+				
 				console.log('Entries',Entries);
 				$scope.entries = Entries;
+				$("#blackbook-contents").show();
 				
 				$scope.getHash = function(d){
 					console.log('md5',md5(d));
