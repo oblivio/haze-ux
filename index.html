@@ -550,10 +550,7 @@
 						    		
 						    });
 						    
-						    $scope.$apply(function() {
-						    	$scope.hasChanged = hasChanged;
-						    	$scope.entries = $scope.getBlackbookEntries();
-						    });
+						    
 						    
 						    $.each(localEntries,function(ii,encodedentry){
 								var tmpRaw = String(encodedentry).split(":");
@@ -578,6 +575,13 @@
 									console.log('entry still exists amigo');
 								}
 							});
+						    
+						    $scope.$apply(function() {
+						    	$scope.hasChanged = hasChanged;
+						    	$scope.entries = $scope.getBlackbookEntries();
+						    	console.log('hasChanged@apply',$scope.hasChanged);
+						    	console.log('entries@apply',$scope.entries);
+						    });
 							
 					  }, "json");
 				};
