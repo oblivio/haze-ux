@@ -29,6 +29,25 @@
 			font-size: 1.5em;
 			letter-spacing: 1px;
 		}
+		
+		
+.slide.ng-enter,
+.slide.ng-leave {
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+}
+.slide.ng-enter {
+    left: 100%;
+}
+.slide.ng-enter-active {
+    left: 0;
+}
+.slide.ng-leave {
+    left: 0;
+}
+.slide.ng-leave-active {
+    left: -100%;
+}
 		</style>
 	</head>
 	<body ng-app="hazeApp">
@@ -37,22 +56,20 @@
 
 				<!-- Nav -->
 					
-					<nav class="ui three item fixed green pointing menu">
+					<nav onclick="" class="ui three item fixed green pointing menu">
 					  	<a id="logo" class="item">
 					  	
 					  	HAZE
 					  	</a>
-						<a id="blackbookbtn" href="#/blackbook" class="item"><div class="ui basic green  icon button"><i class="comments outline icon"></i></div></a>
-						<a id="createbtn" href="#/create" class="item"><div class="ui basic green icon button"><i class="add icon"></i></div></a>
+						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/blackbook" class="item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
+						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="createbtn" href="#/create" class="item"><div class="ui  black basic icon button"><i class="add icon"></i></div></a>
 					</nav>
 					
 				<!-- Main -->
 					<div id="main" class="">
-						<div  data-loading id="main-dimmer" class="ui active page dimmer">
-					        <div class="ui text loader">Loading</div>
-					    </div>
+						
 						<!-- content-section -->
-						<div ng-view></div>
+						<div class="slide" ng-view></div>
 						<!-- /content-section -->
 
 					</div>
@@ -100,7 +117,40 @@
 			
 			<script>
 				//localstorage shit
-			
+				function getBlackbookEntries(){
+					var TmpEntries = [];
+					var localCommCount = oblivious.blackbookGet('commentcount');
+					console.log('bbcheck!');
+					
+					$.each(localCommCount,function(j,cObj){						
+							var tmpEntry = {
+									'category':'',
+									'entryid':'',
+									'visiblename':'',
+									'commentcount':'',
+							};
+							var tmpRaw = String(cObj.key).split(":");
+							var tmpID = tmpRaw[0];
+							var tmpCat = tmpRaw[1];
+							tmpEntry.entryid = tmpID;
+							tmpEntry.visiblename = tmpID;	
+							tmpEntry.category = tmpCat;
+
+							
+							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+								tmpEntry.commentcount = cObj.value;
+							}
+						
+						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){								
+							TmpEntries.push(tmpEntry);
+						}
+
+							
+					});
+					return TmpEntries;
+				}
+						
+				var Entries = getBlackbookEntries();	
 			</script>
 			
 			<script>
@@ -140,131 +190,54 @@
 				$scope.currentCommentImg = '';
 				
 				
-				
-				//blackbook check
-				var bbcheck = function(){
-					console.log('bbcheck!');
-					var Entries =[];
-					var localEntries = [];
-					var localMeta = oblivious.blackbookGet('meta');
-					var localCommCount = oblivious.blackbookGet('commentcount');
-					$.each(localMeta,function(i,obj){
-						var tmpEntry = {
-								'category':'',
-								'entryid':'',
-								'visiblename':'',
-								'commentcount':'',
-						};
-						var tmpRaw = String(obj.key).split(":");
-						var tmpID = tmpRaw[0];
-						var tmpCat = tmpRaw[1];
-						
-						tmpEntry.entryid = tmpID;
-						tmpEntry.visiblename = $scope.getEntryAlias(tmpID,tmpCat);
-						
-						tmpEntry.category = tmpCat;
-
-						console.log('tmpEntry',tmpEntry);
-						
-						$.each(localCommCount,function(j,cObj){
-							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							
-							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-								tmpEntry.commentcount = cObj.value;
-								return false;
+				$scope.entryid = $routeParams.eid;
+//					$scope.category = $routeParams.category;
+//					$scope.entryContents = false;
+//					$scope.entryPassword = '';
+				$scope.getEntry = function(){
+					var earlyExit = false;
+					switch($location.path()){
+					
+				      case "/blackbook":
+				      case "/create":
+				    	 earlyExit = true;
+				    	 break;
+				      }
+						if(earlyExit){
+							return false;
+						}
+						oblivious.getEntry($scope.entryid,$scope.category,function(){
+							console.log('this @ getEntry',this);
+							var data = this;
+							var eContents = false;
+							if(data[1] == "Paste does not exist, has expired or has been deleted."){
+								oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
+								console.log('paste no existe',data[1]);
+								$location.path('/blackbook');
+							}else{
+								if(data[0].meta.krypi == "1"){
+									var pwd = $scope.entryPassword;
+									if(pwd){
+										eContents = oblivious._processGetEntry(data,$scope.entryid,pwd);
+										
+									}else{
+										$location.path('/blackbook');
+									}
+							    }else{
+							    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
+							    }
 							}
+							$scope.$apply(function() {
+						    	$scope.entryContents = eContents.reverse();
+						    });
+							
 						});
 						
-						console.log('que ostia?',tmpEntry);
-						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-								
-							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							Entries.push(tmpEntry);
-							
-						}
-
-							
-					});
-					if(Entries.length == 0)
-						return false;
-					console.log('Entries',Entries);
-					var currEntries = [];
-
-			    	var newCommentCount = {};
-			    	
-					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
-					  .done(function( data ) {
-					    var hasChanged = [];
-					    	data = JSON.parse(data);
-					    	console.log('data from bb check',data);
-					    	
-						    $.each(data,function(i,obj){
-						    	//obj[0] is the entry
-						    	console.log('obj',obj,obj.length);
-						    	if(typeof obj.changed === 'undefined')
-						    		return true; //skip
-						    		
-						    		
-						    		if(obj.changed){
-						    			var tmp = {
-						    					'entryid':obj.entryid,
-						    					'category':obj.category,
-						    					'visiblename':$scope.getEntryAlias(obj.entryid,obj.category)
-						    			};
-						    			hasChanged.push(tmp);
-
-						    		}
-						    		currEntries.push(obj);	
-						    		
-						    });
-						    
-						    $scope.$apply(function() {
-						    	$scope.hasChanged = hasChanged;
-// 						    	$scope.loadBlackbook();
-						    });
-						    
-							//if @ blackbook
-							if($location.path() == '/blackbook'){
-								
-							}else{
-// 								$scope.entryid = $routeParams.eid;
-// 								$scope.category = $routeParams.category;
-// 								$scope.entryContents = false;
-// 								$scope.entryPassword = '';
-								oblivious.getEntry($scope.entryid,$scope.category,function(){
-									console.log('this @ getEntry',this);
-									var data = this;
-									var eContents = false;
-									if(data[1] == "Paste does not exist, has expired or has been deleted."){
-										oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
-										console.log('paste no existe',data[1]);
-										$location.path('/blackbook');
-									}else{
-										if(data[0].meta.krypi == "1"){
-											var pwd = $scope.entryPassword;
-											if(pwd){
-												eContents = oblivious._processGetEntry(data,$scope.entryid,pwd);
-												
-											}else{
-												$location.path('/blackbook');
-											}
-									    }else{
-									    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
-									    }
-									}
-									$scope.$apply(function() {
-								    	$scope.entryContents = eContents.reverse();
-								    	console.log('new comment! yay!');
-								    });
-									
-								});
-							}
-							
-					  }, "json");
-				};
-				bbcheck();
-				window.setInterval(bbcheck,30000); //check every 30s
-				
+			};
+			
+			window.setInterval(function(){
+					$scope.getEntry();
+				},30000); //check every 30s
 				
 				$scope.hasPhoto = function(img){
 					if(img == ''){
@@ -394,7 +367,6 @@
 			  $httpProvider.defaults.headers.patch = {};
 			});
 			app.factory('api', function($http){
-				var bb_Entries=[];
 				var bb_hasChanged = [];
 				var observerCallbacks = [];
 				var notifyObservers = function(){
@@ -403,10 +375,9 @@
 					    });
 				};
 			    return {
-			    	registerObserverCallback:function(callback){
+			    	registerObserverCallback: function(callback){
 						observerCallbacks.push(callback);
 					},
-			    	bbentries: function(){return bb_Entries},
 			    	bbhaschanged:function(){return bb_hasChanged},
 			    	checkblackbook: function(){
 			    
@@ -418,55 +389,10 @@
 							};
 
 			    		console.log('req',req);
-			    		var Entries =[];
-						var localEntries = [];
-						var localMeta = oblivious.blackbookGet('meta');
-						var localCommCount = oblivious.blackbookGet('commentcount');
-						
+			    		
 			    		var bbcheck = function(){
-							console.log('bbcheck!');
 							
-							$.each(localMeta,function(i,obj){
-								var tmpEntry = {
-										'category':'',
-										'entryid':'',
-										'visiblename':'',
-										'commentcount':'',
-								};
-								var tmpRaw = String(obj.key).split(":");
-								var tmpID = tmpRaw[0];
-								var tmpCat = tmpRaw[1];
-								
-								tmpEntry.entryid = tmpID;
-								tmpEntry.visiblename = tmpID;
-								
-								tmpEntry.category = tmpCat;
-
-								console.log('tmpEntry',tmpEntry);
-								
-								$.each(localCommCount,function(j,cObj){
-									console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-									
-									if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-										tmpEntry.commentcount = cObj.value;
-										return false;
-									}
-								});
-								
-								if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-										
-									localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-									Entries.push(tmpEntry);
-									
-								}
-
-									
-							});
-							if(Entries.length == 0)
-								return false;
-							console.log('Entries',Entries);
 							var currEntries = [];
-							
 					    	var newCommentCount = {};
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
@@ -534,57 +460,8 @@
 			    }               
 			});
 			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
-				var Entries =[];
-				var localEntries = [];
-				var localMeta = oblivious.blackbookGet('meta');
-				var localCommCount = oblivious.blackbookGet('commentcount');
 				
-				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
-		      	 $("#blackbookbtn").addClass('active');
-		    	  $("#blackbookbtn").find('.button').removeClass('basic');
-		    	  
-				
-				$.each(localMeta,function(i,obj){
-					var tmpEntry = {
-							'category':'',
-							'entryid':'',
-							'visiblename':'',
-							'commentcount':'',
-					};
-					var tmpRaw = String(obj.key).split(":");
-					var tmpID = tmpRaw[0];
-					var tmpCat = tmpRaw[1];
-					
-					tmpEntry.entryid = tmpID;
-					tmpEntry.visiblename = tmpID;
-					
-					tmpEntry.category = tmpCat;
-
-					console.log('tmpEntry',tmpEntry);
-					
-					$.each(localCommCount,function(j,cObj){
-						console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-						
-						if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-							tmpEntry.commentcount = cObj.value;
-							return false;
-						}
-					});
-					
-					if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-							
-						localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-						Entries.push(tmpEntry);
-						
-					}
-
-						
-				});
-				if(Entries.length == 0)
-					//return false;
 				console.log('Entries',Entries);
-				
 				$scope.entries = Entries;
 				
 				$scope.getHash = function(d){
@@ -630,7 +507,7 @@
 					var alias = eID;
 					$.each(myAliasData,function(i,tmpAlias){
 						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
-							console.log('tmpAlias',tmpAlias);
+							
 							if(tmpAlias.key == String(eID+":"+eCat) && String(tmpAlias.value).length > 0){
 								alias = tmpAlias.value;
 								console.log('alias',alias);
@@ -647,7 +524,7 @@
 
 					$.each(myAliasData,function(i,tmpAlias){
 						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
-							console.log('tmpAlias',tmpAlias);
+							
 							if(tmpAlias.key == 'me' && String(tmpAlias.value).length > 0){
 								alias = tmpAlias.value;
 								console.log('alias',alias);
@@ -665,21 +542,22 @@
 // 				//blackbook check
 
 				
-				window.setInterval(function(){
-					api.checkblackbook();
-				},30000); //check every 30s
+// 				window.setInterval(function(){
+// 					api.checkblackbook();
+// 				},30000); //check every 30s
 				
 // 				$interval( function(){ api.checkblackbook(); }, 3000, true);
-				var blackbookupdate = function(){
-					console.log('bb-update',api.bbhaschanged(),api.bbentries());
-			    	$scope.hasChanged = api.bbhaschanged();
-					$scope.$apply();
-			  	};
-
-				api.registerObserverCallback(blackbookupdate);
+				
+				//api.registerObserverCallback(blackbookupdate);
 				
 				$scope.checkBlackbook = function(){
 					api.checkblackbook();
+					var blackbookupdate = function(){
+						console.log('bb-update',api.bbhaschanged(),api.bbentries());
+				    	$scope.hasChanged = api.bbhaschanged();
+						$scope.$apply();
+				  	};
+				  	blackbookupdate();
 				};
 				
 				$scope.$on('$viewContentLoaded', function(){
@@ -725,12 +603,6 @@
 			});
 			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
-				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
-		    	  $("#createbtn").addClass('active');
-		    	  $("#createbtn").find('.button').removeClass('basic');
-		    	  
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
