@@ -576,6 +576,7 @@
 
 				api.registerObserverCallback(blackbookupdate);
 				
+				api.checkblackbook();
 				window.setInterval(function(){
 					api.checkblackbook();
 				},30000); //check every 30s
