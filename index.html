@@ -538,8 +538,8 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 				
 				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
 		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
-		      	 $("#blackbookbtn").addClass('active');
-		    	  $("#blackbookbtn").find('.button').removeClass('basic');
+		      	$("#blackbookbtn").addClass('active');
+		    	$("#blackbookbtn").find('.button').removeClass('basic');
 		    	  
 		    	  
 				$scope.entries = Entries;
@@ -633,7 +633,7 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 				$scope.checkblackbook = function(){
 					api.checkblackbook();
 				};
-// 				api.checkblackbook();
+				api.checkblackbook();
 				
 // 				window.setInterval(function(){
 // 					api.checkblackbook();
