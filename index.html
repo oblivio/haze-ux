@@ -537,7 +537,11 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 				var localEntries = [];
 				var localMeta = oblivious.blackbookGet('meta');
 				var localCommCount = oblivious.blackbookGet('commentcount');
-				
+				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
+		      	 $("#blackbookbtn").addClass('active');
+		    	  $("#blackbookbtn").find('.button').removeClass('basic');
+		    	  
 				
 				$.each(localMeta,function(i,obj){
 					var tmpEntry = {
@@ -683,9 +687,7 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 					 // Run after view loaded.
 				// Run after view loaded.
 				
-				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
-		      	
+				
 		      	
 							$('.dropdown')
 					  		.dropdown({
@@ -715,9 +717,7 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 								location.reload(true);
 						});
 
-				    	  $("#blackbookbtn").addClass('active');
-				    	  $("#blackbookbtn").find('.button').removeClass('basic');
-				    	  
+				    	 
 					 	
 					});
 				
@@ -726,15 +726,16 @@ $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass(
 			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
 				
+				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
+		    	  $("#createbtn").addClass('active');
+		    	  $("#createbtn").find('.button').removeClass('basic');
+		    	  
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
-
-			    	  $("#createbtn").addClass('active');
-			    	  $("#createbtn").find('.button').removeClass('basic');
-			    	  
+					
 			    	  
 					oblivious._onchange('addimage-input',function(){
 						var imgData = String(this);
