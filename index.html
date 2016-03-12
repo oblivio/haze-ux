@@ -297,21 +297,7 @@
 				
 					$("#add-comment-form").transition('scale');
 				};
-				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
-// 					data.category_data.Categories;
-// 					data.category_data.Keys;
-					console.log('core-information',data);
-					$scope.$apply(function() {
-						$scope.core_data = data;
-						var identicon = new Identicon(data.user_hash, 420).toString();
-						identicon = 'data:image/png;base64,' + identicon;
-						$('.user-avatar').attr('src',identicon);
-						
-						
-						
-					});
-					
-				});
+				
 				$scope.$on('$viewContentLoaded', function(){
 					// Run after view loaded.
 					$('.dropdown')
@@ -373,19 +359,10 @@
 					});
 				});
 			});
-			app.controller('HazeInviteViewCtrl',function($scope,$location,$routeParams){
-				$scope.entryid = $routeParams.eid;
-				$scope.category = $routeParams.category;
+			app.controller('BlackbookCtrl',function($scope,$location,$routeParams){
 				
-				$scope.generateInvite = function(){
-					if($("#invite-pwd").val() != ''){
-							oblivious._generateInvite($scope.entryid ,$scope.category);
-							//clear fields
-							$("#invite-pwd").val('');
-							$("#invite-img-wrapper").fadeIn();
-					}
-				};
-				$scope.$on('$viewContentLoaded', function(){});
+				
+				
 				$scope.getHash = function(d){
 					console.log('md5',md5(d));
 					return md5(d);
@@ -396,87 +373,6 @@
 					return identicon;
 				};
 				$scope.core_data = {};
-				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
-// 					data.category_data.Categories;
-// 					data.category_data.Keys;
-					console.log('core-information',data);
-					$scope.$apply(function() {
-						$scope.core_data = data;
-						var identicon = new Identicon(data.user_hash, 420).toString();
-						identicon = 'data:image/png;base64,' + identicon;
-						$('.user-avatar').attr('src',identicon);
-						
-						
-						
-					});
-					
-				});
-			});
-			app.controller('AliasCtrl',function($scope,$location,$routeParams){
-				
-			});
-			app.controller('HazeProcessInviteViewCtrl',function($scope,$location,$routeParams){
-				
-				$scope.process = function(){
-					oblivious._processInvite('#invite-status');
-				};
-				$scope.$on('$viewContentLoaded', function(){
-					
-					document.getElementById('decode-input').onchange = function(input) {
-						var file    = document.getElementById('decode-input').files[0];
-						if ( file ) {
-					        var FR= new FileReader();
-					        FR.onload = function(e) {
-					        	var password = prompt('Enter password (leave empty if none)');
-					        	
-								GhostPixels.decode(password,e.target.result).then(function(decodedMessage){
-									
-									$("#encodedinvite-input").val(decodedMessage);
-									$("#encodedinvite-input").data('pwd',password);
-									
-					        	});
-					        	
-					        };       
-					        FR.readAsDataURL( file );
-					    }
-					};
-					$("#submit-invite-button").on("click",function(){
-						oblivious._processInvite('#invite-status');
-							$("#inviteform")[0].reset();
-					});
-					
-				});
-				$scope.getHash = function(d){
-					console.log('md5',md5(d));
-					return md5(d);
-				};
-				$scope.getIdenticon = function(str){
-					var identicon = new Identicon(str, 420).toString();
-					identicon = 'data:image/png;base64,' + identicon;
-					return identicon;
-				};
-				$scope.core_data = {};
-				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
-// 					data.category_data.Categories;
-// 					data.category_data.Keys;
-					console.log('core-information',data);
-					$scope.$apply(function() {
-						$scope.core_data = data;
-						var identicon = new Identicon(data.user_hash, 420).toString();
-						identicon = 'data:image/png;base64,' + identicon;
-						$('.user-avatar').attr('src',identicon);
-						
-						
-						
-					});
-					
-				});
-			});
-			app.controller('HazeCtrl', function($scope, $location, $routeParams) {
-				
-				
-				
-				
 				
 				$scope.getEntryClassName = function(e){
 					console.log('$scope.hasChanged',$scope.hasChanged,e);
@@ -491,86 +387,9 @@
 					console.log('className?',className);
 					return className;
 				};
-				
-			
-				$scope.core_data = {};
-				$scope.newentry =  {
-					'image':'',
-					'clientsidecrypto':'',
-					'password':'',
-					'message':'',
-					'expiration':'',
-					'metadata':'',
-				};
-				$scope.getHash = function(d){
-					console.log('md5',md5(d));
-					return md5(d);
-				};
-				$scope.getIdenticon = function(str){
-					var identicon = new Identicon(str, 420).toString();
-					identicon = 'data:image/png;base64,' + identicon;
-					return identicon;
-				};
+
 				$scope.hasChanged = [];
 				$scope.entries = [];
-				$scope.submitNewEntry = function(){
-					var entryDetails = {
-						'image':'',
-						'clientsidecrypto':'',
-						'password':'',
-						'message':'',
-						'expiration':'',
-						'metadata':'',
-						'meta':'',
-						'category':'public',
-						'containsimage':0
-					};
-					entryDetails.clientsidecrypto = $('#cryptotoggle').checkbox('is checked');
-					entryDetails.password = $('#entry-password').val();
-					entryDetails.message = $("#entry-text").val();
-					entryDetails.expiration = $("#entry-expiration").val();
-					entryDetails.metadata = $("#metadata_entry").val();
-					entryDetails.image = $scope.newentry.image;
-					if(entryDetails.image != ''){
-						entryDetails.containsimage = 1;
-					}
-					console.log('entry-details',entryDetails);
-					
-					var d ={ data:String(entryDetails.message),
-				             expire:entryDetails.expiration,
-				             opendiscussion: 1,
-				             category:entryDetails.category,
-				             userkey:entryDetails.password,
-				             imgdata:entryDetails.image,
-				             containsimage:entryDetails.containsimage
-					     };
-					for (var attrname in $scope.newentry.meta) { d[attrname] = $scope.newentry.meta[attrname]; }
-
-					if(entryDetails.password != ''){
-						//krypi-password
-						//(newEntry,category,userKey,img_data){
-						d.userkey = entryDetails.password;
-					}
-					if(entryDetails.image != ''){
-						d.imgdata = entryDetails.image;
-						d.containsimage = 1;
-					}
-					console.log('d',d);
-					if(d.imgdata || d.userkey){
-						console.log('krypi entry');
-						oblivious.addKrypiEntry(d,function(){
-							console.log('added!');
-						});
-					}else{
-						console.log('regular entry');
-						oblivious.addEntry(d,function(){
-							console.log('added!')
-						});
-					}
-					$('#addentryform')[0].reset();
-					$("html, body").animate({ scrollTop: 0 }, "slow");
-					
-				};
 				
 				$scope.setEntryAlias = function(entryID,cat){
 					var newAlias = $('#entry-alias-'+entryID).val();
@@ -600,8 +419,6 @@
 				};
 				$scope.user_alias = $scope.getUserAlias();
 				$scope.user_identicon = '';
-				console.log('loading blackbook...');
-//				 $("html, body").animate({ scrollTop: 0 }, "slow");
 				$scope.getBlackbookEntries = function(){
 
 					var Entries =[];
@@ -652,16 +469,13 @@
 							}
 						}
 					});
-					alert('Entries:'+Entries.length);
+					console.log('Entries:'+Entries.length);
 					return Entries;	
 				};
 				
 					
 				$scope.entries = $scope.getBlackbookEntries();
 				
-				console.log('$scope.entries',$scope.entries);
-				
-			
 				//blackbook check
 				$scope.bbcheck = function(){
 					console.log('bbcheck!');
@@ -775,45 +589,19 @@
 				window.setInterval($scope.bbcheck(),30000); //check every 30s
 				
 				
-				$.getJSON('https://www.hazedaily.com/api/views/basic',function(data){
-// 					data.category_data.Categories;
-// 					data.category_data.Keys;
-					console.log('core-information',data);
-					$scope.$apply(function() {
-						$scope.core_data = data;
-						var identicon = new Identicon(data.user_hash, 420).toString();
-						identicon = 'data:image/png;base64,' + identicon;
-						
-						$scope.user_identicon = identicon;
-						
-						
-						switch($location.path()){
-					      case "/home":
-					    	  break;
-					      case "/blackbook":
-					    	  break;
-					      case "/create":
-					    	  break;
-					      case "/settings":
-					    	  break;
-				      	}
-						
-					});
-					
-				});
 				
 				$scope.$on('$viewContentLoaded', function(){
 					 // Run after view loaded.
-						$('.dropdown')
-				  		.dropdown({
-				  		    //dropdown settings
-			  		    })
-				  		;
-					 
-						$('.checkbox')
-				  		.checkbox();
-						
-					 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
+				// Run after view loaded.
+							$('.dropdown')
+					  		.dropdown({
+					  		    //dropdown settings
+				  		    })
+					  		;
+						 
+							$('.checkbox')
+					  		.checkbox();
+				 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
 					 		var tmpData = $(this).data();
 					 		console.log('tmpData',tmpData);
 					 		
@@ -833,54 +621,209 @@
 								location.reload(true);
 						});
 					 	
-					 	
-					 	switch($location.path()){
-					 	case "/create":
-					 		oblivious._onchange('addimage-input',function(){
-								var imgData = String(this);
-								$scope.$apply(function() {
-									$scope.newentry.image = imgData;
-								});
-							});
-							$('#cryptotoggle').on("change",function(){
-								
-								if($(this).checkbox('is checked')){
-									console.log('enable crypto');	
-									oblivious._enableClientCrypto();
-								}else{
-									console.log('disable crypto');
-									oblivious._disableClientCrypto();
-								}
-							});
-							
-							$("#metadata_entry").on("change",function(){
-								$("#metadata_preview").show();
-								if($(this).val() == '')
-									$("#metadata_preview").hide();
-								
-								var tmpJSON = $(this).val();
-								try{
-									tmpJSON = JSON.parse(tmpJSON);
-									var tmpMeta = {};
-									for (var attrname in tmpJSON) { 
-										tmpMeta[attrname] = tmpJSON[attrname]; 
-									}
-									$scope.$apply(function() {
-										$scope.newentry.meta = tmpMeta;
-									});
-									$("#metadata_preview").val( JSON.stringify(tmpJSON,null,2) );
-								}catch(e){
-									console.log('not valid JSON');
-								}
-								
-							});
-							break;
-					 	case "/blackbook":
-					 		
-							
-					 		break;
-					 	}
 					});
+				
+				
+			});
+			app.controller('CreateCtrl',function($scope,$location,$routeParams){
+				
+				
+				
+				$scope.$on('$viewContentLoaded', function(){
+					oblivious._onchange('addimage-input',function(){
+						var imgData = String(this);
+						$scope.$apply(function() {
+							$scope.newentry.image = imgData;
+						});
+						// Run after view loaded.
+						$('.dropdown')
+				  		.dropdown({
+				  		    //dropdown settings
+			  		    })
+				  		;
+					 
+						$('.checkbox')
+				  		.checkbox();
+					});
+					$('#cryptotoggle').on("change",function(){
+						
+						if($(this).checkbox('is checked')){
+							console.log('enable crypto');	
+							oblivious._enableClientCrypto();
+						}else{
+							console.log('disable crypto');
+							oblivious._disableClientCrypto();
+						}
+					});
+					
+					$("#metadata_entry").on("change",function(){
+						$("#metadata_preview").show();
+						if($(this).val() == '')
+							$("#metadata_preview").hide();
+						
+						var tmpJSON = $(this).val();
+						try{
+							tmpJSON = JSON.parse(tmpJSON);
+							var tmpMeta = {};
+							for (var attrname in tmpJSON) { 
+								tmpMeta[attrname] = tmpJSON[attrname]; 
+							}
+							$scope.$apply(function() {
+								$scope.newentry.meta = tmpMeta;
+							});
+							$("#metadata_preview").val( JSON.stringify(tmpJSON,null,2) );
+						}catch(e){
+							console.log('not valid JSON');
+						}
+						
+					});	
+				});
+				
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
+				
+				$scope.newentry =  {
+						'image':'',
+						'clientsidecrypto':'',
+						'password':'',
+						'message':'',
+						'expiration':'',
+						'metadata':'',
+					};
+				
+				$scope.submitNewEntry = function(){
+					var entryDetails = {
+						'image':'',
+						'clientsidecrypto':'',
+						'password':'',
+						'message':'',
+						'expiration':'',
+						'metadata':'',
+						'meta':'',
+						'category':'public',
+						'containsimage':0
+					};
+					entryDetails.clientsidecrypto = $('#cryptotoggle').checkbox('is checked');
+					entryDetails.password = $('#entry-password').val();
+					entryDetails.message = $("#entry-text").val();
+					entryDetails.expiration = $("#entry-expiration").val();
+					entryDetails.metadata = $("#metadata_entry").val();
+					entryDetails.image = $scope.newentry.image;
+					if(entryDetails.image != ''){
+						entryDetails.containsimage = 1;
+					}
+					console.log('entry-details',entryDetails);
+					
+					var d ={ data:String(entryDetails.message),
+				             expire:entryDetails.expiration,
+				             opendiscussion: 1,
+				             category:entryDetails.category,
+				             userkey:entryDetails.password,
+				             imgdata:entryDetails.image,
+				             containsimage:entryDetails.containsimage
+					     };
+					for (var attrname in $scope.newentry.meta) { d[attrname] = $scope.newentry.meta[attrname]; }
+
+					if(entryDetails.password != ''){
+						//krypi-password
+						//(newEntry,category,userKey,img_data){
+						d.userkey = entryDetails.password;
+					}
+					if(entryDetails.image != ''){
+						d.imgdata = entryDetails.image;
+						d.containsimage = 1;
+					}
+					console.log('d',d);
+					if(d.imgdata || d.userkey){
+						console.log('krypi entry');
+						oblivious.addKrypiEntry(d,function(){
+							console.log('added!');
+						});
+					}else{
+						console.log('regular entry');
+						oblivious.addEntry(d,function(){
+							console.log('added!')
+						});
+					}
+					$('#addentryform')[0].reset();
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+					
+				};
+			});
+			app.controller('HazeInviteViewCtrl',function($scope,$location,$routeParams){
+				$scope.entryid = $routeParams.eid;
+				$scope.category = $routeParams.category;
+				
+				$scope.generateInvite = function(){
+					if($("#invite-pwd").val() != ''){
+							oblivious._generateInvite($scope.entryid ,$scope.category);
+							//clear fields
+							$("#invite-pwd").val('');
+							$("#invite-img-wrapper").fadeIn();
+					}
+				};
+				$scope.$on('$viewContentLoaded', function(){});
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
+				
+			});
+			app.controller('HazeProcessInviteViewCtrl',function($scope,$location,$routeParams){
+				
+				$scope.process = function(){
+					oblivious._processInvite('#invite-status');
+				};
+				$scope.$on('$viewContentLoaded', function(){
+					
+					document.getElementById('decode-input').onchange = function(input) {
+						var file    = document.getElementById('decode-input').files[0];
+						if ( file ) {
+					        var FR= new FileReader();
+					        FR.onload = function(e) {
+					        	var password = prompt('Enter password (leave empty if none)');
+					        	
+								GhostPixels.decode(password,e.target.result).then(function(decodedMessage){
+									
+									$("#encodedinvite-input").val(decodedMessage);
+									$("#encodedinvite-input").data('pwd',password);
+									
+					        	});
+					        	
+					        };       
+					        FR.readAsDataURL( file );
+					    }
+					};
+					$("#submit-invite-button").on("click",function(){
+						oblivious._processInvite('#invite-status');
+							$("#inviteform")[0].reset();
+					});
+					
+				});
+				$scope.getHash = function(d){
+					console.log('md5',md5(d));
+					return md5(d);
+				};
+				$scope.getIdenticon = function(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				$scope.core_data = {};
 				
 			});
 			app.config(['$routeProvider',
@@ -888,11 +831,11 @@
 			      	    $routeProvider.
 			      	      when('/blackbook', {
 			      		        templateUrl: 'templates/blackbook.html',
-			      		        controller: 'HazeCtrl'
+			      		        controller: 'BlackbookCtrl'
 			      	      }).
 			      	      when('/create', {
 			      		        templateUrl: 'templates/create.html',
-			      		        controller: 'HazeCtrl'
+			      		        controller: 'CreateCtrl'
 			      	      }).
 			      	    when('/view/:category/:eid', {
 		      		        templateUrl: 'templates/view.html',
@@ -914,6 +857,10 @@
 			app.run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $routeParams) {
 			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
 			      console.log('Current route name: ' + $location.path());
+			      
+			     
+			      
+			      
 			      // Get all URL parameter
 			      console.log($routeParams);
 			      $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');

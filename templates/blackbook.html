@@ -5,11 +5,10 @@
  		      <div class="right floated">
 		  		</div>
 		    <div class="header user-alias">
-	  						  	<img id="" src="{{user_identicon}}" class="ui avatar image user-avatar"/>
 		    					{{user_alias}}
 		    </div>
 		    <div class="meta">
-		      <span class="category">haze user</span>
+		      <span class="category">Blackbook( {{entries.length}} )</span>
 		    </div>
 		    <div class="description">
 		      <p></p>
@@ -24,21 +23,13 @@
 				    Alias
 				  </a>
 				</div>
+					  <a href="#/processinvite" class="ui orange fluid button" id="invite-modal-open">Have an invite?</a>
+				
 		    </div>
 		    
 		  </div>
 		  
 		</div>
-	<h2 class="ui icon center aligned header">
-	  <i class="comments outline icon"></i>
-	  <div class="content">
-	  	
-	    Blackbook( {{entries.length}} )
-	    <div class="sub header">Manage your Blackbook entries</div>
-	  </div>
-	  <a href="#/processinvite" class="ui orange button" id="invite-modal-open">Have an invite?</a>
-	
-	</h2>
 	<hr />
 	<div class="ui cards">
 		<div id="{{entry.category}}-{{entry.entryid}}" ng-repeat="entry in entries" ng-class="getEntryClassName(entry)">
