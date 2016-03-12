@@ -358,9 +358,157 @@
 					});
 				});
 			});
-			app.controller('BlackbookCtrl',function($scope,$location,$routeParams){
+			app.config(function ($httpProvider) {
+			  $httpProvider.defaults.headers.common = {};
+			  $httpProvider.defaults.headers.post = {};
+			  $httpProvider.defaults.headers.put = {};
+			  $httpProvider.defaults.headers.patch = {};
+			});
+			app.factory('api', function($http){
+				var bb_Entries=[];
+				var bb_hasChanged = [];
+				var observerCallbacks = [];
+				var notifyObservers = function(){
+					angular.forEach(observerCallbacks, function(callback){
+					      callback();
+					    });
+				};
+			    return {
+			    	registerObserverCallback:function(callback){
+						observerCallbacks.push(callback);
+					},
+			    	bbentries: function(){return bb_Entries},
+			    	bbhaschanged:function(){return bb_hasChanged},
+			    	checkblackbook: function(){
+			    
+				    	//api.blackbook({blackbookdata:Entries});
+			    		var req = {
+							 method: 'POST',
+							 url:'https://www.hazedaily.com/api/blackbook/',
+							 data: {blackbookdata:Entries}
+							};
+
+			    		console.log('req',req);
+			    		var Entries =[];
+						var localEntries = [];
+						var localMeta = oblivious.blackbookGet('meta');
+						var localCommCount = oblivious.blackbookGet('commentcount');
+						
+			    		var bbcheck = function(){
+							console.log('bbcheck!');
+							
+							$.each(localMeta,function(i,obj){
+								var tmpEntry = {
+										'category':'',
+										'entryid':'',
+										'visiblename':'',
+										'commentcount':'',
+								};
+								var tmpRaw = String(obj.key).split(":");
+								var tmpID = tmpRaw[0];
+								var tmpCat = tmpRaw[1];
+								
+								tmpEntry.entryid = tmpID;
+								tmpEntry.visiblename = tmpID;
+								
+								tmpEntry.category = tmpCat;
+
+								console.log('tmpEntry',tmpEntry);
+								
+								$.each(localCommCount,function(j,cObj){
+									console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+									
+									if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
+										tmpEntry.commentcount = cObj.value;
+										return false;
+									}
+								});
+								
+								if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
+										
+									localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+									Entries.push(tmpEntry);
+									
+								}
+
+									
+							});
+							if(Entries.length == 0)
+								return false;
+							console.log('Entries',Entries);
+							var currEntries = [];
+							
+					    	var newCommentCount = {};
+					    	
+					    	//api.blackbook({blackbookdata:Entries});
+					    	
+							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+							  .done(function( data ) {
+							    var hasChanged = [];
+							    	data = JSON.parse(data);
+							    	console.log('data from bb check',data);
+							    	
+								    $.each(data,function(i,obj){
+								    	//obj[0] is the entry
+								    	console.log('obj',obj,obj.length);
+								    	if(typeof obj.changed === 'undefined')
+								    		return true; //skip
+								    		
+								    		
+								    		if(obj.changed){
+								    			var tmp = {
+								    					'entryid':obj.entryid,
+								    					'category':obj.category,
+								    					'visiblename':obj.entryid
+								    			};
+								    			hasChanged.push(tmp);
+
+								    		}
+								    		currEntries.push(obj);	
+								    		
+								    });
+								    
+								    
+								    
+								    $.each(localEntries,function(ii,encodedentry){
+										var tmpRaw = String(encodedentry).split(":");
+										var tmpID = tmpRaw[0];
+										var tmpCat = tmpRaw[1];
+										
+										var foundEntry = false;
+										$.each(currEntries,function(jj,obj){
+									    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+											console.log('obj-checkit',obj);
+											if(obj.entryid == tmpID && obj.category == tmpCat){
+												foundEntry = true;
+												return false;
+											}
+											
+									    });
+										if(!foundEntry){
+											console.log('entry no longer exists!');
+									    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+											location.reload(true);
+										}else{
+											console.log('entry still exists amigo');
+										}
+									});
+								    bb_Entries = currEntries;
+								    bb_hasChanged = hasChanged;
+							    	
+								    notifyObservers();
+									
+							  }, "json");
+						};	
+			        
+						bbcheck();
+			        }
+			    }               
+			});
+			app.controller('BlackbookCtrl',function($scope,$location,$routeParams,api){
 				
 				
+				api.checkblackbook();
 				
 				$scope.getHash = function(d){
 					console.log('md5',md5(d));
@@ -387,9 +535,6 @@
 					return className;
 				};
 
-				$scope.hasChanged = [];
-				$scope.entries = [];
-				
 				$scope.setEntryAlias = function(entryID,cat){
 					var newAlias = $('#entry-alias-'+entryID).val();
  					oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
@@ -418,175 +563,22 @@
 				};
 				$scope.user_alias = $scope.getUserAlias();
 				$scope.user_identicon = '';
-				$scope.getBlackbookEntries = function(){
-
-					var Entries =[];
-					var localMeta = oblivious.blackbookGet('meta');
-					
-					var localAliases = oblivious.blackbookGet('aliases');
-
-					var localCommCount = oblivious.blackbookGet('commentcount');
-					
-					$.each(localMeta,function(i,obj){
-						var tmpEntry = {
-								'category':'',
-								'entryid':'',
-								'meta':'',
-								'entryhash':'',
-								'blackbook':true,
-								'visiblename':'(no alias)'
-						};
-						if(obj.value != ''){
-							var tmpRaw = String(obj.key).split(":");
-							var tmpID = tmpRaw[0];
-							var tmpCat = tmpRaw[1];
-							
-							tmpEntry.entryid = tmpID;
-							tmpEntry.hash = $scope.getHash(tmpID);
-							tmpEntry.category = tmpCat;
-							tmpEntry.meta = obj.value;
-							console.log('dimelo pina',tmpEntry);
-							$.each(localAliases,function(j,aliasObj){
-								var aliasRaw = String(aliasObj.key).split(":");
-								var aliasID = aliasRaw[0];
-								var aliasCat = aliasRaw[1];
-								
-								if(aliasID == tmpEntry.entryid && aliasCat == tmpEntry.category){
-									tmpEntry.visiblename = String(aliasObj.value);
-								}
-							});
-							$.each(localCommCount,function(j,cObj){
-								console.log('cObj',cObj);
-								
-								if(String(cObj.key) === String(tmpEntry.entryid + ":" + tmpEntry.category) ){
-									tmpEntry.commentcount = cObj.value;
-									return false;
-								}
-							});
-							if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-								Entries.push(tmpEntry);
-							}
-						}
-					});
-					console.log('Entries:'+Entries.length);
-					return Entries;	
-				};
 				
-					
 				
 				//blackbook check
-				$scope.bbcheck = function(){
-					console.log('bbcheck!');
-					var Entries =[];
-					var localEntries = [];
-					var localMeta = oblivious.blackbookGet('meta');
-					var localCommCount = oblivious.blackbookGet('commentcount');
-					$.each(localMeta,function(i,obj){
-						var tmpEntry = {
-								'category':'',
-								'entryid':'',
-								'visiblename':'',
-								'commentcount':'',
-						};
-						var tmpRaw = String(obj.key).split(":");
-						var tmpID = tmpRaw[0];
-						var tmpCat = tmpRaw[1];
-						
-						tmpEntry.entryid = tmpID;
-						tmpEntry.visiblename = tmpID;
-						
-						tmpEntry.category = tmpCat;
+				var blackbookupdate = function(){
+					console.log('bb-update',api.bbhaschanged(),api.bbentries());
+			    	$scope.hasChanged = api.bbhaschanged();
+					$scope.entries = api.bbentries();
 
-						console.log('tmpEntry',tmpEntry);
-						
-						$.each(localCommCount,function(j,cObj){
-							console.log('cObj',cObj,String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							
-							if(String(cObj.key) === String(tmpEntry.entryid+ ":" + tmpEntry.category) ){
-								tmpEntry.commentcount = cObj.value;
-								return false;
-							}
-						});
-						
-						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){
-								
-							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
-							Entries.push(tmpEntry);
-							
-						}
+					$scope.$apply();
+			  	};
 
-							
-					});
-					if(Entries.length == 0)
-						return false;
-					console.log('Entries',Entries);
-					var currEntries = [];
-
-			    	var newCommentCount = {};
-			    	
-					$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
-					  .done(function( data ) {
-					    var hasChanged = [];
-					    	data = JSON.parse(data);
-					    	console.log('data from bb check',data);
-					    	
-						    $.each(data,function(i,obj){
-						    	//obj[0] is the entry
-						    	console.log('obj',obj,obj.length);
-						    	if(typeof obj.changed === 'undefined')
-						    		return true; //skip
-						    		
-						    		
-						    		if(obj.changed){
-						    			var tmp = {
-						    					'entryid':obj.entryid,
-						    					'category':obj.category,
-						    					'visiblename':obj.entryid
-						    			};
-						    			hasChanged.push(tmp);
-
-						    		}
-						    		currEntries.push(obj);	
-						    		
-						    });
-						    
-						    
-						    
-						    $.each(localEntries,function(ii,encodedentry){
-								var tmpRaw = String(encodedentry).split(":");
-								var tmpID = tmpRaw[0];
-								var tmpCat = tmpRaw[1];
-								
-								var foundEntry = false;
-								$.each(currEntries,function(jj,obj){
-							    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
-									console.log('obj-checkit',obj);
-									if(obj.entryid == tmpID && obj.category == tmpCat){
-										foundEntry = true;
-										return false;
-									}
-									
-							    });
-								if(!foundEntry){
-									console.log('entry no longer exists!');
-							    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
-									location.reload(true);
-								}else{
-									console.log('entry still exists amigo');
-								}
-							});
-						    
-						    $scope.$apply(function() {
-						    	$scope.hasChanged = hasChanged;
-						    	$scope.entries = $scope.getBlackbookEntries();
-						    	console.log('hasChanged@apply',$scope.hasChanged);
-						    	console.log('entries@apply',$scope.entries);
-						    });
-							
-					  }, "json");
-				};
-				$scope.bbcheck();
-				window.setInterval($scope.bbcheck(),30000); //check every 30s
+				api.registerObserverCallback(blackbookupdate);
+				
+				window.setInterval(function(){
+					api.checkblackbook();
+				},30000); //check every 30s
 				
 				
 				
@@ -625,6 +617,7 @@
 				
 				
 			});
+			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
 				
 				
