@@ -48,7 +48,7 @@
 					
 				<!-- Main -->
 					<div id="main" class="">
-						<div  data-loading id="main-dimmer" class="ui active dimmer">
+						<div  data-loading id="main-dimmer" class="ui active page dimmer">
 					        <div class="ui text loader">Loading</div>
 					    </div>
 						<!-- content-section -->
@@ -99,10 +99,15 @@
 			<script src="js/haze.js"></script>
 			
 			<script>
+				//localstorage shit
+			
+			</script>
+			
+			<script>
 			
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
-			app.controller('HazeViewCtrl',function($scope,$location,$routeParams){
+			app.controller('HazeViewCtrl',function($scope,$location,$interval,$routeParams){
 				
 				
 				$scope.getEntryAlias = function(eID,eCat){
@@ -260,7 +265,7 @@
 				bbcheck();
 // 				window.setInterval(bbcheck,30000); //check every 30s
 				
-				
+				$interval( function(){ console.log('da fuck?'); }, 100, true);
 				
 				
 				
@@ -531,7 +536,7 @@
 			        }
 			    }               
 			});
-			app.controller('BlackbookCtrl',function($scope,$location,$routeParams,api){
+			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
 				var Entries =[];
 				var localEntries = [];
 				var localMeta = oblivious.blackbookGet('meta');
@@ -592,16 +597,13 @@
 				$scope.core_data = {};
 				$scope.hasChanged = [];
 				$scope.getEntryClassName = function(e){
-					console.log('$scope.hasChanged',$scope.hasChanged,e);
 					var className = "ui card haze-entry";
 					$.each($scope.hasChanged,function(i,tmpObj){
 						if(e.entryid == tmpObj.entryid && e.category == tmpObj.category){
 							className += " has-changed ";
-							console.log('esto paso?',className);
 							return false; //exit loop
 						}
 					});
-					console.log('className?',className);
 					return className;
 				};
 
@@ -658,7 +660,14 @@
 				$scope.user_identicon = '';
 				
 				
-				//blackbook check
+// 				//blackbook check
+
+				
+// 				window.setInterval(function(){
+// 					api.checkblackbook();
+// 				},30000); //check every 30s
+				
+// 				$interval( function(){ api.checkblackbook(); }, 3000, true);
 				var blackbookupdate = function(){
 					console.log('bb-update',api.bbhaschanged(),api.bbentries());
 			    	$scope.hasChanged = api.bbhaschanged();
@@ -666,14 +675,10 @@
 			  	};
 
 				api.registerObserverCallback(blackbookupdate);
-
-				api.checkblackbook();
 				
-// 				window.setInterval(function(){
-// 					api.checkblackbook();
-// 				},30000); //check every 30s
-				
-				
+				$scope.checkBlackbook = function(){
+					api.checkblackbook();
+				};
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
