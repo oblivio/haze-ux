@@ -473,7 +473,6 @@
 				};
 				
 					
-				$scope.entries = $scope.getBlackbookEntries();
 				
 				//blackbook check
 				$scope.bbcheck = function(){
@@ -553,34 +552,32 @@
 						    
 						    $scope.$apply(function() {
 						    	$scope.hasChanged = hasChanged;
+						    	$scope.entries = $scope.getBlackbookEntries();
 						    });
 						    
-							//if @ blackbook
-							if($location.path() == '/blackbook'){
-								$.each(localEntries,function(ii,encodedentry){
-									var tmpRaw = String(encodedentry).split(":");
-									var tmpID = tmpRaw[0];
-									var tmpCat = tmpRaw[1];
-									
-									var foundEntry = false;
-									$.each(currEntries,function(jj,obj){
-								    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
-										console.log('obj-checkit',obj);
-										if(obj.entryid == tmpID && obj.category == tmpCat){
-											foundEntry = true;
-											return false;
-										}
-										
-								    });
-									if(!foundEntry){
-										console.log('entry no longer exists!');
-								    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
-										location.reload(true);
-									}else{
-										console.log('entry still exists amigo');
+						    $.each(localEntries,function(ii,encodedentry){
+								var tmpRaw = String(encodedentry).split(":");
+								var tmpID = tmpRaw[0];
+								var tmpCat = tmpRaw[1];
+								
+								var foundEntry = false;
+								$.each(currEntries,function(jj,obj){
+							    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+									console.log('obj-checkit',obj);
+									if(obj.entryid == tmpID && obj.category == tmpCat){
+										foundEntry = true;
+										return false;
 									}
-								});
-							}
+									
+							    });
+								if(!foundEntry){
+									console.log('entry no longer exists!');
+							    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+									location.reload(true);
+								}else{
+									console.log('entry still exists amigo');
+								}
+							});
 							
 					  }, "json");
 				};
