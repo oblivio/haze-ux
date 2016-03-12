@@ -72,7 +72,7 @@
 						<div class="slide" ng-view></div>
 						<!-- /content-section -->
 						
-<article id="blackbook" class="ui stacked segment">
+<article id="blackbook" style="display:none;" class="ui stacked segment">
 <div  class="ui card ">
 		  <div class="content">
  		      <div class="right floated">
@@ -347,43 +347,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			</script>
 			
 			<script>
-		$(function() {
-		    FastClick.attach(document.body);
-		    $("#createbtn").removeClass('active');
-			$("#blackbookbtn").addClass('active');
-			
-			Entries = getBlackbookEntries();	
-	      	$('.user-alias').html(getUserAlias());
-	      	
-						$('.dropdown')
-				  		.dropdown({
-				  		    //dropdown settings
-			  		    })
-				  		;
-					 
-						$('.checkbox')
-				  		.checkbox();
-			 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
-				 		var tmpData = $(this).data();
-				 		console.log('tmpData',tmpData);
-				 		
-				 	
-				 		if(typeof tmpData.modalid !== 'undefined'){
-				 			
-				 			$('#'+tmpData.modalid).transition('scale')
-				 			;
-				 			$('#'+tmpData.hidecontentids).transition('scale')
-				 			;			
-				 		}
-				 	});
-				 	$("#clear-blackbook-button").on("click",function(){
-							
-							oblivious.blackbookClear();
-							$("html, body").animate({ scrollTop: 0 }, "slow");
-							location.reload(true);
-					});
-
-		});
+		
 		</script>
 			
 			<script>
@@ -886,11 +850,52 @@ $("#blackbook").hide();
 			
 			app.run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $routeParams) {
 			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
+			    	
+			    	$(function() {
+					    FastClick.attach(document.body);
+					    $("#createbtn").removeClass('active');
+						$("#blackbookbtn").addClass('active');
+						
+						Entries = getBlackbookEntries();	
+				      	$('.user-alias').html(getUserAlias());
+				      	
+									$('.dropdown')
+							  		.dropdown({
+							  		    //dropdown settings
+						  		    })
+							  		;
+								 
+									$('.checkbox')
+							  		.checkbox();
+						 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
+							 		var tmpData = $(this).data();
+							 		console.log('tmpData',tmpData);
+							 		
+							 	
+							 		if(typeof tmpData.modalid !== 'undefined'){
+							 			
+							 			$('#'+tmpData.modalid).transition('scale')
+							 			;
+							 			$('#'+tmpData.hidecontentids).transition('scale')
+							 			;			
+							 		}
+							 	});
+							 	$("#clear-blackbook-button").on("click",function(){
+										
+										oblivious.blackbookClear();
+										$("html, body").animate({ scrollTop: 0 }, "slow");
+										location.reload(true);
+								});
+
+					});
 			      console.log('Current route name: ' + $location.path());
 			      	switch($location.path()){
 			      	case "/":
 			      		$("#blackbook").show();
 			      		break;
+		      		default:
+		      			$("#blackbook").hide();
+		      			break;
 			      	}
 			      
 			    });
