@@ -102,7 +102,23 @@
 			
 			app.controller('HazeViewCtrl',function($scope,$location,$routeParams){
 				
-				
+				$scope.getEntryAlias = function(eID,eCat){
+					
+					var myAliasData = oblivious.blackbookGet('aliases');
+					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
+
+					$.each(myAliasData,function(i,tmpAlias){
+						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
+							console.log('tmpAlias',tmpAlias);
+							if(tmpAlias.key == String(eID+":"+eCat) && String(tmpAlias.value).length > 0){
+								alias = tmpAlias.value;
+								console.log('alias',alias);
+							}
+								
+						}
+					});
+					return alias;
+				};
 				
 				$scope.entryid = $routeParams.eid;
 				$scope.category = $routeParams.category;
@@ -184,7 +200,7 @@
 						    			var tmp = {
 						    					'entryid':obj.entryid,
 						    					'category':obj.category,
-						    					'visiblename':obj.entryid
+						    					'visiblename':$scope.getEntryAlias(obj.entryid,obj.category)
 						    			};
 						    			hasChanged.push(tmp);
 
@@ -238,7 +254,7 @@
 					  }, "json");
 				};
 				bbcheck();
-				window.setInterval(bbcheck,30000); //check every 30s
+// 				window.setInterval(bbcheck,30000); //check every 30s
 				
 				
 				
