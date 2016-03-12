@@ -660,9 +660,8 @@
 				console.log('$scope.entries',$scope.entries);
 				
 				$scope.loadBlackbook = function(){
-					
+					$scope.entries = $scope.getBlackbookEntries();
 					$scope.$apply(function(){
-						$scope.entries = $scope.getBlackbookEntries();
 						console.log('$scope.entries',$scope.entries);
 					});
 						
