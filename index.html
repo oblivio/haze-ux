@@ -61,7 +61,7 @@
 					  	
 					  	HAZE
 					  	</a>
-						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/blackbook" class="item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
+						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/blackbook" class=" item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
 						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="createbtn" href="#/create" class="item"><div class="ui  black basic icon button"><i class="add icon"></i></div></a>
 					</nav>
 					
@@ -99,6 +99,8 @@
 			
 			<script src="js/vendor/angular.min.js"></script>
 			<script src="js/vendor/angular-route.min.js"></script>
+			
+			<script src="js/vendor/bindonce.js"></script>
 			<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 	        <script src="js/vendor/load-image.all.min.js"></script>
 	        <script src="js/vendor/sjcl.js?#"></script>
@@ -117,11 +119,56 @@
 			
 			<script>
 				//localstorage shit
+				function getIdenticon(str){
+					var identicon = new Identicon(str, 420).toString();
+					identicon = 'data:image/png;base64,' + identicon;
+					return identicon;
+				};
+				function setEntryAlias(entryid,category){
+					var newAlias = $('#entry-alias-'+entryid+'-'+category).val();
+ 					oblivious.blackbookSet('aliases',entryid+":"+category,String(newAlias));
+					location.reload(true);
+				};
+				function createCardHTML(entry){
+var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' > "+
+   			    	"<button style='display:none;' class='ui icon top attached labeled red button'><i class='delete icon'></i>remove</button>" +
+				  "<div class='content'>"+
+	      			"<div class='right floated'>"+
+	      			"<img class='ui avatar image' src='"+getIdenticon(entry.entryid)+"'>"+
+  					"</div>"+
+    				"<div class='header'>"+entry.visiblename+"</div>"+
+			    	"<div class='meta'>"+
+			    	  "<span class='category'>haze entry</span>"+
+			    	"</div>"+
+				    "<div class='description'>"+
+				      "<p></p>"+
+				    "</div>"+
+				  "</div>"+
+				  "<div class='extra content'>"+
+				    "<div class='right floated author'>"+
+				    	"<div id='' class='ui right labeled left icon mini input'>"+
+						  "<i class='tags icon'></i>"+
+						  "<input id='entry-alias-"+entry.entryid+"-"+entry.category+" ' placeholder='Enter Alias' type='text'>"+
+						  "<a class='ui tag label' onclick='setEntryAlias("+entry.entryid+","+entry.category+")'>"+
+						    "Alias"+
+						  "</a>"+
+						"</div>"+
+						"<a href='#/invite/"+entry.category+"/"+entry.entryid+"' class='ui fluid button teal'>invite</a>"+
+				    "</div>"+
+				  "</div>"+
+				"<a href='#/view/"+entry.category+"/"+entry.entryid+"' class='ui icon labeled bottom attached green button '><i class='eye icon'></i>view</a>"+
+			"</div>";
+			console.log('cardHTML',cardHTML);
+			return cardHTML;
+				};
+				
 				function getBlackbookEntries(){
 					var TmpEntries = [];
+					var localEntries = [];
 					var localCommCount = oblivious.blackbookGet('commentcount');
 					console.log('bbcheck!');
-					
+					$("#blackbook-contents").html('');
+					var tmpHTML = '';
 					$.each(localCommCount,function(j,cObj){						
 							var tmpEntry = {
 									'category':'',
@@ -143,14 +190,16 @@
 						
 						if(typeof tmpEntry.category != 'undefined' && typeof tmpEntry.entryid != 'undefined' && typeof tmpEntry.commentcount != 'undefined' && tmpEntry.commentcount != -1 && tmpEntry.commentcount != '-1'){								
 							TmpEntries.push(tmpEntry);
+							localEntries.push( String(tmpEntry.entryid+ ":" + tmpEntry.category) );
+							tmpHTML += createCardHTML(tmpEntry) ;
 						}
-
 							
 					});
+					$("#blackbook-contents").html( tmpHTML );
+					
 					return TmpEntries;
 				}
-						
-				var Entries = getBlackbookEntries();	
+				var Entries = [];
 			</script>
 			
 			<script>
@@ -381,15 +430,7 @@
 			    	bbhaschanged:function(){return bb_hasChanged},
 			    	checkblackbook: function(){
 			    
-				    	//api.blackbook({blackbookdata:Entries});
-			    		var req = {
-							 method: 'POST',
-							 url:'https://www.hazedaily.com/api/blackbook/',
-							 data: {blackbookdata:Entries}
-							};
-
-			    		console.log('req',req);
-			    		
+				  
 			    		var bbcheck = function(){
 							
 							var currEntries = [];
@@ -460,7 +501,8 @@
 			    }               
 			});
 			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
-				
+				$("#createbtn").removeClass('active');
+				$("#blackbookbtn").addClass('active');
 				console.log('Entries',Entries);
 				$scope.entries = Entries;
 				
@@ -547,16 +589,16 @@
 // 				},30000); //check every 30s
 				
 // 				$interval( function(){ api.checkblackbook(); }, 3000, true);
-				
-				//api.registerObserverCallback(blackbookupdate);
+				var blackbookupdate = function(){
+					console.log('bb-update',api.bbhaschanged());
+			    	$scope.hasChanged = api.bbhaschanged();
+					$scope.$apply();
+			  	};
+			  	
+// 				api.registerObserverCallback(blackbookupdate);
 				
 				$scope.checkBlackbook = function(){
 					api.checkblackbook();
-					var blackbookupdate = function(){
-						console.log('bb-update',api.bbhaschanged(),api.bbentries());
-				    	$scope.hasChanged = api.bbhaschanged();
-						$scope.$apply();
-				  	};
 				  	blackbookupdate();
 				};
 				
@@ -566,6 +608,7 @@
 				// Run after view loaded.
 				
 				
+				Entries = getBlackbookEntries();	
 		      	
 							$('.dropdown')
 					  		.dropdown({
@@ -603,7 +646,8 @@
 			});
 			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
-				
+				$("#blackbookbtn").removeClass('active');
+				$("#createbtn").addClass('active');
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
 					
@@ -866,10 +910,6 @@
 			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
 			      console.log('Current route name: ' + $location.path());
 			      
-			      
-			      
-			      // Get all URL parameter
-			      console.log($routeParams);
 			      
 			    });
 
