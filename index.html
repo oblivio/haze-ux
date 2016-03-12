@@ -499,7 +499,6 @@
 											console.log('entry still exists amigo');
 										}
 									});
-								    bb_Entries = currEntries;
 								    bb_hasChanged = hasChanged;
 							    	
 								    notifyObservers();
@@ -618,7 +617,6 @@
 				var blackbookupdate = function(){
 					console.log('bb-update',api.bbhaschanged(),api.bbentries());
 			    	$scope.hasChanged = api.bbhaschanged();
-					$scope.entries = api.bbentries();
 					$scope.$apply();
 			  	};
 
@@ -678,16 +676,18 @@
 						$scope.$apply(function() {
 							$scope.newentry.image = imgData;
 						});
-						// Run after view loaded.
-						$('.dropdown')
-				  		.dropdown({
-				  		    //dropdown settings
-			  		    })
-				  		;
-					 
-						$('.checkbox')
-				  		.checkbox();
 					});
+					// Run after view loaded.
+					$('.dropdown')
+			  		.dropdown({
+			  		    //dropdown settings
+		  		    })
+			  		;
+				 
+					$('.checkbox')
+			  		.checkbox();
+					
+					
 					$('#cryptotoggle').on("change",function(){
 						
 						if($(this).checkbox('is checked')){
