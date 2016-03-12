@@ -559,8 +559,6 @@
 				
 				$scope.entries = Entries;
 				
-				api.checkblackbook();
-				
 				$scope.getHash = function(d){
 					console.log('md5',md5(d));
 					return md5(d);
@@ -625,6 +623,8 @@
 			  	};
 
 				api.registerObserverCallback(blackbookupdate);
+
+				api.checkblackbook();
 				
 				window.setInterval(function(){
 					api.checkblackbook();
