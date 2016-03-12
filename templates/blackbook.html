@@ -32,7 +32,7 @@
 		</div>
 	<hr />
 	<div class="ui cards">
-		<div id="{{entry.category}}-{{entry.entryid}}" ng-repeat="entry in entries" ng-class="getEntryClassName(entry)">
+		<div class="ui card" id="{{entry.category}}-{{entry.entryid}}" ng-repeat="entry in entries" ng-class="getEntryClassName(entry)">
 		   			    	<button style="display:none;" class="ui icon top attached labeled red button"><i class="delete icon"></i>remove</button>
 		  <div class="content">
  		      <div class="right floated">
