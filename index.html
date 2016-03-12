@@ -262,8 +262,6 @@
 				
 				
 				
-				
-				
 				$scope.hasPhoto = function(img){
 					if(img == ''){
 						return false;
@@ -325,6 +323,9 @@
 				
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
+$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
 					// Run after view loaded.
 					$('.dropdown')
 			  		.dropdown({
@@ -882,6 +883,9 @@
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
+					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
 				});
 				
 				$scope.getHash = function(d){
@@ -903,6 +907,9 @@
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
+					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
 					document.getElementById('decode-input').onchange = function(input) {
 						var file    = document.getElementById('decode-input').files[0];
 						if ( file ) {
