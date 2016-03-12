@@ -61,7 +61,7 @@
 					  	
 					  	HAZE
 					  	</a>
-						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/blackbook" class=" item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
+						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/" class=" item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
 						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="createbtn" href="#/create" class="item"><div class="ui  black basic icon button"><i class="add icon"></i></div></a>
 					</nav>
 					
@@ -72,15 +72,47 @@
 						<div class="slide" ng-view></div>
 						<!-- /content-section -->
 						
-						<div class="ui stacked segment">
-							<div style="display:none" id="blackbook-contents" class="ui cards">
+<article id="blackbook" class="ui stacked segment">
+<div  class="ui card ">
+		  <div class="content">
+ 		      <div class="right floated">
+		  		</div>
+		    <div class="header user-alias">
+		    					
+		    </div>
+		    <div class="meta">
+		      <span class="category">Blackbook </span>
+		    </div>
+		    <div class="description">
+		      <a onclick="bbcheck()" class="ui right floated icon green button"><i class="refresh icon"></i></a>
+		    </div>
+		  </div>
+		  <div class="extra content">
+		    <div class="right floated author">
+		    	<div id="" class="ui right labeled left icon mini input">
+				  <i class="tags icon"></i>
+				  <input id="user-alias-input" placeholder="Enter Alias" type="text">
+				  <a class="ui tag label" onclick="setUserAlias()">
+				    Alias
+				  </a>
+				</div>
+					  <a href="#/processinvite" class="ui orange fluid button" id="invite-modal-open">Have an invite?</a>
+				
+		    </div>
+		    
+		  </div>
+		  
+		</div>
+	<hr />
+	<div  id="blackbook-contents" class="ui cards">
 							
-							</div>
-							<br />
-							<br />
-							  <a  class="ui red bottom attached basic button" id="clear-blackbook-button">clear blackbook</a>
-									
-						</div>
+			</div>
+			<br />
+			<br />
+			  <a  class="ui red bottom attached basic button" id="clear-blackbook-button">clear blackbook</a>
+					
+</article>
+						
 									
 					</div>
 
@@ -101,11 +133,7 @@
 			<script src="semanticui/dist/semantic.min.js"></script>	
 			<script src="js/vendor/fastclick.js"></script>
 			
-		<script>
-		$(function() {
-		    FastClick.attach(document.body);
-		});
-		</script>
+		
 			
 			<script src="js/vendor/angular.min.js"></script>
 			<script src="js/vendor/angular-route.min.js"></script>
@@ -127,18 +155,108 @@
 			
 			<script src="js/haze.js"></script>
 			
+			
+			
 			<script>
 				//localstorage shit
+				function bbcheck(){
+							
+							var currEntries = [];
+					    	var newCommentCount = {};
+					    	
+					    	//api.blackbook({blackbookdata:Entries});
+					    	
+							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
+							  .done(function( data ) {
+							    var hasChanged = [];
+							    	data = JSON.parse(data);
+							    	console.log('data from bb check',data);
+							    	
+								    $.each(data,function(i,obj){
+								    	//obj[0] is the entry
+								    	console.log('obj',obj,obj.length);
+								    	if(typeof obj.changed === 'undefined')
+								    		return true; //skip
+								    		
+								    		
+								    		if(obj.changed){
+								    			var tmp = {
+								    					'entryid':obj.entryid,
+								    					'category':obj.category,
+								    					'visiblename':obj.entryid
+								    			};
+								    			hasChanged.push(tmp);
+
+								    		}
+								    		currEntries.push(obj);	
+								    		
+								    });
+								    
+								    
+								    
+								    $.each(localEntries,function(ii,encodedentry){
+										var tmpRaw = String(encodedentry).split(":");
+										var tmpID = tmpRaw[0];
+										var tmpCat = tmpRaw[1];
+										
+										var foundEntry = false;
+										$.each(currEntries,function(jj,obj){
+									    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
+											console.log('obj-checkit',obj);
+											if(obj.entryid == tmpID && obj.category == tmpCat){
+												foundEntry = true;
+												return false;
+											}
+											
+									    });
+										if(!foundEntry){
+											console.log('entry no longer exists!');
+									    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
+											location.reload(true);
+										}else{
+											console.log('entry still exists amigo');
+										}
+									});
+								    //bb_hasChanged = hasChanged;
+							    	console.log('hasChanged',hasChanged);
+									
+							  }, "json");
+						};	
+				function getEntryAlias(eID,eCat){
+					var myAliasData = oblivious.blackbookGet('aliases');
+					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
+					var alias = eID;
+					$.each(myAliasData,function(i,tmpAlias){
+						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
+							
+							if(tmpAlias.key == String(eID+":"+eCat) && String(tmpAlias.value).length > 0){
+								alias = tmpAlias.value;
+								console.log('alias',alias);
+								return false;
+							}
+								
+						}
+					});
+					return alias;
+				}
 				function getIdenticon(str){
 					var identicon = new Identicon(str, 420).toString();
 					identicon = 'data:image/png;base64,' + identicon;
 					return identicon;
 				};
+				function setUserAlias(){
+					var newAlias = $('#user-alias-input').val();
+					console.log('newAlias',newAlias);
+ 					oblivious.blackbookSet('aliases','me',String(newAlias));
+					location.reload(true);
+				};
 				function setEntryAlias(entryid,category){
 					var newAlias = $('#entry-alias-'+entryid+'-'+category).val();
+					console.log('newAlias',newAlias);
  					oblivious.blackbookSet('aliases',entryid+":"+category,String(newAlias));
 					location.reload(true);
 				};
+				//
 				function createCardHTML(entry){
 var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' > "+
    			    	"<button style='display:none;' class='ui icon top attached labeled red button'><i class='delete icon'></i>remove</button>" +
@@ -158,8 +276,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				    "<div class='right floated author'>"+
 				    	"<div id='' class='ui right labeled left icon mini input'>"+
 						  "<i class='tags icon'></i>"+
-						  "<input id='entry-alias-"+entry.entryid+"-"+entry.category+" ' placeholder='Enter Alias' type='text'>"+
-						  "<a class='ui tag label' onclick='setEntryAlias("+entry.entryid+","+entry.category+")'>"+
+						  "<input id='entry-alias-"+entry.entryid+"-"+entry.category+"' placeholder='Enter Alias' type='text'>"+
+						  "<a class='ui tag label' onclick='setEntryAlias(\""+entry.entryid+"\",\""+entry.category+"\")'>"+
 						    "Alias"+
 						  "</a>"+
 						"</div>"+
@@ -206,7 +324,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 							var tmpID = tmpRaw[0];
 							var tmpCat = tmpRaw[1];
 							tmpEntry.entryid = tmpID;
-							tmpEntry.visiblename = tmpID;	
+							tmpEntry.visiblename = getEntryAlias(tmpID,tmpCat);	
 							tmpEntry.category = tmpCat;
 
 							
@@ -227,6 +345,46 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				}
 				var Entries = [];
 			</script>
+			
+			<script>
+		$(function() {
+		    FastClick.attach(document.body);
+		    $("#createbtn").removeClass('active');
+			$("#blackbookbtn").addClass('active');
+			
+			Entries = getBlackbookEntries();	
+	      	$('.user-alias').html(getUserAlias());
+	      	
+						$('.dropdown')
+				  		.dropdown({
+				  		    //dropdown settings
+			  		    })
+				  		;
+					 
+						$('.checkbox')
+				  		.checkbox();
+			 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
+				 		var tmpData = $(this).data();
+				 		console.log('tmpData',tmpData);
+				 		
+				 	
+				 		if(typeof tmpData.modalid !== 'undefined'){
+				 			
+				 			$('#'+tmpData.modalid).transition('scale')
+				 			;
+				 			$('#'+tmpData.hidecontentids).transition('scale')
+				 			;			
+				 		}
+				 	});
+				 	$("#clear-blackbook-button").on("click",function(){
+							
+							oblivious.blackbookClear();
+							$("html, body").animate({ scrollTop: 0 }, "slow");
+							location.reload(true);
+					});
+
+		});
+		</script>
 			
 			<script>
 			
@@ -273,7 +431,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					var earlyExit = false;
 					switch($location.path()){
 					
-				      case "/blackbook":
+				      case "/":
 				      case "/create":
 				    	 earlyExit = true;
 				    	 break;
@@ -288,7 +446,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 							if(data[1] == "Paste does not exist, has expired or has been deleted."){
 								oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
 								console.log('paste no existe',data[1]);
-								$location.path('/blackbook');
+								$location.path('/');
 							}else{
 								if(data[0].meta.krypi == "1"){
 									var pwd = $scope.entryPassword;
@@ -296,7 +454,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 										eContents = oblivious._processGetEntry(data,$scope.entryid,pwd);
 										
 									}else{
-										$location.path('/blackbook');
+										$location.path('/');
 									}
 							    }else{
 							    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
@@ -376,6 +534,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
 					// Run after view loaded.
+					$("#blackbook").hide();
 					$('.dropdown')
 			  		.dropdown({
 			  		    //dropdown settings
@@ -396,7 +555,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						var eContents,pwd;
 						if(data[1] == "Paste does not exist, has expired or has been deleted."){
 							oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
-							$location.path('/blackbook');
+							$location.path('/');
 						}else{
 							if(data[0].meta.krypi == "1"){
 								pwd = prompt("Please enter password to decrypt");
@@ -405,7 +564,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 									
 								}else{
 									
-									$location.path('/blackbook');
+									$location.path('/');
 								}
 						    }else{
 						    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
@@ -455,221 +614,13 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					},
 			    	bbhaschanged:function(){return bb_hasChanged},
 			    	checkblackbook: function(){
-			    
-				  
-			    		var bbcheck = function(){
-							
-							var currEntries = [];
-					    	var newCommentCount = {};
-					    	
-					    	//api.blackbook({blackbookdata:Entries});
-					    	
-							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata:Entries})
-							  .done(function( data ) {
-							    var hasChanged = [];
-							    	data = JSON.parse(data);
-							    	console.log('data from bb check',data);
-							    	
-								    $.each(data,function(i,obj){
-								    	//obj[0] is the entry
-								    	console.log('obj',obj,obj.length);
-								    	if(typeof obj.changed === 'undefined')
-								    		return true; //skip
-								    		
-								    		
-								    		if(obj.changed){
-								    			var tmp = {
-								    					'entryid':obj.entryid,
-								    					'category':obj.category,
-								    					'visiblename':obj.entryid
-								    			};
-								    			hasChanged.push(tmp);
-
-								    		}
-								    		currEntries.push(obj);	
-								    		
-								    });
-								    
-								    
-								    
-								    $.each(localEntries,function(ii,encodedentry){
-										var tmpRaw = String(encodedentry).split(":");
-										var tmpID = tmpRaw[0];
-										var tmpCat = tmpRaw[1];
-										
-										var foundEntry = false;
-										$.each(currEntries,function(jj,obj){
-									    	//String(tmpEntry.entryid+ ":" + tmpEntry.category)
-											console.log('obj-checkit',obj);
-											if(obj.entryid == tmpID && obj.category == tmpCat){
-												foundEntry = true;
-												return false;
-											}
-											
-									    });
-										if(!foundEntry){
-											console.log('entry no longer exists!');
-									    	oblivious.blackbookSet('commentcount',tmpID +":"+tmpCat ,-1);
-											location.reload(true);
-										}else{
-											console.log('entry still exists amigo');
-										}
-									});
-								    bb_hasChanged = hasChanged;
-							    	
-								    notifyObservers();
-									
-							  }, "json");
-						};	
 			        
 						bbcheck();
 			        }
 			    }               
 			});
 			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
-				$("#createbtn").removeClass('active');
-				$("#blackbookbtn").addClass('active');
 				
-				console.log('Entries',Entries);
-				$scope.entries = Entries;
-				$("#blackbook-contents").show();
-				
-				$scope.getHash = function(d){
-					console.log('md5',md5(d));
-					return md5(d);
-				};
-				$scope.getIdenticon = function(str){
-					var identicon = new Identicon(str, 420).toString();
-					identicon = 'data:image/png;base64,' + identicon;
-					return identicon;
-				};
-				$scope.core_data = {};
-				$scope.hasChanged = [];
-				$scope.getEntryClassName = function(e){
-					var className = "ui card haze-entry";
-					$.each($scope.hasChanged,function(i,tmpObj){
-						if(e.entryid == tmpObj.entryid && e.category == tmpObj.category){
-							className += " has-changed ";
-							return false; //exit loop
-						}
-					});
-					return className;
-				};
-
-				$scope.setEntryAlias = function(entryID,cat){
-					var newAlias = $('#entry-alias-'+entryID).val();
- 					oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
-					location.reload(true);
-				};
-				
-				$scope.setUserAlias = function(){
-					var alias = $("#user-alias-input").val();
-					if(alias.length > 0)
-						oblivious.blackbookSet('aliases','me',alias);
-					
-					console.log('new user alias - ',alias,oblivious.blackbookGet('aliases','me'));
-					location.reload(true);
-				};
-				$scope.getEntryAlias = function(eID,eCat){
-				
-					var myAliasData = oblivious.blackbookGet('aliases');
-					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
-					var alias = eID;
-					$.each(myAliasData,function(i,tmpAlias){
-						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
-							
-							if(tmpAlias.key == String(eID+":"+eCat) && String(tmpAlias.value).length > 0){
-								alias = tmpAlias.value;
-								console.log('alias',alias);
-							}
-								
-						}
-					});
-					return alias;
-				};
-				$scope.getUserAlias = function(){
-					var alias = '(Anonymous)';
-					var myAliasData = oblivious.blackbookGet('aliases');
-					//oblivious.blackbookSet('aliases',entryID+":"+cat,String(newAlias));
-
-					$.each(myAliasData,function(i,tmpAlias){
-						if(typeof tmpAlias !== 'undefined' && typeof tmpAlias.value !== 'undefined'){
-							
-							if(tmpAlias.key == 'me' && String(tmpAlias.value).length > 0){
-								alias = tmpAlias.value;
-								console.log('alias',alias);
-							}
-								
-						}
-					});
-					return alias;
-					
-				};
-				$scope.user_alias = $scope.getUserAlias();
-				$scope.user_identicon = '';
-				
-				
-// 				//blackbook check
-
-				
-// 				window.setInterval(function(){
-// 					api.checkblackbook();
-// 				},30000); //check every 30s
-				
-// 				$interval( function(){ api.checkblackbook(); }, 3000, true);
-				var blackbookupdate = function(){
-					console.log('bb-update',api.bbhaschanged());
-			    	$scope.hasChanged = api.bbhaschanged();
-					$scope.$apply();
-			  	};
-			  	
-// 				api.registerObserverCallback(blackbookupdate);
-				
-				$scope.checkBlackbook = function(){
-					api.checkblackbook();
-				  	blackbookupdate();
-				};
-				
-				$scope.$on('$viewContentLoaded', function(){
-// 					$("#main-dimmer").removeClass('active');
-					 // Run after view loaded.
-				// Run after view loaded.
-				
-				
-				Entries = getBlackbookEntries();	
-		      	$('.user-alias').html(getUserAlias());
-		      	
-							$('.dropdown')
-					  		.dropdown({
-					  		    //dropdown settings
-				  		    })
-					  		;
-						 
-							$('.checkbox')
-					  		.checkbox();
-				 	$('.action-button,#invite-modal-open').off('click').on('click',function(){
-					 		var tmpData = $(this).data();
-					 		console.log('tmpData',tmpData);
-					 		
-					 	
-					 		if(typeof tmpData.modalid !== 'undefined'){
-					 			
-					 			$('#'+tmpData.modalid).transition('scale')
-					 			;
-					 			$('#'+tmpData.hidecontentids).transition('scale')
-					 			;			
-					 		}
-					 	});
-					 	$("#clear-blackbook-button").on("click",function(){
-								
-								oblivious.blackbookClear();
-								$("html, body").animate({ scrollTop: 0 }, "slow");
-								location.reload(true);
-						});
-
-				    	 
-					 	
-					});
 				
 				
 			});
@@ -679,7 +630,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				$("#createbtn").addClass('active');
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-					
+					$("#blackbook").hide();
 			    	  
 					oblivious._onchange('addimage-input',function(){
 						var imgData = String(this);
@@ -828,6 +779,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
+					$("#blackbook").hide();
 				});
 				
 				$scope.getHash = function(d){
@@ -849,6 +801,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
+$("#blackbook").hide();
 					document.getElementById('decode-input').onchange = function(input) {
 						var file    = document.getElementById('decode-input').files[0];
 						if ( file ) {
@@ -910,10 +863,6 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			app.config(['$routeProvider',
 			      	  function($routeProvider) {
 			      	    $routeProvider.
-			      	      when('/blackbook', {
-			      		        templateUrl: 'templates/blackbook.html',
-			      		        controller: 'BlackbookCtrl'
-			      	      }).
 			      	      when('/create', {
 			      		        templateUrl: 'templates/create.html',
 			      		        controller: 'CreateCtrl'
@@ -931,14 +880,18 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      		        controller: 'HazeProcessInviteViewCtrl'
 		      	      	}).
 			      	      otherwise({
-			      	        redirectTo: '/blackbook'
+			      	        redirectTo: '/'
 			      	      });
 			      	  }]);
 			
 			app.run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $routeParams) {
 			    $rootScope.$on('$routeChangeSuccess', function(e, current, pre) {
 			      console.log('Current route name: ' + $location.path());
-			      
+			      	switch($location.path()){
+			      	case "/":
+			      		$("#blackbook").show();
+			      		break;
+			      	}
 			      
 			    });
 
