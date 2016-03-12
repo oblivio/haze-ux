@@ -664,15 +664,20 @@
 
 				api.checkblackbook();
 				
-				window.setInterval(function(){
-					api.checkblackbook();
-				},30000); //check every 30s
+// 				window.setInterval(function(){
+// 					api.checkblackbook();
+// 				},30000); //check every 30s
 				
 				
 				
 				$scope.$on('$viewContentLoaded', function(){
 					 // Run after view loaded.
 				// Run after view loaded.
+				
+				$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+		      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
+		      	
+		      	
 							$('.dropdown')
 					  		.dropdown({
 					  		    //dropdown settings
@@ -700,6 +705,10 @@
 								$("html, body").animate({ scrollTop: 0 }, "slow");
 								location.reload(true);
 						});
+
+				    	  $("#blackbookbtn").addClass('active');
+				    	  $("#blackbookbtn").find('.button').removeClass('basic');
+				    	  
 					 	
 					});
 				
@@ -711,6 +720,14 @@
 				
 				
 				$scope.$on('$viewContentLoaded', function(){
+					
+					$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
+			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');	
+
+			    	  $("#createbtn").addClass('active');
+			    	  $("#createbtn").find('.button').removeClass('basic');
+			    	  
+			    	  
 					oblivious._onchange('addimage-input',function(){
 						var imgData = String(this);
 						$scope.$apply(function() {
@@ -946,26 +963,7 @@
 			      
 			      // Get all URL parameter
 			      console.log($routeParams);
-			      $("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").find('.button').removeClass('basic').addClass('basic');
-			      	$("#homebtn,#blackbookbtn,#createbtn,#settingsbtn").removeClass('active');
-				      switch($location.path()){
-				      case "/home":
-				    	  $("#homebtn").addClass('active');
-				    	  $("#homebtn").find('.button').removeClass('basic');
-				    	  break;
-				      case "/blackbook":
-				    	  $("#blackbookbtn").addClass('active');
-				    	  $("#blackbookbtn").find('.button').removeClass('basic');
-				    	  break;
-				      case "/create":
-				    	  $("#createbtn").addClass('active');
-				    	  $("#createbtn").find('.button').removeClass('basic');
-				    	  break;
-				      case "/settings":
-				    	  $("#settingsbtn").addClass('active');
-				    	  $("#settingsbtn").find('.button').removeClass('basic');
-				    	  break;
-				      }
+			      
 			    });
 			  }]);
 			</script>
