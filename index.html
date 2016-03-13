@@ -595,7 +595,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 									
 					    			oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category , $scope.entryContents.length);
 									
-									if(eContents[0].image != ""){
+									if(eContents[eContents.length - 1].image != ""){
 
 										$("#main-img").attr('src',eContents[eContents.length - 1].image);	
 										$("#main-img").fadeIn();
