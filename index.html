@@ -663,6 +663,10 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			});
 			
 			app.controller('CreateCtrl',function($scope,$location,$routeParams){
+				$scope.$on("$destroy", function() {
+					oblivious._disableClientCrypto();
+			    });	
+			
 				$("#blackbookbtn").removeClass('active');
 				$("#createbtn").addClass('active');
 				$scope.$on('$viewContentLoaded', function(){
@@ -685,7 +689,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					$('.checkbox')
 			  		.checkbox();
 					
-					
+					oblivious._disableClientCrypto();
 					$('#cryptotoggle').on("change",function(){
 						
 						if($(this).checkbox('is checked')){
