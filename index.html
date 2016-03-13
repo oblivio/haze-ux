@@ -380,7 +380,12 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			
 			app.controller('HazeViewCtrl',function($scope,$location,$interval,$routeParams){
-				
+				var refreshEntryTimer = false;
+				$scope.$on("$destroy", function() {
+			        if (refreshEntryTimer) {
+			        	clearInterval(refreshEntryTimer);
+			        }
+			    });
 				$scope.getEntryHTML = function(entry){
 					var hasImage = false;
 					if(entry.image != ''){
@@ -622,7 +627,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						});
 					};
 					
-					setInterval(updateEntryContents,30000);
+					refreshEntryTimer = setInterval(updateEntryContents,30000);
 					updateEntryContents();
 				});
 			});
