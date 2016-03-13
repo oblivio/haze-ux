@@ -294,6 +294,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
 					    	
+			      			Entries = getBlackbookEntries();
 							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata: Entries})
 							  .done(function( data ) {
 							    var hasChanged = [];
@@ -354,9 +355,9 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 							    	
 							  }, "json");
 						};	
-				Entries = getBlackbookEntries();	
-				window.setInterval(bbcheck,30000);
-				bbcheck();
+					
+// 				window.setInterval(bbcheck,30000);
+// 				bbcheck();
 				var showImage = function(imgSRC){
 					$("#modal-img-src").attr('src','');
 					$("#modal-img-src").attr('src',imgSRC);
@@ -952,6 +953,7 @@ $("#blackbook").hide();
 			      console.log('Current route name: ' + $location.path());
 			      	switch($location.path()){
 			      	case "/":
+// 			      		Entries = getBlackbookEntries();
 			      		$("#blackbook").show();
 			      		break;
 		      		default:
