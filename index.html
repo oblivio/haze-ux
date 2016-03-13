@@ -288,13 +288,14 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				}
 
 				function bbcheck(){
-							
+							if(Entries.length == 0){
+								Entries = getBlackbookEntries();
+							}
 							var currEntries = [];
 					    	var newCommentCount = {};
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
 					    	
-			      			Entries = getBlackbookEntries();
 							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata: Entries})
 							  .done(function( data ) {
 							    var hasChanged = [];
@@ -354,8 +355,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 							    	});
 							    	
 							  }, "json");
-						};	
-					
+						};		
 // 				window.setInterval(bbcheck,30000);
 // 				bbcheck();
 				var showImage = function(imgSRC){
@@ -953,7 +953,8 @@ $("#blackbook").hide();
 			      console.log('Current route name: ' + $location.path());
 			      	switch($location.path()){
 			      	case "/":
-// 			      		Entries = getBlackbookEntries();
+			      		Entries = [];
+			      		$("#blackbook-contents").html('');
 			      		$("#blackbook").show();
 			      		break;
 		      		default:
