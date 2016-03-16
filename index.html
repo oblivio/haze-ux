@@ -15,7 +15,7 @@
 		  font-family: 'Monoton';
 		  font-style: normal;
 		  font-weight: 400;
-		  src: local('Monoton'), local('Monoton-Regular'), url(assets/fonts/monoton.woff2) format('woff2');
+		  src: local('Monoton'), local('Monotvon-Regular'), url(assets/fonts/monoton.woff2) format('woff2');
 		}
 		.has-changed{
 			border: 0.25em solid red !important;
@@ -442,6 +442,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 //					$scope.category = $routeParams.category;
 //					$scope.entryContents = false;
 //					$scope.entryPassword = '';
+
+			
 				$scope.getEntry = function(){
 					var earlyExit = false;
 					switch($location.path()){
@@ -504,6 +506,73 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					$("#view-image-modal").modal('show');
 					
 				};
+
+				var updateEntryContents = function(){
+					if(String($location.path()).indexOf('/view/public/') == -1){
+						console.log('not viewing an entry right now');
+						return false;
+					}
+					oblivious.getEntry($scope.entryid ,$scope.category,function(){
+						console.log('this @ getEntry',this);
+						var data = this;
+						var eContents,pwd;
+						if(data[1] == "Paste does not exist, has expired or has been deleted."){
+							oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
+							$location.path('/');
+						}else{
+							if(data[0].meta.krypi == "1"){
+								if($scope.entryPassword == '')
+									pwd = prompt("Please enter password to decrypt");
+								else
+									pwd = $scope.entryPassword;
+								if(pwd){
+									eContents = oblivious._processGetEntry(data,$scope.entryid ,pwd);
+								}else{
+									
+									$location.path('/');
+								}
+						    }else{
+						    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
+						    	
+						    }
+							$scope.$apply(function() {
+
+								$scope.entryContents = eContents.reverse(); //reverse order
+								$scope.entryPassword = pwd;
+								
+								console.log('eContents',eContents,$scope.entryContents );
+								
+				    			oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category , $scope.entryContents.length);
+								
+								if(eContents[eContents.length - 1].image != ""){
+
+									$("#main-img").attr('src',eContents[eContents.length - 1].image);	
+									$("#main-img").fadeIn();
+
+								}
+								
+								$("#main-message").text(eContents[eContents.length - 1].text);
+								
+								$("#entry-avatar").attr('src', getIdenticon($scope.entryid));
+								$("#entry-avatar").show();
+								
+								var tmpHTML = '';
+								$("#entry-comments").html('');
+								$.each(eContents,function(k,tmpData){
+									tmpHTML += $scope.getEntryHTML(tmpData);
+//										console.log('tmpHTML',tmpHTML);
+								});
+								
+								$("#entry-comments").html(tmpHTML);
+								
+								
+							});
+						}
+					});
+				};
+				
+				refreshEntryTimer = setInterval(updateEntryContents,30000);
+				updateEntryContents();
 				$scope.sendComment = function(){
 					$scope.currentComment = $("#comment-text").val();
 					
@@ -525,7 +594,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						oblivious.addEntryComment($scope.entryid, 
 								$scope.category,
 								d,function(){
-								location.reload(true);
+								updateEntryContents()
 						});
 					}
 				};
@@ -565,70 +634,6 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					$('.checkbox')
 			  		.checkbox();
 					
-					var updateEntryContents = function(){
-						if(String($location.path()).indexOf('/view/public/') == -1){
-							console.log('not viewing an entry right now');
-							return false;
-						}
-						oblivious.getEntry($scope.entryid ,$scope.category,function(){
-							console.log('this @ getEntry',this);
-							var data = this;
-							var eContents,pwd;
-							if(data[1] == "Paste does not exist, has expired or has been deleted."){
-								oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category ,-1);
-								$location.path('/');
-							}else{
-								if(data[0].meta.krypi == "1"){
-									pwd = prompt("Please enter password to decrypt");
-									if(pwd){
-										eContents = oblivious._processGetEntry(data,$scope.entryid ,pwd);
-										
-									}else{
-										
-										$location.path('/');
-									}
-							    }else{
-							    	eContents = oblivious._processGetEntry(data,$scope.entryid,'');
-							    	
-							    }
-								$scope.$apply(function() {
-
-									$scope.entryContents = eContents.reverse(); //reverse order
-									$scope.entryPassword = pwd;
-									
-									console.log('eContents',eContents,$scope.entryContents );
-									
-					    			oblivious.blackbookSet('commentcount',$scope.entryid +":"+$scope.category , $scope.entryContents.length);
-									
-									if(eContents[eContents.length - 1].image != ""){
-
-										$("#main-img").attr('src',eContents[eContents.length - 1].image);	
-										$("#main-img").fadeIn();
-
-									}
-									
-									$("#main-message").text(eContents[eContents.length - 1].text);
-									
-									$("#entry-avatar").attr('src', getIdenticon($scope.entryid));
-									$("#entry-avatar").show();
-									
-									var tmpHTML = '';
-									$("#entry-comments").html('');
-									$.each(eContents,function(k,tmpData){
-										tmpHTML += $scope.getEntryHTML(tmpData);
-// 										console.log('tmpHTML',tmpHTML);
-									});
-									
-									$("#entry-comments").html(tmpHTML);
-									
-									
-								});
-							}
-						});
-					};
-					
-					refreshEntryTimer = setInterval(updateEntryContents,30000);
-					updateEntryContents();
 				});
 			});
 			app.config(function ($httpProvider) {
