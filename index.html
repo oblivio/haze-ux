@@ -594,7 +594,9 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						oblivious.addEntryComment($scope.entryid, 
 								$scope.category,
 								d,function(){
-								updateEntryContents()
+								//reset comment form
+								$("#addcommentform")[0].reset();
+								updateEntryContents();
 						});
 					}
 				};
