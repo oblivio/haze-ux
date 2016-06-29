@@ -2,7 +2,7 @@
     <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.oblivio.haze"
-        version     = "1.0.5" >
+        version     = "1.0.6" >
 
     <!-- versionCode is optional and Android only -->
 
@@ -22,6 +22,7 @@
 <feature name="http://api.phonegap.com/1.0/network" />
 
 <access origin="https://*.hazedaily.com" subdomains="true" />
+<access origin="https://*.firebaseio.com*" subdomains="true" />
 
 </widget>
 
