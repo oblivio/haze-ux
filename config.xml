@@ -22,7 +22,7 @@
 <feature name="http://api.phonegap.com/1.0/network" />
 
 <access origin="https://*.hazedaily.com" subdomains="true" />
-<access origin="https://*.firebaseio.com*" subdomains="true" />
+<access origin="https://*.firebaseio.com" subdomains="true" />
 
 </widget>
 
