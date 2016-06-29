@@ -7,20 +7,38 @@
  <div class="ui form">
  <div class="two fields">
  	<div class="field">
+					<label for="invite-pwd">Email:</label>
+					<input id="invite-email" type="text" placeholder="(optional)" class="full-width" />
+	</div>
+ 	<div class="field">
 					<label for="invite-pwd">Password*:</label>
-					<input id="invite-pwd" type="text" placeholder="(Required)" class="full-width" />
+					<input id="invite-pwd" type="text" placeholder="(required)" class="full-width" />
 		  </div>
-	  <div class="field">
-	  		<label>Encoded Invite:</label>
-	  		<input type="text" class="full-width" id="encodedinvite" placeholder="encodedinvite" />
-	  	
-	  </div>    
+	     
 	  
 	  </div>
+	  		
   	 <div ng-click="generateInvite()" class="ui bottom attached orange button">
 	 	Generate
 	 </div>
   </div>
+  <div id="encoded-details" class="ui form" style="display:none;">
+  <div class="fluid field">
+  		<label>Encoded Invite:</label>
+  		<input type="text" class="full-width" id="encodedinvite" placeholder="encodedinvite" />
+  	
+  </div>    
+<div class="fluid field">
+  		<label>Invite Password:</label>
+  		<input type="text" class="full-width" id="encodedinvite-pwd" placeholder="encodedinvite-pwd" />
+  	
+  </div>   
+  <div class="fluid field">
+  		<label>Invite Email:</label>
+  		<input type="text" class="full-width" id="encodedinvite-email" placeholder="encodedinvite-email" />
+  	
+  </div>    	  
+	  </div>
  <div id="invite-img-wrapper" style="display:none;" class="ui centered card">
 	  <div  class="image">
 			      <a  id="invite-image" href="" download="invite.png"><img class="ui large image processed-entry-image" src="" /></a>

@@ -11,11 +11,17 @@
 		<link rel="stylesheet" type="text/css" href="semanticui/dist/semantic.min.css">
 		
 		<style>
+		#notificationsbtn.hasnotif{
+			box-shadow: 0 0 0 5px rgb(249, 164, 16) inset !important;
+		}
 		@font-face {
 		  font-family: 'Monoton';
 		  font-style: normal;
 		  font-weight: 400;
 		  src: local('Monoton'), local('Monotvon-Regular'), url(assets/fonts/monoton.woff2) format('woff2');
+		}
+		.error-msg{
+			display:none;
 		}
 		.has-changed{
 			border: 0.25em solid red !important;
@@ -27,13 +33,23 @@
 			max-width:960px;
 			
 		}
+		#blackbook-contents,#clear-blackbook-button{
+			display:none;
+		}
 		#logo{
 			font-family: "Monoton",cursive;
 			font-size: 1.5em;
 			letter-spacing: 1px;
 		}
-		
-		
+		#bb-card{
+			display:none;
+		}
+		#login-card{
+			display:none;
+		}
+		#blackbook-contents .ui.card{
+			float:left;
+		}
 .slide.ng-enter,
 .slide.ng-leave {
     -webkit-transition: all 1s ease;
@@ -68,6 +84,7 @@
 					  	</a>
 						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="blackbookbtn" href="#/" class=" item"><div class="ui  black basic  icon button"><i class="comments outline icon"></i></div></a>
 						<a onclick="$('.active.item').removeClass('active');$(this).addClass('active')" id="createbtn" href="#/create" class="item"><div class="ui  black basic icon button"><i class="add icon"></i></div></a>
+
 					</nav>
 					
 				<!-- Main -->
@@ -78,7 +95,8 @@
 						<!-- /content-section -->
 						
 <article id="blackbook" style="display:none;" class="ui stacked segment">
-<div  class="ui card ">
+	<div id="main-bb-cards" class="ui one fluid cards">
+	<div id="bb-card" class="ui card ">
 		  <div class="content">
  		      <div class="right floated">
 		  		</div>
@@ -87,34 +105,84 @@
 		    </div>
 		    <div class="meta">
 		      <span class="category">Blackbook </span>
+		      
 		    </div>
 		    <div class="description">
-		      <a onclick="bbcheck()" class="ui right floated icon green button"><i class="refresh icon"></i></a>
+		    		      <button type="button" id="bb-refresh-btn" onclick="bbcheck()" class="ui right labeled floated icon green button"><i class="refresh icon"></i>Load Blackbook</button>
+		    
+		    	<button type="button" class="ui red labeled icon button" id="user-logout-btn"><i class="close icon"></i>Logout</button>
+<!-- 		    	<a href="#/processinvite" class="ui orange right floated tiny button" id="invite-modal-open">Have an invite?</a> -->
+		   
 		    </div>
 		  </div>
 		  <div class="extra content">
-		    <div class="right floated author">
-		    	<div id="" class="ui right labeled left icon mini input">
+		  	<div class="right floated author">
+		  	<div id="" class="ui right labeled left icon tiny input">
 				  <i class="tags icon"></i>
 				  <input id="user-alias-input" placeholder="Enter Alias" type="text">
 				  <a class="ui tag label" onclick="setUserAlias()">
 				    Alias
 				  </a>
 				</div>
-					  <a href="#/processinvite" class="ui orange fluid button" id="invite-modal-open">Have an invite?</a>
+				<hr />
+		  						<a  class="ui red left floated basic button" id="clear-blackbook-button">clear blackbook</a>
+		  				   						<a class="ui teal right floated basic labeled icon button" id="notificationsbtn" href="#/notifications" ><i class="warning icon"></i>Notifications</a>
+		  		
+		  	</div>
+		    <div class="left floated author">
+		    	
+<!-- 					  <a href="#/processinvite" class="ui orange fluid button" id="invite-modal-open">Have an invite?</a> -->
+	
+			
+		    </div>
+		    
+		  </div>
+		  
+	</div>
+	
+	<div id="login-card" class="ui card ">
+		  <div class="content">
+ 		      <div class="right floated">
+		  		</div>
+		    <div class="header">
+  				Haze Login
+		    </div>
+		    <div class="meta">
+		      <span class="category">Enter your E-mail/Password</span>
+		    </div>
+		    <div class="description">
+				<div id="" class="ui right left icon fluid tiny input">
+				  <i class="user icon"></i>
+				  <input id="user-email-input" placeholder="Enter E-mail" type="text">
+				</div>
+				<div id="" class="ui right left icon fluid tiny input">
+				  <i class="lock icon"></i>
+				  <input id="user-pwd-input" placeholder="Enter Password" type="password">
+				</div>
+				<div>
+					<p class="error-msg wrongpwd">Couldn't login. Please try again.</p>
+				</div>
+		    </div>
+		  </div>
+		  <div class="extra content">
+		    <div class="right floated author">
+		    
+			 <button type="button" class="ui orange fluid button" id="user-login-btn">Login</button>
 				
 		    </div>
 		    
 		  </div>
 		  
-		</div>
+	</div>
+	
+	</div>
+		  
 	<hr />
 	<div  id="blackbook-contents" class="ui cards">
 							
-			</div>
-			<br />
-			<br />
-			  <a  class="ui red bottom attached basic button" id="clear-blackbook-button">clear blackbook</a>
+	</div>
+	<br />
+	<br />
 					
 </article>
 						
@@ -131,7 +199,18 @@
 		<!-- Scripts -->
 			
 		<script src="phonegap.js"></script>
-				
+			
+			<script src="js/vendor/firebase.js"></script>
+			<script>
+			  // Initialize Firebase
+			  var config = {
+			    apiKey: "AIzaSyBxI9ikQGIlADBazqyZ8ghxJLib-yRAw_U",
+			    authDomain: "oblivious-haze.firebaseapp.com",
+			    databaseURL: "https://oblivious-haze.firebaseio.com",
+			    storageBucket: "oblivious-haze.appspot.com",
+			  };
+			  firebase.initializeApp(config);
+			</script>	
 		<!-- Optional -->
 		
 			<script src="assets/js/jquery.min.js"></script>
@@ -168,8 +247,137 @@
 					var localEntries = [];
 
 					var Entries = [];
-
+					var Invites = [];
+					var emaildictionary = {};
 					
+					var firebaseUID = false;
+					var firebaseEmail = false;
+					firebase.auth().onAuthStateChanged(function(user) {
+						if (user) {
+			      		    // User is signed in.
+			      		    console.log('user',user.email);
+			      		  firebaseUID = user.uid;
+			      		  firebaseEmail = user.email;
+			      		  
+			      		firebase.database().ref('email2user/'+user.uid).set({
+			      			  'email':firebaseEmail,
+			      			  'uid':firebaseUID,
+			      		});
+			      		var invitesRef = firebase.database().ref('invites/' + firebaseUID);
+
+			      		  
+			      		invitesRef.on('value', function(snapshot) {
+			      		  Invites = [];
+			      			if(snapshot.val() == null){
+			      			  console.log('gotcha');
+			      			  return false;
+			      		  }
+			      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
+			      			  var tmpInviteObj = {
+			      					  'invite_id':inviteKey,
+			      					  'accepted':tmpOBJ.accepted,'rejected':tmpOBJ.rejected,
+			      					  'invited_by':tmpOBJ.invited_by,
+			      					  'invite_code':tmpOBJ.invitecode
+			      			  }
+			      			  Invites.push(tmpInviteObj);
+			      		  	});
+			      		  console.log('Invites',Invites);
+			      		  
+			      		  if(Invites.length > 0){
+			      			  	$("#notificationsbtn").removeClass('hasnotif').addClass('hasnotif');
+			      		  }
+				      		 $.event.trigger({
+				      		      type: "invites-pulled",
+				      		      message: "Invites have been pulled",
+				      		      time: new Date()
+				      		    });
+			      		});
+
+						firebase.database().ref('email2user/').on('value', function(snapshot) {
+							if(snapshot.val() == null){
+				      			  console.log('gotcha');
+				      			  return false;
+				      		  }
+		      		    	$.each(snapshot.val(),function(key,obj){
+		      		    		emaildictionary[String(obj.email)] = String(obj.uid);
+		      		    	});
+							console.log('emaildictionary',emaildictionary);
+						});
+			      		
+						}
+					});
+					
+
+				function indexRouteDOMLoaded(){
+
+		      		$("#blackbook-contents").html('');
+		      		$("#blackbook").show();
+		      		
+		      		firebase.auth().onAuthStateChanged(function(user) {
+		      		  if (user) {
+		      		    // User is signed in.
+		      		    console.log('userX',firebaseEmail);
+		      		  
+		      		  
+		      		    $("#main-bb-cards .ui.card").hide();
+		      		    $("#bb-card").show();
+		      		    $("#blackbook-contents,#clear-blackbook-button").show();
+		      		    $("#bb-refresh-btn").click();
+		      		  	$("#user-logout-btn").off("click").on("click",function(){
+		      		    	console.log('????');
+		      		    	firebase.auth().signOut().then(function() {
+		      		    	  // Sign-out successful.
+		      		    	  console.log('successful logout');
+		      		    	}, function(error) {
+		      		    	  // An error happened.
+		      		    		console.log('successful logout');
+		      		    	});
+		      		    });
+		      		  } else {
+		      		    // No user is signed in.
+		      		    $("#main-bb-cards .ui.card").hide();
+		      		    $("#login-card").show();
+		      		    $("#blackbook-contents").hide();
+		      		    $("#user-login-btn").off("click").on("click",function(e){
+		      		    	e.preventDefault();
+		      		    	var email = $("#user-email-input").val();
+		      		    	var pwd = $("#user-pwd-input").val();
+		      		    	$(".error-msg").hide();
+		      		    	
+		      		    	if(email != '' && pwd != ''){
+			      		    	$("#user-pwd-input,#user-email-input").val('');
+			      		    	firebase.auth().signInWithEmailAndPassword(email, pwd).catch(function(error) {
+			      		    	  // Handle Errors here.
+			      		    	  var errorCode = error.code;
+			      		    	  var errorMessage = error.message;
+			      		    	  // ...
+			      		    	  console.log('errorCode',errorCode);
+			      		    	  console.log('errorMessage',errorMessage);
+			      		    	  
+				      		    	  if(errorCode == 'auth/user-not-found'){
+				      		    		firebase.auth().createUserWithEmailAndPassword(email, pwd).catch(function(create_error) {
+					      		    		  // Handle Errors here.
+					      		    		  var createErrorCode = create_error.code;
+					      		    		  var createErrorMessage = create_error.message;
+					      		    		  console.log('createErrorCode',createErrorCode);
+					      		    		  console.log('createErrorMessage',createErrorMessage);
+					      		    		  // ...
+				      		    		}); 
+				      		    	  }else if(errorCode == 'auth/wrong-password'){
+				      		    		  $(".error-msg.wrongpwd").show();
+				      		    	  }
+			      		    	});
+		      		    	}
+		      		    	
+		      		    });
+		      		    
+		      		    
+		      		  }
+		      		return false;
+		      		});
+
+		      		
+				};
 				
 				function getEntryAlias(eID,eCat){
 					var myAliasData = oblivious.blackbookGet('aliases');
@@ -187,7 +395,7 @@
 						}
 					});
 					return alias;
-				}
+				};
 				function getIdenticon(str){
 					var identicon = new Identicon(str, 420).toString();
 					identicon = 'data:image/png;base64,' + identicon;
@@ -371,14 +579,221 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				}
 			</script>
 			
-			<script>
-		
-		</script>
+			
 			
 			<script>
+			$(document).on("invites-pulled", function (evt) {
+				console.log('InvitesPulled',Invites);
+			});
 			
 			var app = angular.module('hazeApp',  ['ngRoute']);
-			
+			app.controller('NotificationsCtrl',function($scope,$location,$interval,$routeParams){
+				firebase.auth().onAuthStateChanged(function(user) {
+					if (user) {
+		      		    // User is signed in.
+		      		    console.log('user',user.email);
+		      		  
+		      		var invitesRef = firebase.database().ref('invites/' + firebaseUID);
+
+		      		  
+		      		invitesRef.on('value', function(snapshot) {
+		      		  Invites = [];
+		      		  if(snapshot.val() == null){
+		      			  console.log('gotcha');
+		      			  return false;
+		      		  }
+		      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
+		      			  var tmpInviteObj = {
+		      					  'invite_id':inviteKey,
+		      					  'accepted':tmpOBJ.accepted,'rejected':tmpOBJ.rejected,
+		      					  'invited_by':tmpOBJ.invited_by,
+		      					  'invite_code':tmpOBJ.invitecode
+		      			  }
+		      			  Invites.push(tmpInviteObj);
+		      		  	});
+		      		  console.log('Invites',Invites);
+		      		  $("#notifications-container").html('');
+		      		  var tmpHTML = '';
+		      		  $.each(Invites,function(i,inviteObj){
+		      			var cardHTML = "<div class='ui card' id='invite-"+inviteObj.invite_id+"' > "+
+	   			    	"<button style='display:none;' class='ui icon top attached labeled red button'><i class='delete icon'></i>remove</button>" +
+					  "<div class='content'>"+
+		      			"<div class='right floated'>"+
+		      			"<img class='ui avatar image' src='"+getIdenticon(inviteObj.invite_id)+"'>"+
+	  					"</div>"+
+	    				"<div class='header'>"+inviteObj.invite_id+"</div>"+
+				    	"<div class='meta'>"+
+				    	  "<span class='category'>haze invite</span>"+
+				    	"</div>"+
+					    "<div class='description'>"+
+					      "<p></p>"+
+					    "</div>"+
+					  "</div>"+
+					  "<div class='extra content'>"+
+					    "<div class='right floated author'>"+
+					    "</div>"+
+					  "</div>"+
+					  "<div class='ui two buttons'>"+
+						"<a data-action='accept' data-inviteid='"+inviteObj.invite_id+"' class='ui icon labeled bottom attached green button accept-invite-btn '><i class='check icon'></i>Accept</a>"+
+						"<a data-action='reject'  data-inviteid='"+inviteObj.invite_id+"' class='ui icon labeled bottom attached red button  reject-invite-btn'><i class='close icon'></i>Reject</a>"+
+					"</div>"+
+					"</div>";
+						tmpHTML += cardHTML;
+		      		  });
+		      		  
+		      		  if(Invites.length > 0){
+// 		      			  	$("#notificationsbtn").removeClass('hasnotif').addClass('hasnotif');
+		      			$("#notifications-container").html(tmpHTML);
+		      			$('#notifications-container').on('click', '.accept-invite-btn,.reject-invite-btn', function () {
+		      				var invite_id = $(this).data('inviteid');
+		      				var action = $(this).data('action');
+		      				
+		      				console.log('action',action);
+		      				console.log('invite_id',invite_id);
+		      				
+		      				console.log('Action with Invites',Invites);
+		      				var invite_code = '';
+		      				for(var ii = 0; ii < Invites.length; ii++){
+		      					var cInvite = Invites[ii];
+		      					if(cInvite.invite_id == invite_id){
+		      						invite_code = cInvite.invite_code;
+		      						break;
+		      					}
+		      				}
+		      				
+				      		  
+		      				var tmpInvitesRef = firebase.database().ref('invites/' + firebaseUID + '/'+invite_id);
+		      				tmpInvitesRef.remove();
+		      				
+		      				switch(action){
+		      				case "accept":
+		      					var encodedinvite = invite_code;
+		      					var decodedinvite = window.atob(encodedinvite);
+		      					console.log('decodedinvite',decodedinvite);
+		      					var str_parts = decodedinvite.split("#!");
+		      					console.log('str_parts',str_parts);
+		      					decodedinvite = oblivious._decrypt(str_parts[1],str_parts[0]);
+		      					console.log('str_parts',str_parts);
+		      					str_parts = decodedinvite.split("#!");
+		      					console.log('str_parts',str_parts);
+		      					var inviteid  = str_parts[0];
+		      					var invitecategory = str_parts[1];
+		      					var invitepwd = str_parts[2];
+		      					var invitestatus;
+		      					console.log('inviteid',inviteid);
+		      					console.log('invitecategory',invitecategory);
+		      					
+		      					oblivious.getEntry(inviteid,'invites',function(){
+		      						console.log('this@getentry',this);
+		      						var invitedata = this[0];
+		      						if(this[0].meta.krypi && this[0].meta.isinvite){
+		      							//request password;
+
+		      							var tmpData = String(invitedata.data).replace("#!k!#","");
+		      							console.log('tmpData',tmpData);
+		      							var pwd = invitepwd;//$("#encodedinvite-input").data('pwd');
+		      							$("#encodedinvite-input").data('pwd','');$("#encodedinvite-input").val('');
+		      							console.log('pwd',pwd);
+		      							if(pwd){
+		      								console.log('pwd',pwd);
+		      								var eContents = oblivious._decrypt(pwd,tmpData);
+		      								console.log('eContents',eContents);
+		      								var decoded = eContents;
+		      								console.log('decoded',decoded);
+		      								var s = decoded.split("#");
+		      								var invitestatus;
+		      								
+		      								if(s.length==4){
+		      									var entryID = s[1];
+		      									var entryKey = s[2];
+		      									var entryCategory = s[3];
+		      									console.log('entryID',entryID);
+		      									console.log('entryKey',entryKey);
+		      									console.log('entryCategory',entryCategory);
+		      									
+		      										
+		      							        	
+		      							        	oblivious.getEntryMeta(entryID,entryCategory,function(){
+		      											console.log('this@getEMeta',this);
+		      											var alreadyhaskey = false;//oblivious_module.blackbook._getEntryKey(entryID,entryCategory);
+		      											
+		      											var tmpKeys = oblivious.blackbookGet('keys');
+		      											for(var jj = 0; jj < tmpKeys.length; jj++){
+		      												var currKeyObj = tmpKeys[jj];
+		      												if(currKeyObj.key == String(entryID + ':' + entryCategory)){
+		      													alreadyhaskey = true;
+		      													break;
+		      												}
+		      											}
+		      											console.log('already',alreadyhaskey);
+		      											if(alreadyhaskey){
+		      												invitestatus = "You already have access to this entry.";
+		      											}else{
+		      												invitestatus = "Successfully processed invite!";
+		      												if(entryKey == '(nokey)'){
+		      													entryKey = false;
+		      													invitestatus = "Successfully processed invite! - no key required for entry.";
+		      												}
+		      												oblivious.blackbookSet('entries',entryID+":"+entryCategory,entryID);
+		      												oblivious.blackbookSet('keys',entryID+":"+entryCategory,entryKey);
+		      												oblivious.blackbookSet('categories',entryID,entryCategory);
+		      												oblivious.blackbookSet('commentcount',entryID+":"+entryCategory,1);
+		      												oblivious.blackbookSet('meta',entryID+":"+entryCategory,this[0].meta);
+		      										    	
+		      										    	$("html, body").animate({ scrollTop: 0 }, "slow");
+		      												$(".rvmodal").fadeOut();
+		      												$("#rvmod-generic .generic-msg").text(invitestatus);
+		      									        	$("#rvmod-generic").fadeIn();
+		      									        	location.reload(true);
+		      										    	//blackbookSet commentcount here
+		      										    	//and @ create when populating blackbook
+		      										    	//clicking view from public does not add to bb
+		      											}
+		      										});
+		      								    	//blackbookSet('tokens',data.id,data.deletetoken);
+		      								    	//blackbookSet commentcount here
+		      								    	//and @ create when populating blackbook
+		      								    	//clicking view from public does not add to bb
+		      									
+		      							    	//blackbookSet('tokens',data.id,data.deletetoken);
+		      								}else{
+		      									invitestatus = "Could not process invite.";
+		      									$("html, body").animate({ scrollTop: 0 }, "slow");
+		      									$(".rvmodal").fadeOut();
+		      									$("#rvmod-generic .generic-msg").text(invitestatus);
+		      						        	$("#rvmod-generic").fadeIn();
+		      								}
+		      								
+		      							}else{
+		      								var eContents = window.atob(invitedata);
+		      								console.log('eContents',eContents);
+		      							}
+		      							
+		      						}else{
+		      							console.log('unencrypted invite data',invitedata.data);
+		      						}
+		      					});
+		      					break;
+		      				case "reject":
+		      					
+		      					break;
+		      				}//end switch
+		      				
+		      				
+		      			});
+		      		  }
+			      		 $.event.trigger({
+			      		      type: "invites-pulled",
+			      		      message: "Invites have been pulled",
+			      		      time: new Date()
+			      		    });
+		      		});
+
+					
+		      		
+					}
+				});
+			});
 			app.controller('HazeViewCtrl',function($scope,$location,$interval,$routeParams){
 				var refreshEntryTimer = false;
 				$scope.$on("$destroy", function() {
@@ -391,8 +806,10 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					if(entry.image != ''){
 						hasImage = true;
 					}
+					console.log('entry',entry);
 					var listItemHTML = '<div class="item">'+
 				    '<img class="ui avatar image" src="'+entry.identicon+'">'+
+// 				    '<img class="ui avatar image" src="'+$scope.getIdenticon(btoa(entry.firebaseUID)) +'">'+
 				    '<div class="right floated content">';
 				    
 				    if(hasImage){
@@ -584,7 +1001,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					             imgdata:'',
 					             userkey:'',
 					             containsimage:0,
-					             nickname:''
+					             nickname:'',
+					             'firebaseUID':firebaseUID
 						     };
 						if($scope.currentCommentImg != ''){
 							d.imgdata = $scope.currentCommentImg;
@@ -663,9 +1081,9 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			        }
 			    }               
 			});
-			app.controller('BlackbookCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
+			app.controller('IndexCtrl',function($scope,$location,$timeout,$interval,$routeParams,api){
 				
-				
+				console.log('dimelo pina este es el remix');
 				
 			});
 			
@@ -729,6 +1147,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						}
 						
 					});	
+					$('#cryptotoggle').click();
 				});
 				
 				$scope.getHash = function(d){
@@ -780,7 +1199,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				             category:entryDetails.category,
 				             userkey:entryDetails.password,
 				             imgdata:entryDetails.image,
-				             containsimage:entryDetails.containsimage
+				             containsimage:entryDetails.containsimage,
+				             'firebaseUID':firebaseUID
 					     };
 					for (var attrname in $scope.newentry.meta) { d[attrname] = $scope.newentry.meta[attrname]; }
 
@@ -817,17 +1237,47 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				$scope.entryid = $routeParams.eid;
 				$scope.category = $routeParams.category;
 				
+				var randomKey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
+				$("#invite-pwd").val(randomKey);
 				$scope.generateInvite = function(){
 					if($("#invite-pwd").val() != ''){
 							oblivious._generateInvite($scope.entryid ,$scope.category);
-							//clear fields
-							$("#invite-pwd").val('');
-							$("#invite-img-wrapper").fadeIn();
+							//triggers encodedinvite:change()
+							
 					}
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
 					$("#blackbook").hide();
+					$("#encodedinvite").off('change').on('change',function(){
+						
+						//clear fields
+						$("#encoded-details").show();
+						$("#encodedinvite-pwd").val( $("#invite-pwd").val() );
+						$("#encodedinvite-email").val( $("#invite-email").val() );
+						$("#invite-img-wrapper").fadeIn();	
+						
+						
+						//add to firebase invite
+						if(typeof emaildictionary[$("#encodedinvite-email").val()] !== 'undefined'){
+							var userid = emaildictionary[$("#encodedinvite-email").val()];
+							console.log('userid',userid);	
+						
+							firebase.database().ref('invites/'+userid).push({
+				      			  'invitecode':$("#encodedinvite").val(),
+				      			  'invited_by': firebaseUID,
+				      			  'accepted':false,
+				      			  'rejected':false
+				      		});	
+						}else{
+							console.log('invalid email/user - Firebase',$("#encodedinvite-email").val());
+							$("#encodedinvite-email").val('(invalid email)');
+						}
+						
+						$("#invite-pwd,#invite-email").val('');
+						$("#invite-pwd").val( sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0) );
+						
+					});
 				});
 				
 				$scope.getHash = function(d){
@@ -849,18 +1299,20 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				};
 				$scope.$on('$viewContentLoaded', function(){
 // 					$("#main-dimmer").removeClass('active');
-$("#blackbook").hide();
+					$("#blackbook").hide();
 					document.getElementById('decode-input').onchange = function(input) {
 						var file    = document.getElementById('decode-input').files[0];
 						if ( file ) {
 					        var FR= new FileReader();
 					        FR.onload = function(e) {
-					        	var password = prompt('Enter password (leave empty if none)');
 					        	
-								GhostPixels.decode(password,e.target.result).then(function(decodedMessage){
+// 					        console.log('e.target.result',e.target.result);
+// 					        	var password = prompt('Enter password (leave empty if none)');
+					        	
+								GhostPixels.decode('',e.target.result).then(function(decodedMessage){
 									
 									$("#encodedinvite-input").val(decodedMessage);
-									$("#encodedinvite-input").data('pwd',password);
+									//$("#encodedinvite-input").data('pwd',password);
 									
 					        	});
 					        	
@@ -915,6 +1367,10 @@ $("#blackbook").hide();
 			      		        templateUrl: 'templates/create.html',
 			      		        controller: 'CreateCtrl'
 			      	      }).
+			      	    when('/notifications', {
+			      		        templateUrl: 'templates/notifications.html',
+			      		        controller: 'NotificationsCtrl'
+			      	      }).
 			      	    when('/view/:category/:eid', {
 		      		        templateUrl: 'templates/view.html',
 		      		        controller: 'HazeViewCtrl'
@@ -928,7 +1384,7 @@ $("#blackbook").hide();
 		      		        controller: 'HazeProcessInviteViewCtrl'
 		      	      	}).
 			      	      otherwise({
-			      	        redirectTo: '/'
+			      	        redirectTo: '/',
 			      	      });
 			      	  }]);
 			
@@ -975,8 +1431,7 @@ $("#blackbook").hide();
 			      	switch($location.path()){
 			      	case "/":
 			      		Entries = [];
-			      		$("#blackbook-contents").html('');
-			      		$("#blackbook").show();
+			      		indexRouteDOMLoaded();
 			      		break;
 		      		default:
 		      			$("#blackbook").hide();

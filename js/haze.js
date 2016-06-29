@@ -758,7 +758,7 @@ var oblivious = (function () {
 				var data = this;
 				var inviteid = data.id;
 				var invitecategory = entryCategory;
-				var inviteString = inviteid + "#!" + invitecategory;
+				var inviteString = oblivious._encrypt( tmpPwd, inviteid + "#!" + invitecategory + "#!" + tmpPwd) + "#!" + tmpPwd;
 				var encodedInvite;
 				
 					encodedInvite = window.btoa(inviteString);
@@ -767,7 +767,9 @@ var oblivious = (function () {
 
 				$("#encodedinvite").val(encodedInvite);
 				$("#encodedinvite").show();
-				var imgSRC = GhostPixels.encode(encodedInvite,tmpPwd);
+				$("#encodedinvite").trigger('change');
+				
+				var imgSRC = GhostPixels.encode(encodedInvite,'');
 				$("#invite-image").attr('href',imgSRC);
 				$("#invite-image>img").attr('src',imgSRC);
 				$("#invite-image>img").show();
@@ -783,9 +785,9 @@ var oblivious = (function () {
 		             containsimage:0,
 		             isinvite:1
 			     };
-			
+			var tmpPwd;
 			if($("#invite-pwd").val() != ''){
-				var tmpPwd = $("#invite-pwd").val();
+				tmpPwd = $("#invite-pwd").val();
 				encodedString = "#!k!#"+oblivious._encrypt(tmpPwd,encodedString);
 				//avoids sending the unencrypted key
 				d.krypi=1;
@@ -799,7 +801,9 @@ var oblivious = (function () {
 				var data = this;
 				var inviteid = data.id;
 				var invitecategory = entryCategory;
-				var inviteString = inviteid + "#!" + invitecategory;
+//				var inviteString = inviteid + "#!" + invitecategory;
+				var inviteString = oblivious._encrypt( tmpPwd, inviteid + "#!" + invitecategory + "#!" + tmpPwd) + "#!" + tmpPwd;
+
 				var encodedInvite;
 				
 					encodedInvite = window.btoa(inviteString);
@@ -807,7 +811,8 @@ var oblivious = (function () {
 //				
 				$("#encodedinvite").val(encodedInvite);
 				$("#encodedinvite").show();
-				var imgSRC = GhostPixels.encode(encodedInvite,tmpPwd);
+				$("#encodedinvite").trigger('change');
+				var imgSRC = GhostPixels.encode(encodedInvite,'');
 				
 				$("#invite-image").attr('href',imgSRC);
 				$("#invite-image>img").attr('src',imgSRC);
@@ -835,9 +840,16 @@ var oblivious = (function () {
 //		
 		var encodedinvite = $("#encodedinvite-input").val();
 		var decodedinvite = window.atob(encodedinvite);
+		console.log('decodedinvite',decodedinvite);
 		var str_parts = decodedinvite.split("#!");
+		console.log('str_parts',str_parts);
+		decodedinvite = oblivious._decrypt(str_parts[1],str_parts[0]);
+		console.log('str_parts',str_parts);
+		str_parts = decodedinvite.split("#!");
+		console.log('str_parts',str_parts);
 		var inviteid  = str_parts[0];
 		var invitecategory = str_parts[1];
+		var invitepwd = str_parts[2];
 		var invitestatus;
 		console.log('inviteid',inviteid);
 		console.log('invitecategory',invitecategory);
@@ -850,7 +862,7 @@ var oblivious = (function () {
 
 				var tmpData = String(invitedata.data).replace("#!k!#","");
 				console.log('tmpData',tmpData);
-				var pwd = $("#encodedinvite-input").data('pwd');
+				var pwd = invitepwd;//$("#encodedinvite-input").data('pwd');
 				$("#encodedinvite-input").data('pwd','');$("#encodedinvite-input").val('');
 				console.log('pwd',pwd);
 				if(pwd){
