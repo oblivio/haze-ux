@@ -275,7 +275,6 @@
 			      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
 			      			  var tmpInviteObj = {
 			      					  'invite_id':inviteKey,
-			      					  'accepted':tmpOBJ.accepted,'rejected':tmpOBJ.rejected,
 			      					  'invited_by':tmpOBJ.invited_by,
 			      					  'invite_code':tmpOBJ.invitecode
 			      			  }
@@ -606,7 +605,6 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
 		      			  var tmpInviteObj = {
 		      					  'invite_id':inviteKey,
-		      					  'accepted':tmpOBJ.accepted,'rejected':tmpOBJ.rejected,
 		      					  'invited_by':tmpOBJ.invited_by,
 		      					  'invite_code':tmpOBJ.invitecode
 		      			  }
