@@ -312,6 +312,7 @@
 
 		      		$("#blackbook-contents").html('');
 		      		$("#blackbook").show();
+		      		$("#notificationsbtn").removeClass('hasnotif');
 		      		
 		      		firebase.auth().onAuthStateChanged(function(user) {
 		      		  if (user) {
