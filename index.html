@@ -270,6 +270,7 @@
 			      		  Invites = [];
 			      			if(snapshot.val() == null){
 			      			  console.log('gotcha');
+			      			$("#notificationsbtn").removeClass('hasnotif');
 			      			  return false;
 			      		  }
 			      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
@@ -295,6 +296,7 @@
 						firebase.database().ref('email2user/').on('value', function(snapshot) {
 							if(snapshot.val() == null){
 				      			  console.log('gotcha');
+				      			$("#notificationsbtn").removeClass('hasnotif');
 				      			  return false;
 				      		  }
 		      		    	$.each(snapshot.val(),function(key,obj){
@@ -602,6 +604,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      		  Invites = [];
 		      		  if(snapshot.val() == null){
 		      			  console.log('gotcha');
+		      			$("#notificationsbtn").removeClass('hasnotif');
 		      			  return false;
 		      		  }
 		      		  $.each(snapshot.val(),function(inviteKey,tmpOBJ){
