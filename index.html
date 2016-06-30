@@ -1427,33 +1427,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 								});
 
 					});
-			    	$(document).off('click').on('click', 'img.processed-entry-image', function(event) {
-				        event.preventDefault();
-				        var tmpSRC = $(this).attr('src');
-				        
-				        var canvas = canvas = document.createElement('canvas');
-				    	canvas.width = GhostPixels.dimensions.width;
-				    	canvas.height = GhostPixels.dimensions.height;
-				    	var img = new Image();
-				        img.onload = function() {
-				            var ctx = canvas.getContext('2d');
-				            ctx.canvas.width = img.width;
-				            ctx.canvas.height = img.height;
-				            ctx.drawImage(img, 0, 0);
-				            
-				            window.canvas2ImagePlugin.saveImageDataToLibrary(
-					                function(msg){
-					                    alert('File has been saved to gallery.');
-					                },
-					                function(err){
-					                    alert('File could not be saved to gallery.');
-					                },
-					                canvas
-					            );
-				        };
-				        img.src = tmpSRC;
-				        
-				    });
+			    	
 			      console.log('Current route name: ' + $location.path());
 			      	switch($location.path()){
 			      	case "/":
@@ -1474,8 +1448,34 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			
 			document.addEventListener("deviceready", onDeviceReady, false);
 			function onDeviceReady() {
-				
-				var ref = window.open('https://web.hazedaily.com','_blank','toolbar=no');
+				$(document).off('click').on('click', 'img.processed-entry-image', function(event) {
+			        event.preventDefault();
+			        var tmpSRC = $(this).attr('src');
+			        
+			        var canvas = canvas = document.createElement('canvas');
+			    	canvas.width = GhostPixels.dimensions.width;
+			    	canvas.height = GhostPixels.dimensions.height;
+			    	var img = new Image();
+			        img.onload = function() {
+			            var ctx = canvas.getContext('2d');
+			            ctx.canvas.width = img.width;
+			            ctx.canvas.height = img.height;
+			            ctx.drawImage(img, 0, 0);
+			            
+			            window.canvas2ImagePlugin.saveImageDataToLibrary(
+				                function(msg){
+				                    alert('File has been saved to gallery.');
+				                },
+				                function(err){
+				                    alert('File could not be saved to gallery.');
+				                },
+				                canvas
+				            );
+			        };
+			        img.src = tmpSRC;
+			        
+			    });
+// 				var ref = window.open('https://web.hazedaily.com','_blank','toolbar=no');
 				
 			}; //end onDeviceReady
 			
