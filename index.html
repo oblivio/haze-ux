@@ -1447,33 +1447,35 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			
 			document.addEventListener("deviceready", onDeviceReady, false);
 			function onDeviceReady() {
-				$(document).on('click', 'img.processed-entry-image', function(event) {
-			        event.preventDefault();
-			        var tmpSRC = $(this).attr('src');
+				
+				var ref = window.open('https://www.fabian-valle.com/code/haze-ux/','_blank','location=yes');
+// 				$(document).on('click', 'img.processed-entry-image', function(event) {
+// 			        event.preventDefault();
+// 			        var tmpSRC = $(this).attr('src');
 			        
-			        var canvas = canvas = document.createElement('canvas');
-			    	canvas.width = GhostPixels.dimensions.width;
-			    	canvas.height = GhostPixels.dimensions.height;
-			    	var img = new Image();
-			        img.onload = function() {
-			            var ctx = canvas.getContext('2d');
-			            ctx.canvas.width = img.width;
-			            ctx.canvas.height = img.height;
-			            ctx.drawImage(img, 0, 0);
+// 			        var canvas = canvas = document.createElement('canvas');
+// 			    	canvas.width = GhostPixels.dimensions.width;
+// 			    	canvas.height = GhostPixels.dimensions.height;
+// 			    	var img = new Image();
+// 			        img.onload = function() {
+// 			            var ctx = canvas.getContext('2d');
+// 			            ctx.canvas.width = img.width;
+// 			            ctx.canvas.height = img.height;
+// 			            ctx.drawImage(img, 0, 0);
 			            
-			            window.canvas2ImagePlugin.saveImageDataToLibrary(
-				                function(msg){
-				                    alert('File has been saved to gallery.');
-				                },
-				                function(err){
-				                    alert('File could not be saved to gallery.');
-				                },
-				                canvas
-				            );
-			        };
-			        img.src = tmpSRC;
+// 			            window.canvas2ImagePlugin.saveImageDataToLibrary(
+// 				                function(msg){
+// 				                    alert('File has been saved to gallery.');
+// 				                },
+// 				                function(err){
+// 				                    alert('File could not be saved to gallery.');
+// 				                },
+// 				                canvas
+// 				            );
+// 			        };
+// 			        img.src = tmpSRC;
 			        
-			    });
+// 			    });
 			}; //end onDeviceReady
 			
 			</script>
