@@ -595,6 +595,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      		  
 		      		var invitesRef = firebase.database().ref('invites/' + firebaseUID);
 
+
+		      		  $("#notifications-container").html('');
 		      		  
 		      		invitesRef.on('value', function(snapshot) {
 		      		  Invites = [];
@@ -611,7 +613,6 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      			  Invites.push(tmpInviteObj);
 		      		  	});
 		      		  console.log('Invites',Invites);
-		      		  $("#notifications-container").html('');
 		      		  var tmpHTML = '';
 		      		  $.each(Invites,function(i,inviteObj){
 		      			var cardHTML = "<div class='ui card' id='invite-"+inviteObj.invite_id+"' > "+
