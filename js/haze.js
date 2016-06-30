@@ -196,12 +196,15 @@ var oblivious = (function () {
     }
 
 	function _onchange(elementID,cb){
-		document.getElementById(elementID).onchange = function (e) {
-			var imgURL = e.target.files[0];
-			var img = _prepareImage(imgURL,cb);
-			console.log('preparing image',img);
-			
-		};
+		if(document.getElementById(elementID) != null){
+			document.getElementById(elementID).onchange = function (e) {
+				var imgURL = e.target.files[0];
+				var img = _prepareImage(imgURL,cb);
+				console.log('preparing image',img);
+				
+			};
+		}
+		
 	}
 	function deleteEntry(entryID,deleteToken,category){
 		if(typeof entryID === 'undefined' || typeof deleteToken === 'undefined'){
