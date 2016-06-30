@@ -1228,8 +1228,9 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 							console.log('added!')
 						});
 					}
-					$('#addentryform')[0].reset();
-					$("html, body").animate({ scrollTop: 0 }, "slow");
+					location.reload(true);
+// 					$('#addentryform')[0].reset();
+// 					$("html, body").animate({ scrollTop: 0 }, "slow");
 					
 				};
 			});
