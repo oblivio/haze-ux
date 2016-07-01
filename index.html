@@ -1221,14 +1221,16 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 						console.log('krypi entry');
 						oblivious.addKrypiEntry(d,function(){
 							console.log('added!');
+							location.reload(true);
 						});
 					}else{
 						console.log('regular entry');
 						oblivious.addEntry(d,function(){
 							console.log('added!')
+							location.reload(true);
 						});
 					}
-					location.reload(true);
+// 					location.reload(true);
 // 					$('#addentryform')[0].reset();
 // 					$("html, body").animate({ scrollTop: 0 }, "slow");
 					
