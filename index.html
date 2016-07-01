@@ -360,7 +360,7 @@
 		      		    $("#blackbook-contents").hide();
 		      		    $("#user-login-btn").off("click").on("click",function(e){
 		      		    	e.preventDefault();
-		      		    	var email = $("#user-email-input").val();
+		      		    	var email = String( $("#user-email-input").val() ).toLowerCase().trim();
 		      		    	var pwd = $("#user-pwd-input").val();
 		      		    	$(".error-msg").hide();
 		      		    	
@@ -1286,11 +1286,11 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 // 					$("#main-dimmer").removeClass('active');
 					$("#blackbook").hide();
 					$("#encodedinvite").off('change').on('change',function(){
-						
+						var inviteEmail = String($("#invite-email").val()).toLowerCase().trim();
 						//clear fields
 						$("#encoded-details").show();
 						$("#encodedinvite-pwd").val( $("#invite-pwd").val() );
-						$("#encodedinvite-email").val( $("#invite-email").val() );
+						$("#encodedinvite-email").val( inviteEmail );
 // 						$("#invite-img-wrapper").fadeIn();	
 						
 						
@@ -1306,7 +1306,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				      			  'rejected':false
 				      		});	
 						}else{
-							console.log('invalid email/user - Firebase',$("#encodedinvite-email").val());
+							console.log('invalid email/user - Firebase',inviteEmail);
 							$("#encodedinvite-email").val('(invalid email)');
 						}
 						
