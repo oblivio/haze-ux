@@ -10,7 +10,7 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<link rel="stylesheet" type="text/css" href="semanticui/dist/semantic.min.css">
-		<link type="text/css" rel="stylesheet" href="js/featherlight/featherlight.min.css" />
+		<link type="text/css" rel="stylesheet" href="js/magnific-popup/magnific-popup.css" />
 		<link href='https://fonts.googleapis.com/css?family=Monoton' rel='stylesheet' type='text/css'>
 <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-icon-60x60.png">
@@ -237,7 +237,7 @@
 			<script src="js/vendor/fastclick.js"></script>
 			
 		
-			<script src="js/featherlight/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+			<script src="js/magnific-popup/magnific-popup.js" ></script>
 			<script src="js/vendor/angular.min.js"></script>
 			<script src="js/vendor/angular-route.min.js"></script>
 			
@@ -345,7 +345,6 @@
 		      		    $("#blackbook-contents,#clear-blackbook-button").show();
 		      		    $("#bb-refresh-btn").click();
 		      		  	$("#user-logout-btn").off("click").on("click",function(){
-		      		    	console.log('????');
 		      		    	firebase.auth().signOut().then(function() {
 		      		    	  // Sign-out successful.
 		      		    	  console.log('successful logout');
@@ -601,6 +600,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			</script>
 			
 			
+			<script src="js/vendor/jquery.blockui.js"></script>
 			
 			<script>
 			$(document).on("invites-pulled", function (evt) {
@@ -667,6 +667,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 // 		      			  	$("#notificationsbtn").removeClass('hasnotif').addClass('hasnotif');
 		      			$("#notifications-container").html(tmpHTML);
 		      			$('#notifications-container').on('click', '.accept-invite-btn,.reject-invite-btn', function () {
+		      				$.blockUI();
 		      				var invite_id = $(this).data('inviteid');
 		      				var action = $(this).data('action');
 		      				
@@ -797,7 +798,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 		      					});
 		      					break;
 		      				case "reject":
-		      					
+		      					location.reload(true);
 		      					break;
 		      				}//end switch
 		      				
@@ -835,7 +836,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				    '<div class="right floated content">';
 				    
 				    if(hasImage){
-				    	listItemHTML+= '<a href="'+entry.image+'" class="ui icon button pink" data-featherlight="image"><i class="photo icon"></i></a>';
+				    	listItemHTML+= '<a data-lightbox="image" href="'+entry.image+'" class="ui icon button pink" ><i class="photo icon"></i></a>';
 				    }
 				    listItemHTML += '</div>'+
 				    '<div class="content">'+
@@ -1004,6 +1005,10 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 								
 								$("#entry-comments").html(tmpHTML);
 								
+								$("[data-lightbox='image']").magnificPopup({
+									  type: 'image'
+									  // other options
+								});
 								
 							});
 						}
@@ -1013,6 +1018,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				refreshEntryTimer = setInterval(updateEntryContents,30000);
 				updateEntryContents();
 				$scope.sendComment = function(){
+					$.blockUI();
 					$scope.currentComment = $("#comment-text").val();
 					
 					if($scope.currentComment == '' && $scope.currentCommentImg == ''){
@@ -1024,7 +1030,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					             userkey:'',
 					             containsimage:0,
 					             nickname:'',
-					             'firebaseUID':firebaseUID
+// 					             'firebaseUID':firebaseUID
 						     };
 						if($scope.currentCommentImg != ''){
 							d.imgdata = $scope.currentCommentImg;
@@ -1036,7 +1042,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 								d,function(){
 								//reset comment form
 								$("#addcommentform")[0].reset();
-								updateEntryContents();
+								location.reload(true);
 						});
 					}
 				};
@@ -1061,6 +1067,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 // 					$("#main-dimmer").removeClass('active');
 					// Run after view loaded.
 					$("#blackbook").hide();
+					
+					
 					$('.dropdown')
 			  		.dropdown({
 			  		    //dropdown settings
@@ -1193,6 +1201,8 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					};
 				
 				$scope.submitNewEntry = function(){
+					$.blockUI();
+				
 					var entryDetails = {
 						'image':'',
 						'clientsidecrypto':'',
@@ -1222,7 +1232,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				             userkey:entryDetails.password,
 				             imgdata:entryDetails.image,
 				             containsimage:entryDetails.containsimage,
-				             'firebaseUID':firebaseUID
+// 				             'firebaseUID':firebaseUID
 					     };
 					for (var attrname in $scope.newentry.meta) { d[attrname] = $scope.newentry.meta[attrname]; }
 
