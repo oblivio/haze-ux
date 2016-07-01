@@ -606,6 +606,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 			$(document).on("invites-pulled", function (evt) {
 				console.log('InvitesPulled',Invites);
 			});
+			$.blockUI.defaults.message = "";
 			
 			var app = angular.module('hazeApp',  ['ngRoute']);
 			app.controller('NotificationsCtrl',function($scope,$location,$interval,$routeParams){
