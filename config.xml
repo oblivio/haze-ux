@@ -7,7 +7,7 @@
     <!-- versionCode is optional and Android only -->
 
     <name>Haze</name>
-	<icon src="img/hotel75.png"/>
+	<icon src="img/haze-logo.jpg"/>
     <description>
         Haze is an off the record communication platform. 
     </description>

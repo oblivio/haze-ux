@@ -5,10 +5,12 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> 
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" href="favicon.ico" type="image/x-icon">
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		<link rel="stylesheet" type="text/css" href="semanticui/dist/semantic.min.css">
+		<link type="text/css" rel="stylesheet" href="js/featherlight/featherlight.min.css" />
 		<link href='https://fonts.googleapis.com/css?family=Monoton' rel='stylesheet' type='text/css'>
 		<style>
 		#notificationsbtn.hasnotif{
@@ -218,7 +220,7 @@
 			<script src="js/vendor/fastclick.js"></script>
 			
 		
-			
+			<script src="js/featherlight/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
 			<script src="js/vendor/angular.min.js"></script>
 			<script src="js/vendor/angular-route.min.js"></script>
 			
@@ -816,7 +818,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 				    '<div class="right floated content">';
 				    
 				    if(hasImage){
-				    	listItemHTML+= '<div onclick="showImage(\''+entry.image+'\')" class="ui icon button pink"><i class="photo icon"></i></div>';
+				    	listItemHTML+= '<a href="'+entry.image+'" class="ui icon button pink" data-featherlight="image"><i class="photo icon"></i></a>';
 				    }
 				    listItemHTML += '</div>'+
 				    '<div class="content">'+
