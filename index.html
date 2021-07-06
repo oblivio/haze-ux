@@ -217,16 +217,17 @@
 
 		<!-- Scripts -->
 			
-		<script src="phonegap.js"></script>
-			
-			<script src="js/vendor/firebase.js"></script>
-			<script>
+		<script src="js/vendor/firebase.js"></script>
+		<script>
 			  // Initialize Firebase
 			  var config = {
-			    apiKey: "AIzaSyBxI9ikQGIlADBazqyZ8ghxJLib-yRAw_U",
-			    authDomain: "oblivious-haze.firebaseapp.com",
-			    databaseURL: "https://oblivious-haze.firebaseio.com",
-			    storageBucket: "oblivious-haze.appspot.com",
+			    apiKey: "AIzaSyCxczOqKbHVqo3tX3p_vL1vSXa8CTbkRC8",
+				authDomain: "haze-ux.firebaseapp.com",
+				projectId: "haze-ux",
+				storageBucket: "haze-ux.appspot.com",
+				messagingSenderId: "249313567626",
+				appId: "1:249313567626:web:7e14377a6e371319131e73"
+
 			  };
 			  firebase.initializeApp(config);
 			</script>	
@@ -529,7 +530,7 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
 					    	
-							$.post( "https://www.hazedaily.com/api/blackbook/", {blackbookdata: Entries})
+							$.post( "http://localhost/api/blackbook/", {blackbookdata: Entries})
 							  .done(function( data ) {
 							    var hasChanged = [];
 							    	data = JSON.parse(data);
