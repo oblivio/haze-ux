@@ -215,7 +215,7 @@ var oblivious = (function () {
 		        delete_token:  deleteToken,
 		        category:category
 		      };
-		var url = "http://localhost/api/remove/entry/";
+		var url = "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/remove-entry";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -322,7 +322,7 @@ var oblivious = (function () {
 		});
 		entrydata.nickname = nickname;
 		
-		var url = "http://localhost/api/create/entry/";
+		var url = "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/add-entry";
 		var reqObj = {
 				url: url,
 			     data: entrydata
@@ -374,7 +374,7 @@ var oblivious = (function () {
 				entry_id:entryID,
 				category:category
 		};
-		var url = "http://localhost/api/get/entry/meta/";
+		var url = "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/get-entry-meta";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -399,7 +399,7 @@ var oblivious = (function () {
 				entry_id:entryID,
 				category:category
 		};
-		var url = "http://localhost/api/get/entry/";
+		var url = "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/get-entry";
 		var reqObj = {
 				url: url,
 			     data: d
@@ -578,7 +578,7 @@ var oblivious = (function () {
 		});
 		
 		console.log('before post',d);
-		var url = "http://localhost/api/create/entry/";
+		var url = "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/add-entry";
 		var reqObj = {
 				url: url,
 			     data: d

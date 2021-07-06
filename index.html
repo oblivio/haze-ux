@@ -530,10 +530,11 @@ var cardHTML = "<div class='ui card' id='"+entry.category+"-"+entry.entryid+"' >
 					    	
 					    	//api.blackbook({blackbookdata:Entries});
 					    	
-							$.post( "http://localhost/api/blackbook/", {blackbookdata: Entries})
+							$.post( "https://117sxi2567.execute-api.us-east-2.amazonaws.com/public/blackbook/", {blackbookdata: Entries})
 							  .done(function( data ) {
+								  console.log('data',data);
 							    var hasChanged = [];
-							    	data = JSON.parse(data);
+							    	//data = JSON.parse(data);
 							    	console.log('data from bb check',data);
 							    	
 								    $.each(data,function(i,obj){
